@@ -1,0 +1,14 @@
+{
+  "root": {
+    "name": "tasks_template",
+    "type": "",
+    "subtype": "",
+    "task": {
+      "active": true,
+      "status": "NOT-STARTED",
+      "artist": "None",
+      "imports_from": {},
+      "pub_slots":{}
+    }
+  }
+}

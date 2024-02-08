@@ -1,0 +1,105 @@
+{
+  "shot": {
+    "definition": {
+      "full_range_in": "ingest plate",
+      "full_range_out": "ingest plate",
+      "frame_in": "1001",
+      "frame_out": "1001",
+      "handles_head": "8",
+      "handles_tail": "8",
+      "preroll": "10",
+      "shot_type": "vfx",
+      "cut_in": "1009",
+      "cut_out": "993",
+      "frame_rate": "24",
+      "motion_blur_high": "0.25",
+      "motion_blur_low": "-0.25",
+      "res_x": "from plate",
+      "res_y": "from plate"
+  }
+  },
+  "build": {
+    "definition": {
+      "asset_lod": "hero",
+      "assembly": false,
+      "full_range_in": "1001",
+      "full_range_out": "1100",
+      "frame_in": "1001",
+      "frame_out": "1001",
+      "handles_head": "8",
+      "handles_tail": "8",
+      "preroll": "10",
+      "shot_type": "vfx",
+      "cut_in": "1009",
+      "cut_out": "993",
+      "frame_rate": "24",
+      "motion_blur_high": "0.25",
+      "motion_blur_low": "-0.25",
+      "res_x": "from plate",
+      "res_y": "from plate"
+    }
+  },
+  "character": {
+    "definition": {
+      "asset_lod": "hero",
+      "assembly": false,
+      "full_range_in": "1001",
+      "full_range_out": "1100",
+      "frame_in": "1001",
+      "frame_out": "1001",
+      "handles_head": "8",
+      "handles_tail": "8",
+      "preroll": "10",
+      "shot_type": "vfx",
+      "cut_in": "1009",
+      "cut_out": "993",
+      "frame_rate": "24",
+      "motion_blur_high": "0.25",
+      "motion_blur_low": "-0.25",
+      "res_x": "from plate",
+      "res_y": "from plate"
+    }
+  },
+  "prop": {
+    "definition": {
+      "asset_lod": "hero",
+      "assembly": false,
+      "full_range_in": "1001",
+      "full_range_out": "1100",
+      "frame_in": "1001",
+      "frame_out": "1001",
+      "handles_head": "8",
+      "handles_tail": "8",
+      "preroll": "10",
+      "shot_type": "vfx",
+      "cut_in": "1009",
+      "cut_out": "993",
+      "frame_rate": "24",
+      "motion_blur_high": "0.25",
+      "motion_blur_low": "-0.25",
+      "res_x": "from plate",
+      "res_y": "from plate"
+    }
+  },
+  "environment": {
+    "definition": {
+      "asset_lod": "hero",
+      "assembly": false,
+      "full_range_in": "1001",
+      "full_range_out": "1100",
+      "frame_in": "1001",
+      "frame_out": "1001",
+      "handles_head": "8",
+      "handles_tail": "8",
+      "preroll": "10",
+      "shot_type": "vfx",
+      "cut_in": "1009",
+      "cut_out": "993",
+      "frame_rate": "24",
+      "motion_blur_high": "0.25",
+      "motion_blur_low": "-0.25",
+      "res_x": "from plate",
+      "res_y": "from plate"
+    }
+  }
+}

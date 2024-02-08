@@ -1,0 +1,192 @@
+#usda 1.0
+(
+    defaultPrim = "Room_set"
+    upAxis = "Y"
+)
+
+def Xform "Room_set" (
+    kind = "assembly"
+)
+{
+    def Xform "Furniture" (
+        kind = "group"
+    )
+    {
+        def "Table" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Table/Table.usd@
+        )
+        {
+        }
+    }
+
+    def Xform "Props" (
+        kind = "group"
+    )
+    {
+        def "Ball_1" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_1"
+            }
+        )
+        {
+            double3 xformOp:translate = (10, 77.3575, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_2" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_2"
+            }
+        )
+        {
+            double3 xformOp:translate = (14.949335182628067, 77.3575, -2.8575)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_3" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_3"
+            }
+        )
+        {
+            double3 xformOp:translate = (14.949335182628067, 77.3575, 2.8575)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_4" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_4"
+            }
+        )
+        {
+            double3 xformOp:translate = (19.898670365256134, 77.3575, -5.715)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_5" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_5"
+            }
+        )
+        {
+            double3 xformOp:translate = (19.898670365256134, 77.3575, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_6" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_6"
+            }
+        )
+        {
+            double3 xformOp:translate = (19.898670365256134, 77.3575, 5.715)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_7" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_7"
+            }
+        )
+        {
+            double3 xformOp:translate = (24.8480055478842, 77.3575, -8.5725)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_8" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_8"
+            }
+        )
+        {
+            double3 xformOp:translate = (24.8480055478842, 77.3575, -2.8575)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_9" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_9"
+            }
+        )
+        {
+            double3 xformOp:translate = (24.8480055478842, 77.3575, 2.8575)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_10" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_10"
+            }
+        )
+        {
+            double3 xformOp:translate = (24.8480055478842, 77.3575, 8.5725)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_11" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_11"
+            }
+        )
+        {
+            double3 xformOp:translate = (29.797340730512268, 77.3575, -11.43)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_12" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_12"
+            }
+        )
+        {
+            double3 xformOp:translate = (29.797340730512268, 77.3575, -5.715)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_13" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_13"
+            }
+        )
+        {
+            double3 xformOp:translate = (29.797340730512268, 77.3575, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_14" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_14"
+            }
+        )
+        {
+            double3 xformOp:translate = (29.797340730512268, 77.3575, 5.715)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def "Ball_15" (
+            prepend references = @C:\Users\arsithra\PycharmProjects\ORIGIN_ENERVO\USD\tutorial_scripts\../models\Ball/Ball.usd@
+            variants = {
+                string shadingVariant = "Ball_15"
+            }
+        )
+        {
+            double3 xformOp:translate = (29.797340730512268, 77.3575, 11.43)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+}
+

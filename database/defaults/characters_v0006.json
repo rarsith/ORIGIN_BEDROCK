@@ -1,0 +1,732 @@
+{
+    "category": "characters",
+    "tasks_schema": {
+        "lidar": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": {},
+            "pub_slots": {
+                "img": {
+                    "type": "img",
+                    "method": "img_exp",
+                    "used_by": [
+                        "modeling"
+                    ],
+                    "source": {},
+                    "reviewable": true,
+                    "active": true
+                },
+                "pdf": {
+                    "type": "scn",
+                    "method": "img_exp",
+                    "used_by": [],
+                    "source": {},
+                    "reviewable": true,
+                    "active": true
+                }
+            }
+        },
+        "concept": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": {},
+            "pub_slots": {
+                "img": {
+                    "type": "img",
+                    "method": "img_exp",
+                    "used_by": [
+                        "modeling",
+                        "modeling.rend_geo",
+                        "modeling.proxy_geo",
+                        "modeling.utility"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "pdf": {
+                    "type": "scn",
+                    "method": "img_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                }
+            }
+        },
+        "sculpting": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "concept.pub_slots.img"
+            ],
+            "pub_slots": {
+                "ref_geo": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "modeling",
+                        "surfacing",
+                        "modeling.rend_geo",
+                        "modeling.proxy_geo",
+                        "modeling.utility"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                }
+            }
+        },
+        "modeling": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "concept.pub_slots.img",
+                "sculpting.pub_slots.ref_geo",
+                "texturing.pub_slots.vport_tex"
+            ],
+            "pub_slots": {
+                "muscle_muscles": {
+                    "type": "csh",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "cfx_set.muscles_setup"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "muscle_skeleton": {
+                    "type": "csh",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "rigging.render_rig",
+                        "rigging.proxy_rig",
+                        "rigging.util_rig"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "clothes_utility": {
+                    "type": "csh",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "cfx_set.cloth_setup",
+                        "rigging.util_rig"
+                    ],
+                    "source": "clothes_render",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "clothes_proxy": {
+                    "type": "csh",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "cfx_set.cloth_setup",
+                        "rigging.proxy_rig"
+                    ],
+                    "source": "clothes_render",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "clothes_render": {
+                    "type": "csh",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "cfx_set.cloth_setup",
+                        "rigging.render_rig"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "mat_assignment": {
+                    "type": "cfg",
+                    "method": "cfg_exp",
+                    "used_by": [
+                        "texturing.texture_set",
+                        "texturing.vport_tex"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "cavity_map": {
+                    "type": "img",
+                    "method": "geo_bake",
+                    "used_by": [
+                        "texturing.texture_set"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "normal_map": {
+                    "type": "img",
+                    "method": "geo_bake",
+                    "used_by": [
+                        "texturing.texture_set",
+                        "texturing.vport_tex"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "displacement_map": {
+                    "type": "img",
+                    "method": "geo_bake",
+                    "used_by": [
+                        "texturing.texture_set"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "rend_geo": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "rigging",
+                        "cfx_set",
+                        "groom",
+                        "cfx_set.cloth_setup",
+                        "rigging.render_rig",
+                        "facs.main_shapes",
+                        "facs.corrective",
+                        "surfacing.look_dev"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "proxy_geo": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "rigging",
+                        "cfx_set",
+                        "rigging.proxy_rig"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "utility": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "rigging",
+                        "cfx_set",
+                        "rigging.util_rig"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "lidar": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "proj_geo": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "vport_mat": {
+                    "type": "scn",
+                    "method": "assign_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "tex_object": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "texturing.texture_set"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "curvature_map": {
+                    "type": "img",
+                    "method": "geo_bake",
+                    "used_by": [
+                        "surfacing.look_dev"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "ao_map": {
+                    "type": "img",
+                    "method": "geo_bake",
+                    "used_by": [
+                        "surfacing.look_dev"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "selection_map": {
+                    "type": "img",
+                    "method": "geo_bake",
+                    "used_by": [
+                        "texturing.texture_set"
+                    ],
+                    "source": "rend_geo",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                }
+            }
+        },
+        "texturing": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "modeling.pub_slots.cavity_map",
+                "modeling.pub_slots.normal_map",
+                "modeling.pub_slots.displacement_map",
+                "modeling.pub_slots.tex_object",
+                "modeling.pub_slots.curvature_map",
+                "modeling.pub_slots.ao_map",
+                "modeling.pub_slots.selection_map"
+            ],
+            "pub_slots": {
+                "texture_set": {
+                    "type": "img",
+                    "method": "img_exp",
+                    "used_by": [
+                        "surfacing.look_dev"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "vport_tex": {
+                    "type": "img",
+                    "method": "img_exp",
+                    "used_by": [
+                        "modeling.vport_mat"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "groom_maps": {
+                    "type": "img",
+                    "method": "img_exp",
+                    "used_by": [
+                        "groom",
+                        "groom.fur_set",
+                        "groom.feathers_set"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "util_maps": {
+                    "type": "img",
+                    "method": "img_exp",
+                    "used_by": [
+                        "surfacing.look_dev"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                }
+            }
+        },
+        "rigging": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "modeling.pub_slots.rend_geo",
+                "modeling.pub_slots.proxy_geo",
+                "modeling.pub_slots.utility"
+            ],
+            "pub_slots": {
+                "render_rig": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [
+                        "fx_set.bgeo",
+                        "fx_set.vdb"
+                    ],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "proxy_rig": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "render_rig",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "cmuscle_rig": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "util_rig": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                }
+            }
+        },
+        "groom": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "pub_slots": {
+                "fur_guides": {
+                    "type": "abc",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "cfx_set.fur_setup"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "fur_set": {
+                    "type": "abc",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "surfacing.look_dev"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "feathers_set": {
+                    "type": "abc",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "cfx_set.feathers_setup",
+                        "surfacing.look_dev"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                }
+            },
+            "imports_from": [
+                "modeling.pub_slots.mat_assignment",
+                "modeling.pub_slots.cavity_map",
+                "modeling.pub_slots.rend_geo"
+            ]
+        },
+        "cfx_set": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "modeling.pub_slots.rend_geo",
+                "modeling.pub_slots.proxy_geo",
+                "modeling.pub_slots.utility"
+            ],
+            "pub_slots": {
+                "muscles_setup": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "cloth_setup": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "fur_setup": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "feathers_setup": {
+                    "type": "scn",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                }
+            }
+        },
+        "fx_set": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "modeling.pub_slots.rend_geo"
+            ],
+            "pub_slots": {
+                "bgeo": {
+                    "type": "geo",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "vdb": {
+                    "type": "csh",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": "root",
+                    "scope": "shots",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                }
+            }
+        },
+        "surfacing": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "pub_slots": {
+                "look_dev": {
+                    "type": "cfg",
+                    "method": "scn_exp",
+                    "used_by": [],
+                    "source": {},
+                    "reviewable": true,
+                    "active": true
+                }
+            },
+            "imports_from": [
+                "modeling.pub_slots.mat_assignment",
+                "modeling.pub_slots.rend_geo",
+                "texturing.pub_slots.texture_set"
+            ]
+        },
+        "facs": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": [
+                "modeling.pub_slots.rend_geo",
+                "modeling.pub_slots.proxy_geo",
+                "texturing.pub_slots.vport_tex"
+            ],
+            "pub_slots": {
+                "main_shapes": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "rigging",
+                        "rigging.render_rig",
+                        "rigging.proxy_rig"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                },
+                "corrective": {
+                    "type": "geo",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "rigging",
+                        "rigging.render_rig",
+                        "rigging.proxy_rig"
+                    ],
+                    "source": "root",
+                    "scope": "build",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": false,
+                    "active": true
+                }
+            }
+        },
+        "tasty": {
+            "active": true,
+            "status": "NOT-STARTED",
+            "artist": "None",
+            "imports_from": {},
+            "pub_slots": {
+                "ou2": {
+                    "type": "abc",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "modeling.muscle_muscles",
+                        "modeling.muscle_skeleton"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                },
+                "out1": {
+                    "type": "abc",
+                    "method": "sf_csh",
+                    "used_by": [
+                        "modeling.muscle_skeleton",
+                        "modeling.clothes_utility",
+                        "modeling.muscle_muscles"
+                    ],
+                    "source": "root",
+                    "scope": "local",
+                    "mode": "layer",
+                    "artists": "unassigned",
+                    "reviewable": true,
+                    "active": true
+                }
+            }
+        }
+    }
+}
