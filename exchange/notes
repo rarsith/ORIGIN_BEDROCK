@@ -1,0 +1,19 @@
+ORIGIN - database
+    collections:
+        - projectName (collection that stores all project structure related documents)
+
+        - projectName_workfiles (collection that contains all work_scenes)
+
+        - projectName_publishes (collection that contains all publishes)
+
+        - projectName_control (collection that contains all INCOMING and OUTGOING packages)
+
+ORIGIN_GLOBALS - database
+    collections:
+    - configuration (collection that contains globals settings of the ORIGIN pipeline)
+        -> connection URL to the MongoDB server
+
+    - users
+
+    - usage_reports
+

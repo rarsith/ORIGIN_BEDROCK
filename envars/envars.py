@@ -125,7 +125,105 @@ class Envars():
     def project_name(self, proj_name):
         os.environ['ORIGIN_PROJECT_NAME'] = proj_name
 
+class OriginEnvar():
 
+    @property
+    def os_root(self):
+        return os.environ.get('ORIGIN_ROOT')
+
+    @os_root.setter
+    def os_root(self, root_path):
+        os.environ.get['ORIGIN_ROOT'] = root_path
+
+    @property
+    def origin_id(self):
+        return os.environ.get('ORIGIN_ID')
+
+    @origin_id.setter
+    def origin_id(self, origin_id):
+        os.environ['ORIGIN_ID'] = origin_id
+
+    @property
+    def project_name(self):
+        return os.environ.get('ORIGIN_PROJECT_NAME')
+
+    @project_name.setter
+    def project_name(self, proj_name):
+        os.environ['ORIGIN_PROJECT_NAME'] = proj_name
+
+    @property
+    def show_name(self):
+        return os.environ.get('ORIGIN_PROJECT')
+
+    @show_name.setter
+    def show_name(self, project):
+        os.environ['ORIGIN_PROJECT'] = project
+
+    @property
+    def origin_path_hierarchy(self):
+        return os.environ.get('ORIGIN_HIERARCHY')
+
+    @origin_path_hierarchy.setter
+    def origin_path_hierarchy(self, hierarchy):
+        os.environ['ORIGIN_HIERARCHY'] = hierarchy
+
+    @property
+    def entry_name(self):
+        return os.environ.get('ORIGIN_PROJECT_ENTITY')
+
+    @entry_name.setter
+    def entry_name(self, entity):
+        os.environ['ORIGIN_PROJECT_ENTITY'] = entity
+
+    @property
+    def task_name(self):
+        return os.environ.get('ORIGIN_ENTITY_TASK')
+
+    @task_name.setter
+    def task_name(self, task):
+        os.environ['ORIGIN_ENTITY_TASK'] = task
+
+
+    def taget_path(self, *args):
+        path = '.'.join(args)
+        return path
+
+    def resolve_db_filter(self):
+        current_envars = {"show_name": OriginEnvar().show_name,
+                          "origin_db_path": OriginEnvar().origin_path_hierarchy,
+                          "entry_name": OriginEnvar().entry_name,
+                          "task_name": OriginEnvar().task_name}
+
+        db_filter = dict()
+
+        for key, value in current_envars.items():
+            if value:
+                db_filter[key] = value
+
+        return db_filter
+
+    def update_hierarchy_path(self, sel_items: list, delimiter=".", use_root=False) -> str:
+        if len(sel_items) == 0:
+            OriginEnvar().origin_path_hierarchy = OriginEnvar().show_name
+            return OriginEnvar().origin_path_hierarchy
+        OriginEnvar().origin_path_hierarchy = f"{delimiter}".join([OriginEnvar.show_name, *sel_items])
+        return OriginEnvar().origin_path_hierarchy
+
+    def current_context(self):
+        current_envars = {"show_name": OriginEnvar().show_name,
+                          "origin_db_path": OriginEnvar().origin_path_hierarchy,
+                          "entry_name": OriginEnvar().entry_name,
+                          "task_name": OriginEnvar().task_name}
+
+        context = []
+
+        for key, value in current_envars.items():
+            if value:
+                context.append(value)
+
+        current_context = ".".join(context)
+
+        return current_context
 
 if __name__ == "__main__":
     from database import db_connection as mdbconn
@@ -135,7 +233,23 @@ if __name__ == "__main__":
     Envars.branch_name = "sequences"
     Envars.category = "XPM"
     Envars.entry_name = "0200"
-    # Envars.task_name = "animation"
+    Envars.task_name = "animation"
+
+    selection_list = ["sequences", "XXP", "templates"]
+
+    OriginEnvar.show_name = "Green"
+    OriginEnvar.entry_name = "0200"
+
+    path_db = OriginEnvar().update_hierarchy_path(selection_list)
+    print(path_db)
+    print(OriginEnvar().origin_path_hierarchy)
+
+    db_filter = OriginEnvar().resolve_db_filter()
+    print(db_filter)
+
+
+
+
 
     filter_db = Envars().get_envars_set()
     # print(filter_db)
@@ -261,7 +375,7 @@ if __name__ == "__main__":
 
     # get_matching_string_documents(selected_names)
 
-    db_reparent_document(5, 3)
+    # db_reparent_document(5, 3)
 
     # target_document = get_document_by_id(doc_id = 4)
     # new_parent = db_reparent_document(target_document, new_parent_id=5)
