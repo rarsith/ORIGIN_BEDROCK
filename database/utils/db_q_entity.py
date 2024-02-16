@@ -84,7 +84,6 @@ class From:
         except ValueError as val:
             raise("{} Error! Nothing Done!".format(val))
 
-
     @property
     def projects(self):
         return "show"
