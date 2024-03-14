@@ -10,31 +10,12 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTableWidget):
     def widget_build(self):
         self.setColumnCount(11)
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        width = self.width()
-        self.setColumnWidth(0, round(width*0.07))
-        self.setColumnWidth(1, round(width*0.4))
-        self.setColumnWidth(2, round(width*0.1))
-        self.setColumnWidth(3, round(width*0.2))
-        self.setColumnWidth(4, round(width*0.2))
-        self.setColumnWidth(5, round(width*0.2))
-        self.setColumnWidth(6, round(width*0.2))
-        self.setColumnWidth(7, round(width*0.1))
-        self.setColumnWidth(8, round(width*0.1))
-        self.setColumnWidth(9, round(width*0.45))
-        self.setColumnWidth(10, round(width*0.0))
-
         self.setShowGrid(False)
-
-        # self.setMinimumWidth(500)
-        # self.setMaximumWidth(500)
         self.setSortingEnabled(True)
 
-
-
         for row in range(self.rowCount()):
-            self.setRowHeight(row, 10)
+            self.setRowHeight(row, 7)
 
-        # self.setAlternatingRowColors(True)
         self.setHorizontalHeaderLabels(['',
                                         'Publish Name',
                                         'Version',
@@ -47,6 +28,25 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTableWidget):
                                         'Description',
                                         'Id',
                                         ])
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+
+        new_width = event.size().width()
+
+        col_multiplier = [0.03, 0.187, 0.04, 0.085, 0.07, 0.07, 0.07, 0.05, 0.05, 0.346, 0]
+
+        for idx, mult in enumerate(col_multiplier):
+            self.setColumnWidth(idx, round(new_width * mult))
+
+        column_sizes = []
+        header = self.horizontalHeader()
+
+        for i in range(self.columnCount()):
+            column_width = header.sectionSize(i)
+            column_sizes.append(column_width)
+
+
 
 class MainPublishesViewUI(QtWidgets.QWidget):
     def __init__(self, parent=None):

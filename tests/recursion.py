@@ -31,8 +31,8 @@ dictionary_list = [
 def add_child(dictionary_list):
     new_dict_list = []
     for dictionary in dictionary_list:
-        if "h_anchor" not in dictionary:
-            dictionary["h_anchor"] = []
+        if "children" not in dictionary:
+            dictionary["children"] = []
             new_dict_list.append(dictionary)
     
     return new_dict_list
@@ -53,19 +53,18 @@ def build_hierarchy(dictionary_list):
         else:
             parent = dictionary_map.get(parent_id)
             if parent:
-                parent["h_anchor"].append(dictionary)
+                parent["children"].append(dictionary)
     for keys, values in tree.items():
         return values
 
 
 def extract_entry_names(data):
     tree = {}
-
     def deep_search(dictionary):
         if isinstance(dictionary, dict):
             entry_name = dictionary.get('entry_name')
-            children = dictionary.get('h_anchor')
-            catch = tree[entry_name] = [extract_entry_names(child) for child in children]
+            children = dictionary.get('children')
+            catch = tree[entry_name]=[extract_entry_names(child) for child in children]
 
             return catch
 

@@ -63,12 +63,12 @@ def find_parents(documents_list):
                 collapsed.setdefault(parent_doc["entry_name"], []).append(document["entry_name"])
     iterate_parents(documents_list)
 
-    for key, values in collapsed.items():
-        new_dict = {key: values}
-        regrouped_dict.append(new_dict)
-
-    for pairs in regrouped_dict:
-        if pairs.keys() in regrouped_dict:
+    # for key, values in collapsed.items():
+    #     new_dict = {key: values}
+    #     regrouped_dict.append(new_dict)
+    #
+    # for pairs in regrouped_dict:
+    #     if pairs.keys() in regrouped_dict:
 
     return collapsed
 

@@ -39,7 +39,7 @@ def get_deep_value(key_attr_path, dict_data, delimiter="."):
         return dict_data[key_attr_path]
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     json_load = open_json("../database/defaults/tasks_default_schemas.json")
     tasks_read = read_dictionary(json_load, 'prop')
     print(tasks_read)

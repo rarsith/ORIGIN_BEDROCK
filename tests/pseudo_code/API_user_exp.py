@@ -1,39 +1,13 @@
 """
-Query().all_shows.names
-Update().all_shows.names
-Query().current_show.structures
-Query().parent.name
 
-Query.projects.all.names
-Query.
-
-Query().path.to_root
-
-Query().path.all_ascendants.to_root
-Query().path.all_descendants.types
-
-Query().path.to_parent.name
-Query().path.to_parent.type
-Query().path.to_parent.config
-Query().path.to_parent.definitions
-Query().path.to_parent.templates
-Query().path.to_parent.data
-
-
-Query().all_tasks.names
-Query().all_tasks.statuses
-Query().task.imports_from
-Query().task.output_slots.names
-
-
-Query().task.output_slot(name).data
-Update().task.output_slot(name).data
-Remove().task.output_slot(name).data
-Create().task.output_slot(name).data
-
-
-
-
+Query - attr values
+Create - new database entry
+Update - attr values
+Add - attr values
+Set - replaces attr values
+Remove - deletes attr values
+Publish - complex - creates db entry based on the context (current Task), contains all task output_slots versioned
+    and status controlled
 
 
 ## Assets Tasks dependencies

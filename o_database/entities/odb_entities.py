@@ -4,18 +4,19 @@ from common_utils.users import Users
 from database.db_defaults import DbDefaults
 from database.db_statuses import DbStatuses
 from database.utils.db_version_control import DBVersionControl
-from envars.envars import OriginEnvar, Envars
-from database import db_connection as mdbconn, db_templates
+from envars.envars import Envars
+from envars.origin_envars import OriginEnvar
+from database import db_templates
+from database.db_connection import MongoConnection
 from database.utils.db_q_entity import From, QEntity, DbRef, DbReferences
 from database.entities.db_structures import DbProjectBranch
 from database.entities.db_attributes import (DbAttrPaths,
                                              DbProjectAttrPaths,
                                              DbEntityAttrPaths,
                                              DbTaskAttrPaths,
-                                             DbSyncTaskAttrPaths,
                                              DbPubSlotsAttrPaths)
 # from database.db_ids import DbIds
-from database.odb_ids import DbIds
+from o_database.entities.ids import DbIds
 from database.utils import db_path_assembler
 
 
@@ -124,7 +125,7 @@ class _DbConstructors:
             time=DateTime().curr_time,
             owner=Users.curr_user(),
             parent=OriginEnvar().show_name,
-            visual_parent = OriginEnvar().current_context()
+            visual_parent=OriginEnvar().current_context()
         )
         return entity_id, entity_attributes
 
@@ -136,10 +137,8 @@ class _DbConstructors:
 
         save_content = dict(
             _id=common_id,
-            show_name=Envars.show_name,
-            branch_name=Envars.branch_name,
-            category=Envars.category,
             entry_name=Envars.entry_name,
+            type="work_file",
             task_name=Envars.task_name,
             status="WIP",
             description=[],
@@ -147,15 +146,12 @@ class _DbConstructors:
             version=version,
             date=DateTime().curr_date,
             time=DateTime().curr_time,
-            publish_packaging="wip_scene",
             display_name=set_display_name,
-            origin=[],
             components=dict(main_path=OutputPaths(version, output_file_name=file_name).wip_file_path()),
             session=[]
         )
 
         return common_id, save_content
-        pass
 
     @staticmethod
     def bundle_construct():
@@ -168,16 +164,13 @@ class _DbConstructors:
         entity_attributes = dict(
             _id=common_id,
             show_name=Envars.show_name,
-            branch_name=Envars.branch_name,
-            category=Envars.category,
             entry_name=Envars.entry_name,
             display_name=set_display_name,
             artist=Users.curr_user(),
             status=status,
             version=version,
             date=DateTime().curr_date,
-            time=DateTime().curr_time,
-            master_bundle=dict.fromkeys(entity_tasks, [])
+            time=DateTime().curr_time
         )
         return common_id, entity_attributes
 
@@ -189,10 +182,8 @@ class _DbConstructors:
 
         save_content = dict(
             _id=common_id,
-            reviewable_component="insert_movie",
             show_name=Envars.show_name,
-            branch_name=Envars.branch_name,
-            category=Envars.category,
+            type="",
             entry_name=Envars.entry_name,
             task_name=Envars.task_name,
             status="PENDING_REVIEW",
@@ -201,7 +192,6 @@ class _DbConstructors:
             version=version,
             date=DateTime().curr_date,
             time=DateTime().curr_time,
-            publish_packaging="main",
             publishing_slots=[],
             display_name=set_display_name
         )
@@ -229,8 +219,6 @@ class _DbConstructors:
             reviewable_component="insert_movie_path",
             slot_thumbnail="insert_thumbnail_path",
             show_name=Envars.show_name,
-            branch_name=Envars.branch_name,
-            category=Envars.category,
             entry_name=Envars.entry_name,
             task_name=Envars.task_name,
             update_type="non-critical",
@@ -257,29 +245,10 @@ class _DbConstructors:
 
         return common_id, save_content
 
-    @staticmethod
-    def sync_tasks_capture_construct(current_syncs: dict):
-        # TODO: cohesion check!!
-        version = DBVersionControl().db_sync_tasks_ver_increase()
-        entity_id = DbIds.get_sync_tasks_id(version)
-
-        entity_attributes = dict(
-            _id=entity_id,
-            show_name=Envars.show_name,
-            entry_name=Envars.entry_name,
-            category=Envars.category,
-            version=version,
-            sync_tasks=current_syncs,
-            date=DateTime().curr_date,
-            time=DateTime().curr_time,
-            owner=Users.curr_user()
-        )
-        return entity_id, entity_attributes
-
 
 class DbProject:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = MongoConnection().origin_production_database()
 
     @staticmethod
     def current():
@@ -292,7 +261,7 @@ class DbProject:
         try:
             self.db[name].insert_one(save_data)
             self.db.create_collection(name+"_publishes")
-            self.db.create_collection(name+"_workfiles")
+            self.db.create_collection(name+"_work")
             self.db.create_collection(name+"_control")
             print("{} Project created!".format(name))
 
@@ -362,7 +331,7 @@ class DbProject:
 
 class DbAsset:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = MongoConnection().origin_production_database()
 
     def create(self, name, task_schema=None):
         collection = self.db[OriginEnvar.show_name]
@@ -505,7 +474,7 @@ class DbAsset:
 
 class DbGroup:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = MongoConnection().origin_production_database()
 
     def create(self, name):
         collection = self.db[OriginEnvar.show_name]
@@ -529,11 +498,6 @@ class DbTasks:
                 entry_id=DbIds.curr_entry_id(),
                 attribute_path=DbEntityAttrPaths.to_tasks()
                 ).add_property(name=name, add_data=db_templates.task_defaults())
-
-        QEntity(db_collection=From().entities,
-                entry_id=DbIds.curr_entry_id(),
-                attribute_path=DbEntityAttrPaths.sync_tasks()
-                ).add_property(name=name, add_data={})
 
         print("{} Origin Asset Task created!".format(name))
         return name
@@ -672,7 +636,7 @@ class DbTasks:
 
 class DbPublish:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = MongoConnection().origin_production_database()
 
     def get_db_publishes_ids(self, collection, view_limit=0):
         #TODO change this to database aggregations
@@ -806,19 +770,16 @@ class DbPublish:
     def db_publish_sel(self, sel_pub_slots=[]):
         current_task = Envars().task_name
         task_pub_slots = DbPubSlot().get_pub_slots()
-        get_sync_tasks = DbSyncTasks().capture_all()
-        sync_to_curr_task = get_sync_tasks[current_task]
 
         if len(sel_pub_slots)==0:
             sel_pub_slots = task_pub_slots
 
-        for sync_slot in sel_pub_slots:
-             del sync_to_curr_task[sync_slot]
+
 
         main_publish = self.db_main_publish()
 
         for pub_slot in sel_pub_slots:
-            get_sync_path = ".".join(["sync_tasks", current_task, pub_slot])
+
             pub_slots_publish = self.db_slot_publish(pub_slot)
 
             DbReferences.add_db_id_reference(collection=main_publish[1],
@@ -826,22 +787,6 @@ class DbPublish:
                                              destination_slot="publishing_slots",
                                              id_to_add=pub_slots_publish[0],
                                              from_collection=pub_slots_publish[1])
-
-            DbReferences.add_db_id_reference(collection=DbProjectBranch().get_current_branch_type,
-                                             parent_doc_id=DbIds.curr_entry_id(),
-                                             destination_slot=get_sync_path,
-                                             id_to_add=pub_slots_publish[0],
-                                             from_collection=pub_slots_publish[1],
-                                             replace=True)
-
-        for inherited_slot in sync_to_curr_task.items():
-            get_collection = inherited_slot[1].split(",")
-
-            DbReferences.add_db_id_reference(collection=main_publish[1],
-                                             parent_doc_id=main_publish[0],
-                                             destination_slot="publishing_slots",
-                                             id_to_add=get_collection[1],
-                                             from_collection=get_collection[0])
 
         return main_publish
 
@@ -877,37 +822,15 @@ class DbPublish:
         print("{0} Saved!".format(set_display_name))
         return published.inserted_id, collection_name
 
-    def publish_sync_state(self):
-        #TODO: cohesion check!!
-        existing_sync_tasks = self.capture_all()
-        version = DBVersionControl().db_sync_tasks_ver_increase()
-        entity_id = DbIds.get_sync_tasks_id(version)
-        entity_attributes = dict(
-            _id= entity_id,
-            show_name= Envars.show_name,
-            entry_name= Envars.entry_name,
-            category= Envars.category,
-            version=version,
-            sync_tasks= existing_sync_tasks,
-            date=DateTime().curr_date,
-            time=DateTime().curr_time,
-            owner= Users.curr_user()
-        )
-        try:
-            self.db.sync_tasks.insert_one(entity_attributes)
-
-        except Exception as e:
-            print("{} Error! Nothing Created!".format(e))
-
 
 class DbPubSlot:
+
     def create(self, name: str) -> str:
         QEntity(db_collection=From().entities,
                 entry_id=DbIds.curr_entry_id(),
                 attribute_path=DbTaskAttrPaths.pub_slots()
                 ).add_property(name=name, add_data=db_templates.tasks_pub_slot_schema())
 
-        DbSyncTasks().add_sync_task_slot(name)
         print("{} Task Pub Slot created!".format(name))
         return name
 
@@ -1064,68 +987,9 @@ class DbPubSlot:
             raise ValueError("Error! Nothing Done! -- {}".format(e))
 
 
-class DbSyncTasks:
-    @staticmethod
-    def create_from_template():
-        get_tasks_config = DbDefaults().get_show_defaults(DbDefaults().root_tasks)
-        entity_tasks = list(get_tasks_config)
-        save_elements_list = dict()
-        for task in entity_tasks:
-            task_definition = (get_tasks_config[task])
-            task_pub_slots = (list(task_definition["pub_slots"].keys()))
-            make_dictionary = dict.fromkeys(task_pub_slots, {})
-            nest_slot = {task: make_dictionary}
-            save_elements_list.update(nest_slot)
-
-        return save_elements_list
-
-    def capture_all(self) -> dict:
-        try:
-            tasks_list = QEntity(db_collection=From().entities,
-                                 entry_id=DbIds.curr_entry_id(),
-                                 attribute_path=DbEntityAttrPaths.sync_tasks()
-                                 ).get_attr_values()
-            return tasks_list
-
-        except ValueError as e:
-            print("{} Error! Nothing Done!".format(e))
-
-    def add(self, data: dict):
-        existing_sync_tasks = self.capture_all()
-        return existing_sync_tasks.update(data)
-
-    def add_sync_task(self, name: str) -> None:
-        QEntity(db_collection=From().entities,
-                entry_id=DbIds.curr_entry_id(),
-                attribute_path=DbEntityAttrPaths.sync_tasks()
-                ).add_property(name=name, add_data={})
-
-        print("{} Sync Tasks saved!".format(name))
-
-    def add_sync_task_slot(self, name: str) -> None:
-        QEntity(db_collection=From().entities,
-                entry_id=DbIds.curr_entry_id(),
-                attribute_path=DbSyncTaskAttrPaths.sync_pub_slots()
-                ).add_property(name=name, add_data={})
-
-        print("{} Sync Slot saved!".format(name))
-
-    def get_sync_task_slots(self) -> dict:
-        try:
-            tasks_list = QEntity(db_collection=From().entities,
-                                 entry_id=DbIds.curr_entry_id(),
-                                 attribute_path=DbSyncTaskAttrPaths.sync_pub_slots()
-                                 ).get_attr_values()
-
-            return tasks_list
-
-        except ValueError as vale:
-            print(vale)
-
-
 class DbBundle:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = MongoConnection().origin_production_database()
 
     def create(self):
         inserted_id, save_content = _DbConstructors().bundle_construct()
@@ -1203,8 +1067,6 @@ class DbBundle:
 
 
 if __name__ == '__main__':
-    import pprint
-
     OriginEnvar.show_name = "MooMoo"
     OriginEnvar.origin_path_hierarchy = "assets"
     # Envars.entry_name = "frog"

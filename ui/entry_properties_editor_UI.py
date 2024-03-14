@@ -71,7 +71,7 @@ if __name__=="__main__":
         "full_range_in": "1001",
         "full_range_out": "1100",
         "frame_in": "1001",
-        "frame_out": "1001",
+        "frame_out": "1100",
         "handles_head": "8",
         "handles_tail": "8",
         "preroll": "10",
@@ -81,8 +81,8 @@ if __name__=="__main__":
         "frame_rate": "24",
         "motion_blur_high": "0.25",
         "motion_blur_low": "-0.25",
-        "res_x": "from plate",
-        "res_y": "from plate"
+        "resolution_width": "1920",
+        "resolution_height": "1080"
     }
 
 

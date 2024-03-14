@@ -5,10 +5,16 @@
     "subtype": "",
     "task": {
       "active": true,
+      "type": "",
       "status": "NOT-STARTED",
       "artist": "None",
       "imports_from": {},
-      "pub_slots":{}
+      "bid_days": "",
+      "end_date": "",
+      "milestones":{},
+      "start_date": "",
+      "worked_days": "",
+      "previous_artists":[]
     }
   }
 }
