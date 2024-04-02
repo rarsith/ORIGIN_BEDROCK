@@ -1,4 +1,4 @@
-from database.db_connection import MongoConnection
+from o_database.mongo_connection import MongoConnection
 from envars.origin_envars import OriginEnvar
 from o_database.collections.connections import ProjectCollections
 from o_database.collections.pipelines import OriginDBPipelines
@@ -24,7 +24,240 @@ class Entity:
 
     @entity_type.setter
     def entity_type(self, ent_type):
+        attribute_path = DbEntityAttrPath().to_type()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(ent_type)
+
+    @property
+    def entity_data(self):
+        attribute_path = DbEntityAttrPath().to_data()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @entity_data.setter
+    def entity_data(self, ent_data):
+        attribute_path = DbEntityAttrPath().to_data()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(ent_data)
+
+    @property
+    def entity_parent(self):
         attribute_path = DbEntityAttrPath().to_parent()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @entity_parent.setter
+    def entity_parent(self, ent_parent):
+        attribute_path = DbEntityAttrPath().to_parent()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(ent_parent)
+
+    @property
+    def entity_visual_parent(self):
+        attribute_path = DbEntityAttrPath().to_visual_parent()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @entity_visual_parent.setter
+    def entity_visual_parent(self, ent_parent):
+        attribute_path = DbEntityAttrPath().to_visual_parent()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(ent_parent)
+
+    @property
+    def entity_name(self):
+        return
+
+    @entity_name.setter
+    def entity_name(self, ent_name):
+        pass
+
+    @property
+    def is_active(self):
+        attribute_path = DbEntityAttrPath().to_is_active()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @is_active.setter
+    def is_active(self, set_is_active):
+        attribute_path = DbEntityAttrPath().to_is_active()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_is_active)
+
+    @property
+    def definition(self):
+        attribute_path = DbEntityAttrPath().to_definition()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @definition.setter
+    def definition(self, set_definition):
+        attribute_path = DbEntityAttrPath().to_definition()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_definition)
+
+    @property
+    def origin_db_path(self):
+        attribute_path = DbEntityAttrPath().to_origin_db_path()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @origin_db_path.setter
+    def origin_db_path(self, set_origin_db_path):
+        attribute_path = DbEntityAttrPath().to_tasks()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_origin_db_path)
+
+    @property
+    def children(self):
+        attribute_path = DbEntityAttrPath().to_children()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @children.setter
+    def children(self, set_children):
+        attribute_path = DbEntityAttrPath().to_tasks()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_children)
+
+    def all_tasks(self):
+        return Tasks(operation=self.operation, db_operation=self.db_operation)
+
+    @property
+    def tasks(self):
+        attribute_path = DbEntityAttrPath().to_tasks()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @tasks.setter
+    def tasks(self, set_tasks):
+        attribute_path = DbEntityAttrPath().to_tasks()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_tasks)
+
+    @property
+    def config(self):
+        attribute_path = DbEntityAttrPath().to_config()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @config.setter
+    def config(self, set_config):
+        attribute_path = DbEntityAttrPath().to_config()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_config)
+
+    @property
+    def components(self):
+        attribute_path = DbEntityAttrPath().to_components()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @components.setter
+    def components(self, set_components):
+        attribute_path = DbEntityAttrPath().to_assigned_to()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_components)
+
+    @property
+    def assigned_to(self):
+        attribute_path = DbEntityAttrPath().to_assigned_to()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+
+        return results
+
+    @assigned_to.setter
+    def assigned_to(self, set_assigned_to):
+        attribute_path = DbEntityAttrPath().to_assigned_to()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        method(set_assigned_to)
+
+class EntityById:
+    def __init__(self, operation=None, db_operation=None, entity_id=None):
+        self.operation = operation
+        self.db_operation = db_operation
+        self.current_entity_id = entity_id
+
+
+    @property
+    def entity_type(self):
+        attribute_path = DbEntityAttrPath().to_type()
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.current_entity_id,
+                                        attribute=attribute_path), self.db_operation)
+        results = method()
+        return results
+
+    @entity_type.setter
+    def entity_type(self, ent_type):
+        attribute_path = DbEntityAttrPath().to_type()
         method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
                                         entry_id=self.current_entity_id,
                                         attribute=attribute_path), self.db_operation)
@@ -313,6 +546,15 @@ class Tasks:
         self.operation = operation
         self.db_operation = db_operation
         self.current_entity_id = DbIds.curr_entry_id()
+
+
+    def multiple(self, ops_list):
+        for operation in ops_list:
+            for attr_path, attr_value in operation.items():
+                method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                                entry_id=self.current_entity_id,
+                                                attribute=attr_path), self.db_operation)
+                method(attr_value)
 
 
     def names(self):

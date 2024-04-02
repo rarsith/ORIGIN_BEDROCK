@@ -6,6 +6,8 @@ from ui import odb_create_asset_ui, odb_task_manager_core, assignment_manager_co
 
 
 class ProjectTreeViewerCore(ProjectTreeViewerUI):
+    selection_data = QtCore.Signal(dict)
+
     def __init__(self, parent=None):
         super(ProjectTreeViewerCore, self).__init__(parent)
 
@@ -57,7 +59,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def curr_sel_show(self):
         """Returns the current selected show in the combobox"""
         text = self.show_select_cb.currentText()
+        # project = Project(name=text).select()
         OriginEnvar.show_name = text
+        OriginEnvar.project_publishes = "__".join([text, "PUBLISHES"])
+        OriginEnvar.project_work = "__".join([text, "WORK"])
+        OriginEnvar.project_control = "__".join([text, "CONTROL"])
+
         return text
 
     def populate_shows_cb(self):
@@ -137,9 +144,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
         if current_selection:
             sel_type = current_selection.data(1, QtCore.Qt.UserRole)
+            sel_id = current_selection.data(0, QtCore.Qt.UserRole)
 
             if sel_type == "asset":
                 asset_items.append(current_selection.text(0))
+                self.selection_data.emit({"sel_id": sel_id, "sel_type": sel_type})
+
             elif sel_type == "group":
                 group_items.append(current_selection.text(0))
                 asset_items.clear()

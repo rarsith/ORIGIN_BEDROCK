@@ -1,5 +1,6 @@
 import os
 
+import o_database.mongo_connection
 from envars.origin_envars import OriginEnvar
 
 
@@ -131,7 +132,7 @@ class Envars():
 
 if __name__ == "__main__":
     from database import db_connection as mdbconn
-    db = mdbconn.server[mdbconn.database_name]
+    db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     Envars.show_name = "Green"
     Envars.branch_name = "sequences"

@@ -1,3 +1,4 @@
+import o_database.mongo_connection
 from common_utils.date_time import DateTime
 from common_utils.output_paths import OutputPaths
 from common_utils.users import Users
@@ -257,7 +258,7 @@ class _DbConstructors:
 
 class DbProject:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     @staticmethod
     def current():
@@ -337,7 +338,7 @@ class DbProject:
 
 class DbAsset:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     def create(self, name):
         collection = self.db[From().entities]
@@ -638,7 +639,7 @@ class DbTasks:
 
 class DbPublish:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     def get_db_publishes_ids(self, collection, view_limit=0):
         #TODO change this to database aggregations
@@ -1091,7 +1092,7 @@ class DbSyncTasks:
 
 class DbBundle:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     def create(self):
         inserted_id, save_content = _DbConstructors().bundle_construct()

@@ -1,5 +1,7 @@
 import os
 
+import o_database.mongo_connection
+
 
 class OriginEnvar:
 
@@ -152,7 +154,7 @@ class OriginEnvar:
 
 if __name__ == "__main__":
     from database import db_connection as mdbconn
-    db = mdbconn.server[mdbconn.database_name]
+    db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
 
     selection_list = ["sequences", "XXP", "templates"]
@@ -188,7 +190,7 @@ if __name__ == "__main__":
         :return:
         """
         from database import db_connection as mdbconn
-        db = mdbconn.server[mdbconn.database_name]
+        db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
         if len(sel_names) == 1:
             sel_filter = sel_names[0]
@@ -203,7 +205,7 @@ if __name__ == "__main__":
 
     def get_document_by_id(doc_id):
         from database import db_connection as mdbconn
-        db = mdbconn.server[mdbconn.database_name]
+        db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
         cursor = db["test_extraction"].find({"_id": doc_id})
         extract_doc = list(cursor)
 
@@ -212,7 +214,7 @@ if __name__ == "__main__":
 
     def db_update_document_by_id(doc_id, data, field):
         from database import db_connection as mdbconn
-        db = mdbconn.server[mdbconn.database_name]
+        db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
         db["test_extraction"].update_one({"_id": doc_id}, {"$set": {field: data}})
         return doc_id
 
@@ -224,7 +226,7 @@ if __name__ == "__main__":
 
     def db_recompute_db_document_path(doc_id: int):
         from database import db_connection as mdbconn
-        db = mdbconn.server[mdbconn.database_name]
+        db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
         parents_id_list = []
         db_path = []

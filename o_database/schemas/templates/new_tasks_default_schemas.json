@@ -25,7 +25,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "sculpting": {
         "active": true,
         "status": "NOT-STARTED",
@@ -50,7 +51,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "modeling": {
         "active": true,
         "status": "NOT-STARTED",
@@ -75,7 +77,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "texturing": {
         "active": true,
         "status": "NOT-STARTED",
@@ -100,7 +103,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "rigging": {
         "active": true,
         "status": "NOT-STARTED",
@@ -125,7 +129,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "groom": {
         "active": true,
         "status": "NOT-STARTED",
@@ -150,7 +155,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "cfx_set": {
         "active": true,
         "status": "NOT-STARTED",
@@ -175,7 +181,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "fx_set": {
         "active": true,
         "status": "NOT-STARTED",
@@ -200,7 +207,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "surfacing": {
         "active": true,
         "status": "NOT-STARTED",
@@ -225,7 +233,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""}
+        "previous_artists": "",
+        "priority": ""}
     }
   },
   "prop":{
@@ -254,7 +263,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "sculpting": {
         "active": true,
         "status": "NOT-STARTED",
@@ -279,7 +289,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "modeling": {
         "active": true,
         "status": "NOT-STARTED",
@@ -304,7 +315,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "texturing": {
         "active": true,
         "status": "NOT-STARTED",
@@ -329,7 +341,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "rigging": {
         "active": true,
         "status": "NOT-STARTED",
@@ -354,7 +367,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "groom": {
         "active": true,
         "status": "NOT-STARTED",
@@ -379,7 +393,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "cfx_set": {
         "active": true,
         "status": "NOT-STARTED",
@@ -404,7 +419,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "fx_set": {
         "active": true,
         "status": "NOT-STARTED",
@@ -429,7 +445,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "surfacing": {
         "active": true,
         "status": "NOT-STARTED",
@@ -454,7 +471,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""}
+        "previous_artists": "",
+        "priority": ""}
     }
   },
   "environment":{
@@ -483,7 +501,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "assembly": {
         "active": true,
         "status": "NOT-STARTED",
@@ -508,7 +527,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""}
+        "previous_artists": "",
+        "priority": ""}
 
     }
   },
@@ -538,7 +558,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "cam_track": {
         "active": true,
         "status": "NOT-STARTED",
@@ -563,7 +584,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "body_track": {
         "active": true,
         "status": "NOT-STARTED",
@@ -588,7 +610,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "layout": {
         "active": true,
         "status": "NOT-STARTED",
@@ -613,7 +636,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "animation": {
         "active": true,
         "status": "NOT-STARTED",
@@ -638,7 +662,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "cfx": {
         "active": true,
         "status": "NOT-STARTED",
@@ -663,7 +688,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "fx": {
         "active": true,
         "status": "NOT-STARTED",
@@ -688,7 +714,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "lighting": {
         "active": true,
         "status": "NOT-STARTED",
@@ -713,7 +740,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "roto": {
         "active": true,
         "status": "NOT-STARTED",
@@ -738,7 +766,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "paint": {
         "active": true,
         "status": "NOT-STARTED",
@@ -763,7 +792,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "compositing": {
         "active": true,
         "status": "NOT-STARTED",
@@ -788,7 +818,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "retime": {
         "active": true,
         "status": "NOT-STARTED",
@@ -813,7 +844,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""},
+        "previous_artists": "",
+        "priority": ""},
       "repo": {
         "active": true,
         "status": "NOT-STARTED",
@@ -838,7 +870,8 @@
       },
         "start_date": "",
         "worked_days": "",
-        "previous_artists": ""}
+        "previous_artists": "",
+        "priority": ""}
     }
   }
 }

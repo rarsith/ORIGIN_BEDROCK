@@ -88,7 +88,6 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         top_layout.addWidget(self.refresh_btn)
         top_layout.addWidget(self.filter_menu_btn)
 
-
         bottom_btn_layout =  QtWidgets.QHBoxLayout()
         bottom_btn_layout.addStretch(1)
         bottom_btn_layout.addWidget(self.go_to_first_page_btn)
@@ -98,14 +97,11 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         bottom_btn_layout.addWidget(self.go_to_next_page_btn)
         bottom_btn_layout.addWidget(self.go_to_last_page_btn)
 
-
         bottom_layout = QtWidgets.QHBoxLayout()
         bottom_layout.addLayout(bottom_btn_layout)
 
         slot_view_layout = QtWidgets.QHBoxLayout()
         slot_view_layout.addWidget(self.publish_view_tw)
-
-
 
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addLayout(top_layout)

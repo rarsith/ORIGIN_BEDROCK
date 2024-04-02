@@ -7,7 +7,7 @@ from database.utils.db_version_control import DBVersionControl
 from envars.envars import Envars
 from envars.origin_envars import OriginEnvar
 from database import db_templates
-from database.db_connection import MongoConnection
+from o_database.mongo_connection import MongoConnection
 from database.utils.db_q_entity import From, QEntity, DbRef, DbReferences
 from database.entities.db_structures import DbProjectBranch
 from database.entities.db_attributes import (DbAttrPaths,

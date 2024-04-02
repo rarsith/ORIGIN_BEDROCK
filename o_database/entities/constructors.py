@@ -134,6 +134,8 @@ class DbConstructors:
             type=task_type,
             status="NOT-STARTED",
             artist="None",
+            priority="",
+            description="",
             imports_from={},
             bid_days="",
             end_date="",

@@ -43,12 +43,21 @@ class SlotComponentsViewerUI(QtWidgets.QWidget):
 
     def create_widgets(self):
         self.slot_component_viewer_tw = SlotComponentsViewerBuild()
+        self.play_btn = QtWidgets.QPushButton("Play")
+        self.open_in_cb = QtWidgets.QPushButton("Play Using...")
 
     def create_layout(self):
+        top_buttons_layout = QtWidgets.QHBoxLayout()
+        top_buttons_layout.addWidget(self.play_btn)
+        top_buttons_layout.addWidget(self.open_in_cb)
+        top_buttons_layout.setStretch(0, 1)
+
+
         slot_view_layout = QtWidgets.QVBoxLayout()
         slot_view_layout.addWidget(self.slot_component_viewer_tw)
 
         main_layout = QtWidgets.QVBoxLayout(self)
+        main_layout.addLayout(top_buttons_layout)
         main_layout.addLayout(slot_view_layout)
 
 

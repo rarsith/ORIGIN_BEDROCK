@@ -1,5 +1,6 @@
+import o_database.mongo_connection
 from database import db_connection as mdbconn
-from database.db_connection import MongoConnection
+from o_database.mongo_connection import MongoConnection
 from o_database.collections.pipelines import OriginDBPipelines
 
 
@@ -32,7 +33,7 @@ class DbRef:
     def __init__(self, collection="", entity_id=""):
         self.collection = collection
         self.entity_id = entity_id
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     @property
     def db_ref(self):
@@ -51,11 +52,11 @@ class DbRef:
 
 class DbReferences:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     @classmethod
     def add_db_id_reference(cls, collection, parent_doc_id, destination_slot, id_to_add, from_collection, replace=False):
-        db = mdbconn.server[mdbconn.database_name]
+        db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
         if not replace:
             db[collection].update_one({"_id": parent_doc_id},
                                       {"$push": {destination_slot: DbRef(from_collection, id_to_add).db_ref}})
@@ -77,7 +78,7 @@ class DbReferences:
 
 class DbCollection(object):
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     def db_add(self, db_collection, **kwargs) -> None:
         """

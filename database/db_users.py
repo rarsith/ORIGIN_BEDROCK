@@ -1,3 +1,4 @@
+import o_database.mongo_connection
 from common_utils.date_time import DateTime
 from database import db_connection as mdbconn
 
@@ -6,7 +7,7 @@ class DbUsers:
 
     def __init__(self, first_name, last_name, personal_email, job_title, access_level):
         '''initialize the DbUsers class'''
-        self.db = mdbconn.server.xchange
+        self.db = o_database.mongo_connection.server.xchange
         self.main_domain = "origin.com"
 
         self.first_name = first_name

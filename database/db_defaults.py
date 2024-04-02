@@ -1,3 +1,4 @@
+import o_database.mongo_connection
 from envars.envars import Envars
 from database.db_ids import DbIds
 from database import db_connection as mdbconn
@@ -5,7 +6,7 @@ from database import db_connection as mdbconn
 
 class DbDefaults(object):
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     @property
     def root_definitions(self):

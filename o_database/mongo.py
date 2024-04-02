@@ -1,9 +1,9 @@
 from database import db_connection as mdbconn
-from database.db_connection import MongoConnection
+from o_database.mongo_connection import MongoConnection
 
 
 class DBFind:
-    def __init__(self, db_collection, entry_id=None, attribute=None):
+    def __init__(self, db_collection=None, entry_id=None, attribute=None):
         self.db = MongoConnection().origin_production_database()
 
         self.collection = db_collection

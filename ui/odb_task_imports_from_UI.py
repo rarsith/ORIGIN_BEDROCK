@@ -9,8 +9,8 @@ class ImportsFromWidgetBuild(QtWidgets.QTreeWidget):
     def widget_build(self):
         self.setAlternatingRowColors(False)
         self.setHeaderLabels(['task'])
-        self.setMinimumWidth(150)
-        self.setMaximumWidth(160)
+        # self.setMinimumWidth(150)
+        # self.setMaximumWidth(160)
         # self.setMinimumHeight(300)
         self.setColumnWidth(0, 130)
 
@@ -23,8 +23,8 @@ class ImportsFromAssignmentsWidgetBuild(QtWidgets.QTreeWidget):
     def widget_build(self):
         self.setAlternatingRowColors(False)
         self.setHeaderLabels(['assigned entity'])
-        self.setMinimumWidth(150)
-        self.setMaximumWidth(160)
+        # self.setMinimumWidth(150)
+        # self.setMaximumWidth(160)
         # self.setMinimumHeight(300)
         self.setColumnWidth(0, 130)
 
@@ -35,8 +35,8 @@ class ListEntryTasksBuild(QtWidgets.QListWidget):
         self.widget_build()
 
     def widget_build(self):
-        self.setMinimumWidth(100)
-        self.setMaximumWidth(110)
+        # self.setMinimumWidth(100)
+        # self.setMaximumWidth(110)
         # self.setAlternatingRowColors(True)
         self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
 

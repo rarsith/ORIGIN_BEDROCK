@@ -1,9 +1,10 @@
+import o_database.mongo_connection
 from database import db_connection as mdbconn
 
 
 class DbCollection(object):
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     def db_add(self, db_collection, **kwargs) -> None:
         """

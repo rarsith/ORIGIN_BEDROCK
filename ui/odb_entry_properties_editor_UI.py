@@ -13,11 +13,7 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
     def create_widget(self):
         self.properties_viewer = QtWidgets.QTableWidget()
         self.properties_viewer.setColumnCount(2)
-        # self.properties_viewer.setColumnWidth(0, 250)
-        # self.properties_viewer.setColumnWidth(1, 120)
-
         self.properties_viewer.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        # self.properties_viewer.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.properties_viewer.verticalScrollBar().setVisible(False)
         self.properties_viewer.horizontalScrollBar().setVisible(False)
 
@@ -40,28 +36,38 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
         horizontal_header.setMaximumHeight(3)
         horizontal_header.hide()
 
+        self.refresh_btn = QtWidgets.QPushButton("Refresh")
+        self.commit_btn = QtWidgets.QPushButton("Save Changes")
+
     def create_layout(self):
+        buttons_layout = QtWidgets.QHBoxLayout()
+        buttons_layout.addWidget(self.commit_btn)
+        buttons_layout.addWidget(self.refresh_btn)
+
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addWidget(self.properties_viewer)
+        main_layout.addLayout(buttons_layout)
 
     def create_properties(self, properties):
-        try:
-            self.properties_viewer.setRowCount(0)
-            store_attributes_names = (list(properties.keys()))
-            write_attrib_nice = nice_names.write_nice_names(store_attributes_names)
+        if properties:
 
-            for i in range(len(store_attributes_names)):
-                get_properties_names = write_attrib_nice[i]
-                get_properties_values = list(properties.values())[i]
-                self.properties_viewer.insertRow(i)
-                self.insert_item(i, 0, str(get_properties_names))
-                self.insert_item(i, 1, str(get_properties_values))
-        except:
-            pass
+            row_count = (len(properties))
+            self.properties_viewer.setRowCount(row_count)
 
-    def insert_item(self, row, column, text):
-        item = QtWidgets.QTableWidgetItem(text)
-        self.properties_viewer.setItem(row, column, item)
+
+            for row, (attr_name, attr_value) in enumerate(properties.items()):
+                self.attr_name_le = QtWidgets.QLineEdit()
+                self.attr_name_le.setReadOnly(True)
+                self.attr_name_le.setMaximumHeight(17)
+
+                attr_nice = nice_names.write_nice_names([attr_name])
+
+                value_item = QtWidgets.QTableWidgetItem(str(attr_value))
+
+                self.attr_name_le.setText(attr_nice[0])
+
+                self.properties_viewer.setCellWidget(row, 0, self.attr_name_le)
+                self.properties_viewer.setItem(row, 1, value_item)
 
 
 if __name__=="__main__":

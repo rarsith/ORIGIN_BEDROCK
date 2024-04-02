@@ -1,5 +1,7 @@
 import sys
 from PySide2 import QtWidgets, QtCore, QtGui
+
+import o_database.mongo_connection
 from database import db_connection as mdbconn
 # from origin_data_base import xcg_db_connection as xcon
 # from origin_data_base import xcg_db_helpers as xhlp
@@ -18,7 +20,7 @@ from ui.slot_component_viewer_core import SlotComponentsViewerCore
 
 
 
-db = mdbconn.server[mdbconn.database_name]
+db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 test_position = db.show_name
 test = test_position.find({}, {"_id":1, "show_name":1})
 
@@ -160,7 +162,7 @@ class NotesWidget(QtWidgets.QWidget):
 class OriginControlCenterUI(QtWidgets.QWidget):
 
     WINDOW_TITLE = "Origin Control Center"
-    db = mdbconn.server[mdbconn.database_name]
+    db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
     cursor = db.show_name
 
     def __init__(self):

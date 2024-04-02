@@ -1,4 +1,6 @@
 from bson import BSON
+
+import o_database.mongo_connection
 from envars.envars import Envars
 from database import db_connection as mdbconn
 from common_utils import json_utils
@@ -15,7 +17,7 @@ class DbRef:
     def __init__(self, collection="", entity_id=""):
         self.collection = collection
         self.entity_id = entity_id
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     @property
     def db_ref(self):
@@ -34,11 +36,11 @@ class DbRef:
 
 class DbReferences:
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     @classmethod
     def add_db_id_reference(cls, collection, parent_doc_id, destination_slot, id_to_add, from_collection, replace=False):
-        db = mdbconn.server[mdbconn.database_name]
+        db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
         if not replace:
             db[collection].update_one({"_id": parent_doc_id},
                                       {"$push": {destination_slot: DbRef(from_collection, id_to_add).db_ref}})
@@ -61,7 +63,7 @@ class DbReferences:
 class From:
 
     def __init__(self):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
     def current_branch_type(self):
         branch_name = Envars.branch_name
@@ -132,7 +134,7 @@ class QEntity:
                                                                                   DbPubSlotsAttrPaths,
                                                                                   DbMainPubAttrPaths,
                                                                                   DbBundleAttrPaths)):
-        self.db = mdbconn.server[mdbconn.database_name]
+        self.db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
         self.collection = db_collection
         self.attribute = attribute_path
         self.db_id = entry_id
@@ -327,7 +329,7 @@ if __name__ == '__main__':
     # print (result)
     # print ("FROM ?<<{0}>> database collection,\n SELECT entity with _ID -- {1} -- ,\n use this STRING -- {2} --  to go to tasks and get them.\n\n----RESULT----\n{3} ".format(source ,entity, attr, origin))
 
-    db = mdbconn.server[mdbconn.database_name]
+    db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
     # vv = db["show"].aggregate([
     #     {"_id": "root.Green", "fieldType":{"$type":"$active"}}])
     #

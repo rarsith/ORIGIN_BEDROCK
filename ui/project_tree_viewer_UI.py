@@ -22,8 +22,8 @@ class ProjectsBoxBuild(QtWidgets.QComboBox):
 class ProjectTreeViewerUI(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(ProjectTreeViewerUI, self).__init__(parent)
-        self.setMinimumWidth(150)
-        self.setMaximumWidth(160)
+        # self.setMinimumWidth(150)
+        # self.setMaximumWidth(160)
 
         self.create_widgets()
         self.create_layout()

@@ -1,4 +1,4 @@
-from database.db_connection import MongoConnection
+from o_database.mongo_connection import MongoConnection
 from envars.origin_envars import OriginEnvar
 from o_database.entities.attributes_paths import DbEntityAttrPath
 from o_database.entities.constructors import DbConstructors
@@ -11,6 +11,9 @@ from o_database.collections.connections import ProjectCollections
 
 class Query:
     # this to resolve the current context on initiation
+
+    # def __init__(self):
+    #     self.db_operand = DBFind()
 
     def curr_entity(self):
         return Entity(operation=DBFind, db_operation="attr_values")
@@ -73,6 +76,9 @@ class Set:
         return Assets(operation=DBSet, db_operation="attribute_value")
 
     def curr_task(self):
+        return Tasks(operation=DBSet, db_operation="attribute_value")
+
+    def tasks(self):
         return Tasks(operation=DBSet, db_operation="attribute_value")
 
     # def work_files(self):
@@ -224,3 +230,9 @@ class Create:
 
     def origin_ids(self):
         return DbIds()
+
+
+if __name__ == "__main__":
+
+
+    Query().curr_asset().tasks
