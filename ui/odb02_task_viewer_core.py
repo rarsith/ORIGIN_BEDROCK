@@ -1,6 +1,7 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 from PySide2.QtCore import Slot
 from envars.origin_envars import OriginEnvar
+# from envars.dc_origin_envars import OriginEnvar
 from o_database.odb_statuses import DbTaskStatuses
 from o_database.odb_priorities import DbPriorities
 
@@ -26,8 +27,11 @@ class TaskViewerCore(TaskViewerUI):
         self.save_changes_btn.clicked.connect(self.commit_changes)
         self.refresh_btn.clicked.connect(self.populate_tasks)
 
+    def deselect_all(self):
+        self.task_viewer_wdg.clearSelection()
+
     def commit_changes(self):
-        Set().tasks().multiple(self.changes_to_database)
+        Set().tasks().multiple_ops(self.changes_to_database)
         self.populate_tasks()
         return self.changes_to_database.clear()
 
@@ -205,6 +209,11 @@ class TaskViewerCore(TaskViewerUI):
                 get_task_name_data = item.data(11, 1)
                 OriginEnvar.task_name = get_task_name_data
                 return get_task_name_data
+
+    def get_current_selected(self):
+        get_selected_task = self.task_viewer_wdg.selectedItems()
+        return get_selected_task
+
 
     #context Menu for the task viewer
     def create_tasks_actions(self):

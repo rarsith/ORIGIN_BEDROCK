@@ -1,0 +1,20 @@
+{
+  "root": {
+    "name": "tasks_template",
+    "type": "",
+    "subtype": "",
+    "task": {
+      "active": true,
+      "type": "",
+      "status": "NOT-STARTED",
+      "artist": "None",
+      "imports_from": {},
+      "bid_days": "",
+      "end_date": "",
+      "milestones":{},
+      "start_date": "",
+      "worked_days": "",
+      "previous_artists":[]
+    }
+  }
+}

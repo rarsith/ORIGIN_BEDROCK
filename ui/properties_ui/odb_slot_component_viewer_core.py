@@ -1,7 +1,7 @@
 import sys
 from PySide2 import QtWidgets, QtGui
 from database.entities.db_entities import DbPublish
-from ui.odb_slot_component_viewer_UI import SlotComponentsViewerUI
+from ui.properties_ui.odb_slot_component_viewer_UI import SlotComponentsViewerUI
 
 
 img_path = "/Users/arsithra/Documents/Learning_Python/PycharmProjects/Xchange/xcg_icons/play_icon_vsmall.png"

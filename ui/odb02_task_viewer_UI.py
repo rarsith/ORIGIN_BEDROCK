@@ -21,6 +21,7 @@ class TaskViewerBuild(QtWidgets.QTreeWidget):
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.setHeaderLabels(['Name',
                               'Type',

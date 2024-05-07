@@ -1,5 +1,6 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 from envars.origin_envars import OriginEnvar
+# from envars.dc_origin_envars import OriginEnvar
 from ui.odb_project_tree_viewer_UI import ProjectTreeViewerUI
 from o_database.entities.actions import Query, Fetch
 from ui import odb_create_asset_ui, odb_task_manager_core, assignment_manager_core, odb_create_show_ui, odb_create_group_ui
@@ -8,14 +9,29 @@ from ui import odb_create_asset_ui, odb_task_manager_core, assignment_manager_co
 class ProjectTreeViewerCore(ProjectTreeViewerUI):
     selection_data = QtCore.Signal(dict)
 
-    def __init__(self, parent=None):
+    def __init__(self, has_project_select_wdg=True, has_context_menu=True, has_create_new_proj=True, parent=None):
         super(ProjectTreeViewerCore, self).__init__(parent)
 
-        self.context_actions()
+        self.has_project_select_wdg = has_project_select_wdg
+        self.has_context_menu = has_context_menu
+        self.has_create_new_proj = has_create_new_proj
+
+        if not self.has_project_select_wdg:
+            self.show_select_cb.setEnabled(False)
+            self.show_select_cb.setVisible(False)
+
+        if not self.has_create_new_proj:
+            self.create_project_btn.setEnabled(False)
+            self.create_project_btn.setVisible(False)
+
+        if self.has_context_menu:
+            self.context_actions()
+            self.context_menu()
+            self.create_context_menu_connections()
+
         self.create_connections()
         self.populate_shows_cb()
         self.refresh_tree_widget()
-        self.context_menu()
 
     def create_connections(self):
         """Creates all the connections for the UI"""
@@ -29,8 +45,9 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.project_tree_viewer_wdg.itemSelectionChanged.connect(self.resolve_context)
         self.project_tree_viewer_wdg.itemExpanded.connect(self.on_item_expanded)
 
-        self.about_action.triggered.connect(self.about)
+        # self.about_action.triggered.connect(self.about)
 
+    def create_context_menu_connections(self):
         self.create_group_action.triggered.connect(self.create_group_menu)
         self.create_asset_action.triggered.connect(self.create_asset_menu)
         self.save_task_schema_action.triggered.connect(self.task_manager_menu)
@@ -73,6 +90,25 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def set_show_to(self):
         """Sets the show to the current show in the combobox"""
         self.show_select_cb.setCurrentText(self.show_name)
+
+    def isolate_to_context(self, asset_id):
+        import os
+        get_full_context = Query().entity_by_id(entity_id=asset_id).origin_db_path
+        entity_name = Query().entity_by_id(entity_id=asset_id).entity_name
+        entity_type = Query().entity_by_id(entity_id=asset_id).entity_type
+
+        separate_elements = get_full_context.split(".")[1:]
+        separate_elements.append(entity_name)
+        full_context_path = os.path.join(*separate_elements)
+
+        if entity_type != "group":
+            self.project_tree_viewer_wdg.clear()
+
+            item = QtWidgets.QTreeWidgetItem([full_context_path])
+            item.setData(0, QtCore.Qt.UserRole, asset_id)
+            item.setData(1, QtCore.Qt.UserRole, entity_type)
+            self.project_tree_viewer_wdg.addTopLevelItem(item)
+            return item
 
     def refresh_tree_widget(self):
         """Refreshes the tree widget with the current show selected in the combobox"""
@@ -194,10 +230,6 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.edit_entry_definition = QtWidgets.QAction("Edit Definition...", self)
         self.save_task_schema_action = QtWidgets.QAction("Task Manager...", self)
         self.assignment_manager_action = QtWidgets.QAction("Assignment Manager...", self)
-        # self.edit_bundle = QtWidgets.QAction("Edit Bundle...", self)
-
-    def about(self):
-        QtWidgets.QMessageBox.about(self, "About Simple Stuff", "Add About Text Here")
 
     def remove_selected_menu(self):
         """Remove entry from the database."""
@@ -207,15 +239,6 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         custom_dialog.setStandardButtons(custom_dialog.Yes | custom_dialog.Cancel)
         custom_dialog.setDefaultButton(custom_dialog.Save)
         btn_pressed = custom_dialog.exec_()
-
-        # if btn_pressed == custom_dialog.Yes:
-        #     xac.remove_entry(self.show_select_cb.currentText(),
-        #                      self.get_sel_show_branch(),
-        #                      self.get_sel_category(),
-        #                      self.get_selected_entry_name())
-        #     self.refresh_tree_widget()
-        # else:
-        #     custom_dialog.close()
 
     def create_show_menu(self):
         """Create show menu."""
@@ -251,10 +274,18 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
 if __name__ == '__main__':
     import sys
+    path = ["assets", "characters"]
+    OriginEnvar.show_name = "New_World"
+    OriginEnvar().origin_path_hierarchy = path
+    OriginEnvar.entry_name = "hulk"
+    asset_id = OriginEnvar().resolve_entity_id()
+
+    # Envars.task_name = "cfx_set"
+
     app = QtWidgets.QApplication(sys.argv)
     font = app.instance().setFont(QtGui.QFont())
 
-    OriginEnvar.show_name = "GREEN"
     test_dialog = ProjectTreeViewerCore()
+    # test_dialog.isolate_to_context(asset_id)
     test_dialog.show()
     sys.exit(app.exec_())

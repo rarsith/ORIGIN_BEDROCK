@@ -1,6 +1,7 @@
 import sys
 from PySide2 import QtWidgets
 from common_utils import nice_names as nice_names
+from o_database.entities.actions import Query, Set
 
 
 class EntryPropertiesEditorUI(QtWidgets.QWidget):
@@ -9,6 +10,7 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
         self.create_widget()
         self.create_layout()
+        self.create_connections()
 
     def create_widget(self):
         self.properties_viewer = QtWidgets.QTableWidget()
@@ -48,12 +50,30 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
         main_layout.addWidget(self.properties_viewer)
         main_layout.addLayout(buttons_layout)
 
+    def create_connections(self):
+        self.commit_btn.clicked.connect(self.save_properties_to_db)
+        self.refresh_btn.clicked.connect(self.populate_properties_list)
+
+    def extract_properties(self):
+        data = {}
+
+        for row in range(self.properties_viewer.rowCount()):
+            attribute_name = self.properties_viewer.cellWidget(row, 0).text()
+            ugly_name = nice_names.write_ugly_names(attribute_name)
+            value_text = self.properties_viewer.item(row, 1).text()
+            data[ugly_name] = value_text
+
+        return data
+
+    def save_properties_to_db(self):
+        data_to_insert = self.extract_properties()
+        Set().curr_asset().definition = data_to_insert
+
     def create_properties(self, properties):
         if properties:
 
             row_count = (len(properties))
             self.properties_viewer.setRowCount(row_count)
-
 
             for row, (attr_name, attr_value) in enumerate(properties.items()):
                 self.attr_name_le = QtWidgets.QLineEdit()
@@ -68,6 +88,30 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
                 self.properties_viewer.setCellWidget(row, 0, self.attr_name_le)
                 self.properties_viewer.setItem(row, 1, value_item)
+
+    def populate_properties_list(self):
+        properties = self.get_entry_properties()
+        self.properties_viewer.clear()
+        self.create_properties(properties)
+
+    def get_entry_properties(self):
+        spare_it = {}
+        curr_asset_type = Query().curr_asset().entity_type
+        definitions_list = Query().curr_asset().definition
+
+        if curr_asset_type != "group":
+            if definitions_list is None:
+                return spare_it
+            else:
+                try:
+                    if len(definitions_list) == 0:
+                        return spare_it
+                    elif len(definitions_list) >= 1:
+                        return definitions_list
+                except ValueError as e:
+                    raise e
+        else:
+            return spare_it
 
 
 if __name__=="__main__":

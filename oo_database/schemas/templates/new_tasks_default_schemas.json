@@ -1,0 +1,878 @@
+{
+  "character": {
+    "tasks": {
+      "concept": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "concept",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "sculpting": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "modeling",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "modeling": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "modeling",
+        "imports_from": ["sculpting"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "texturing": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "texturing",
+        "imports_from": ["modeling"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "rigging": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "rigging",
+        "imports_from": ["modeling"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "groom": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "grooming",
+        "imports_from": ["modeling"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "cfx_set": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "cfx",
+        "imports_from": ["modeling", "grooming"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "fx_set": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "fx",
+        "imports_from": ["modeling", "grooming"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "surfacing": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "shading",
+        "imports_from": ["modeling", "texturing", "grooming", "fx"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""}
+    }
+  },
+  "prop":{
+    "tasks": {
+      "concept": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "concept",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "sculpting": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "modeling",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "modeling": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "modeling",
+        "imports_from": ["sculpting"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "texturing": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "texturing",
+        "imports_from": ["modeling"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "rigging": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "rigging",
+        "imports_from": ["modeling"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "groom": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "grooming",
+        "imports_from": ["modeling"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "cfx_set": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "cfx",
+        "imports_from": ["modeling", "grooming"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "fx_set": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "fx",
+        "imports_from": ["modeling", "grooming"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "surfacing": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "shading",
+        "imports_from": ["modeling", "texturing", "grooming", "fx"],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""}
+    }
+  },
+  "environment":{
+    "tasks":{
+      "concept": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "concept",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "assembly": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "assembly",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""}
+
+    }
+  },
+  "shot": {
+    "tasks": {
+      "plateio": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "image_ingest",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "cam_track": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "camera_track",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "body_track": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "animation",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "layout": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "layout",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "animation": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "animation",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "cfx": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "cfx",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "fx": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "fx",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "lighting": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "lighting",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "roto": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "compositing",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "paint": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "compositing",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "compositing": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "compositing",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "retime": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "retime",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""},
+      "repo": {
+        "active": true,
+        "status": "NOT-STARTED",
+        "artist": "None",
+        "type": "repo",
+        "imports_from": [],
+        "bid_days": "",
+        "end_date": "",
+        "milestones": {
+        "milestone01": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone02": {
+          "end_date": "",
+          "description": ""
+        },
+        "milestone03": {
+          "end_date": "",
+          "description": ""
+        }
+      },
+        "start_date": "",
+        "worked_days": "",
+        "previous_artists": "",
+        "priority": ""}
+    }
+  }
+}
+

@@ -1,0 +1,10 @@
+{
+    "applications": {
+        "mummo": {
+            "enabled": true,
+            "icon": "mummo",
+            "display_name": "Mummo",
+            "versions": {}
+        }
+    }
+}

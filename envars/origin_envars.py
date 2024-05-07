@@ -150,6 +150,12 @@ class OriginEnvar:
 
         return current_context
 
+    def resolve_entity_id(self):
+        current_envars = [OriginEnvar().show_name, OriginEnvar().origin_path_hierarchy, OriginEnvar().entry_name]
+
+        entity_id = ".".join(current_envars)
+
+        return entity_id
 
 
 if __name__ == "__main__":
