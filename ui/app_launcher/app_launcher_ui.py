@@ -109,12 +109,16 @@ class AppLauncher(QtWidgets.QWidget):
         self.label_icon.setAlignment(QtCore.Qt.AlignCenter)
         pixmap = QtGui.QPixmap(icon_path).scaled(20, 20)
         self.label_icon.setPixmap(pixmap)
+        self.label_icon.setStyleSheet("background-color: rgba(50, 50, 50, 50);")
 
-        self.label_text = QtWidgets.QLabel(name)
+        self.label_text = QtWidgets.QLabel()
+        self.label_text.setText(name)
+
         font = QtGui.QFont()
         font.setPointSize(8)
         self.label_text.setFont(font)
         self.label_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_text.setStyleSheet("background-color: rgba(50, 50, 50, 50); color: rgba(200, 200, 200, 255);")
 
         self.launcher_tw.setCellWidget(row, 0, self.label_icon)
         self.launcher_tw.setCellWidget(row, 1, self.label_text)

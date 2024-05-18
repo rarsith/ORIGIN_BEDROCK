@@ -1,13 +1,8 @@
 from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtCore import Slot
 from envars.origin_envars import OriginEnvar
-# from envars.dc_origin_envars import OriginEnvar
-from o_database.odb_statuses import DbTaskStatuses
-from o_database.odb_priorities import DbPriorities
-
 from ui.odb02_task_viewer_UI import TaskViewerUI
 from ui.odb_task_status_wdg import TaskStatusWidget
-from database.entities.db_entities import DbTasks
+from ui.odb_task_priority_wdg import TaskPriorityWidget
 from o_database.entities.actions import Query, Set
 from ui.odb_create_task_ui import CreateTaskUI
 
@@ -31,7 +26,7 @@ class TaskViewerCore(TaskViewerUI):
         self.task_viewer_wdg.clearSelection()
 
     def commit_changes(self):
-        Set().tasks().multiple_ops(self.changes_to_database)
+        Set().tasks(entity_id=OriginEnvar().entity_id).multiple_ops(self.changes_to_database)
         self.populate_tasks()
         return self.changes_to_database.clear()
 
@@ -54,35 +49,29 @@ class TaskViewerCore(TaskViewerUI):
         self.task_name_capture.setReadOnly(True)
 
         self.task_type_capture = QtWidgets.QLineEdit()
-        self.task_type_capture.setText((task_data["type"]).capitalize())
+        task_type = task_data["type"]
+        task_type_cap = task_type.capitalize()
+        self.task_type_capture.setText(f"Task ( {task_type_cap} )")
         self.task_type_capture.setReadOnly(True)
 
         self.get_status = task_data["status"]
         self.status_cb = TaskStatusWidget()
-        # self.status_cb.addItems(DbTaskStatuses().list_all())
-
 
         self.priority = task_data["priority"]
-        self.priorities_cb = QtWidgets.QComboBox()
-        self.priorities_cb.addItems(DbPriorities().list_all())
-
+        self.priorities_cb = TaskPriorityWidget()
 
         self.assigned_artist = task_data["artist"]
         self.artist_cb = QtWidgets.QComboBox()
+        self.artist_cb.wheelEvent = lambda event: None
         self.artist_cb.addItems(["arsithra", "unassigned"])  # TODO: Implement User_Database
-
 
         self.get_start_date = task_data["start_date"]
         self.start_date_dt = QtWidgets.QDateEdit(calendarPopup=True)
         get_start_date = self.set_date_from_string(self.get_start_date)
 
-
-
         self.get_end_date = task_data["end_date"]
         self.end_date_dt = QtWidgets.QDateEdit(calendarPopup=True)
         get_end_date = self.set_date_from_string(self.get_end_date)
-
-
 
         self.get_used_days = "15"  # TODO: Compile used days from user time tracking
         self.get_parity = "-2"  # TODO: Compile parity from used days vs bid days
@@ -117,6 +106,7 @@ class TaskViewerCore(TaskViewerUI):
         self.task_viewer_wdg.setItemWidget(task_item, 9, self.artist_cb)
         task_item.setText(10, self.get_description)
         task_item.setData(11, 1, task_name)
+        task_item.setData(11, 0, task_type)
 
         return task_item
 
@@ -126,8 +116,8 @@ class TaskViewerCore(TaskViewerUI):
         if current_task_name:
             attr_path = ".".join(["tasks", current_task_name, "status"])
             attr_value = sender.currentText()
-            self.changes_to_database.append({attr_path:attr_value})
-            return {attr_path:attr_value}
+            self.changes_to_database.append({attr_path: attr_value})
+            return {attr_path: attr_value}
 
     def changed_prio(self, data):
         sender = self.sender()
@@ -166,8 +156,12 @@ class TaskViewerCore(TaskViewerUI):
             return {attr_path: date_to_string}
 
     def populate_tasks(self):
-        get_entry_tasks_names = self.get_tasks()
+        self.changes_to_database.clear()
         self.task_viewer_wdg.clear()
+        self.task_viewer_wdg.clearSelection()
+        # self.task_viewer_wdg.clearFocus()
+        get_entry_tasks_names = self.get_tasks()
+
         for task_name, task_schema in get_entry_tasks_names.items():
             root_item = self.task_viewer_wdg.invisibleRootItem()
             row_item = self.task_widget_construct(root_item=root_item, task_name=task_name, task_data=task_schema)
@@ -175,8 +169,9 @@ class TaskViewerCore(TaskViewerUI):
 
     def get_tasks(self):
         spare_it = {}
-        curr_asset_type = Query().curr_asset().entity_type
-        tasks_list = Query().curr_asset().tasks
+        entity_id = OriginEnvar().entity_id
+        curr_asset_type = OriginEnvar().entity_type
+        tasks_list = Query().entity(entity_id=entity_id).tasks
 
         if curr_asset_type != "group":
             if tasks_list is None:
@@ -192,23 +187,18 @@ class TaskViewerCore(TaskViewerUI):
         else:
             return spare_it
 
-    def get_selected_task(self):
-        names = []
-        get_selected_objects = self.task_viewer_wdg.selectedItems()
-        if len(get_selected_objects) == 0:
-            return None
-        elif len(get_selected_objects) >= 1:
-            for item in get_selected_objects:
-                names.append(item.data(11, 1))
-            return names[0]
-
     def get_task_list_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
-        if get_selected_task:
+
+        if len(get_selected_task) != 0:
             for item in get_selected_task:
-                get_task_name_data = item.data(11, 1)
-                OriginEnvar.task_name = get_task_name_data
-                return get_task_name_data
+                get_task_name = item.data(11, 1)
+                get_task_type = item.data(11, 0)
+                OriginEnvar.task_name = get_task_name
+                OriginEnvar.task_type = get_task_type
+                return get_task_name
+        else:
+            OriginEnvar.task_name = None
 
     def get_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
@@ -231,20 +221,12 @@ if __name__ == '__main__':
 
     path = ["assets", "characters"]
 
-    OriginEnvar.show_name = "New_World"
+    OriginEnvar.show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
-    # Envars.task_name = "cfx_set"
-
 
     app = QtWidgets.QApplication(sys.argv)
     font = app.instance().setFont(QtGui.QFont())
-
-    qss_style_file = "stylesheets/Task_Viewer.qss"
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
 
     test_dialog = TaskViewerCore()
 

@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets
 
-from ui.properties_ui.entity_summary_wdg import EntitySummaryInfo
-from ui.properties_ui.thumbnail_viewer_wdg import ThumbnailViewer
+from ui.properties_ui.representation_summary_wdg import EntitySummaryInfo
+from ui.properties_ui.representation_thumbnail_wdg import ThumbnailViewer
 
 
 class RepresentationViewer(QtWidgets.QWidget):

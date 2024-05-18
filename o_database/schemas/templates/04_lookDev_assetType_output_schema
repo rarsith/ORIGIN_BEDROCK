@@ -1,0 +1,50 @@
+custom_out01
+custom_out02
+
+------------REVIEW-------------
+frames
+
+filmstrip
+
+db_review
+
+internal_edotorial
+
+review
+
+thumbnail
+
+reference (backdrop reference image) -> can have also foreground elements
+
+-----------SOURCE_DATA---------
+
+gaffer_script
+
+gaffer_script_packed
+
+render_script (?)
+
+
+
+-----------OUTPUT_DATA---------
+- all outputs defined n the gaffer lookdev template
+    - lighting setups (studio/sunny/overcast)
+    - different IDs for comp
+    - aovs
+
+
+contactsheet (for each output)
+
+usd (materials assignment output) - actual lookdev package
+
+
+
+
+
+
+
+
+
+
+
+

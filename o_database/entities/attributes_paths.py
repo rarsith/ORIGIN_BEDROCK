@@ -390,19 +390,4 @@ class DbWorkSessionAttrPath:
 
 
 if __name__ == '__main__':
-    OriginEnvar.show_name="Test"
-    OriginEnvar.branch_name="assets"
-    OriginEnvar.category="characters"
-    OriginEnvar.entry_name="red_hulk"
-    OriginEnvar.task_name="surfacing"
-
-    # pp_path = pp.db_task_pub(relative=False, dict_packed=True)
-    # print (pp_path)
-    asset_id = DbTaskAttrPath.to_imports_from()
-
-
-    print (asset_id)
-
-    add = DbAssetAttrPath()
-    cc = add.to_data()
-    print(cc)
+    pass

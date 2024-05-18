@@ -1,0 +1,62 @@
+------------REVIEW-------------
+frames
+
+filmstrip
+
+db_review
+
+internal_edotorial
+
+review
+
+thumbnail
+
+-----------SOURCE_DATA---------
+master_scene (path to the scene that generated the output)
+
+gaffer_script
+
+
+
+
+-----------OUTPUT_DATA---------
+
+
+fur_description (for each fur description, there should be an output with a path to the file_version)
+    - representation for review (alembic/usd)
+
+
+render_output -> different render layers that enable tech checks
+    - furUV
+    - Pref
+    - rootToTip
+    - P
+    - normals
+    - fur_iso
+
+
+
+
+
+
+- all outputs defined n the gaffer lookdev template
+    - lighting setups (studio/sunny/overcast)
+    - different IDs for comp
+    - aovs
+   
+
+contactsheet (for each output)
+
+usd (materials assignment output) - actual lookdev package
+
+
+
+
+
+
+
+
+
+
+
+

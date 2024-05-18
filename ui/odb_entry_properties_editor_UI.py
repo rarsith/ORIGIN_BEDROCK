@@ -2,6 +2,7 @@ import sys
 from PySide2 import QtWidgets
 from common_utils import nice_names as nice_names
 from o_database.entities.actions import Query, Set
+from envars.origin_envars import OriginEnvar
 
 
 class EntryPropertiesEditorUI(QtWidgets.QWidget):
@@ -67,7 +68,8 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
     def save_properties_to_db(self):
         data_to_insert = self.extract_properties()
-        Set().curr_asset().definition = data_to_insert
+        entity_id = OriginEnvar().entity_id
+        Set().entity(entity_id=entity_id).definition = data_to_insert
 
     def create_properties(self, properties):
         if properties:
@@ -96,8 +98,10 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
     def get_entry_properties(self):
         spare_it = {}
-        curr_asset_type = Query().curr_asset().entity_type
-        definitions_list = Query().curr_asset().definition
+        curr_asset_id = OriginEnvar().entity_id
+        curr_asset_type = OriginEnvar().entity_type
+
+        definitions_list = Query().entity(entity_id=curr_asset_id).definition
 
         if curr_asset_type != "group":
             if definitions_list is None:

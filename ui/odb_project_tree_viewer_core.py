@@ -3,7 +3,8 @@ from envars.origin_envars import OriginEnvar
 # from envars.dc_origin_envars import OriginEnvar
 from ui.odb_project_tree_viewer_UI import ProjectTreeViewerUI
 from o_database.entities.actions import Query, Fetch
-from ui import odb_create_asset_ui, odb_task_manager_core, assignment_manager_core, odb_create_show_ui, odb_create_group_ui
+from ui import odb_create_asset_ui, odb_task_manager_core, assignment_manager_core, odb_create_show_ui, \
+    odb_create_group_ui
 
 
 class ProjectTreeViewerCore(ProjectTreeViewerUI):
@@ -91,11 +92,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         """Sets the show to the current show in the combobox"""
         self.show_select_cb.setCurrentText(self.show_name)
 
-    def isolate_to_context(self, asset_id):
+    def isolate_to_context(self, entity_id):
         import os
-        get_full_context = Query().entity_by_id(entity_id=asset_id).origin_db_path
-        entity_name = Query().entity_by_id(entity_id=asset_id).entity_name
-        entity_type = Query().entity_by_id(entity_id=asset_id).entity_type
+        asset_document = Fetch().project_structure_entities().entity_document(doc_id=entity_id)
+        get_full_context = asset_document["origin_db_path"]
+        entity_name = asset_document["entry_name"]
+        entity_type = asset_document["type"]
 
         separate_elements = get_full_context.split(".")[1:]
         separate_elements.append(entity_name)
@@ -105,7 +107,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             self.project_tree_viewer_wdg.clear()
 
             item = QtWidgets.QTreeWidgetItem([full_context_path])
-            item.setData(0, QtCore.Qt.UserRole, asset_id)
+            item.setData(0, QtCore.Qt.UserRole, entity_id)
             item.setData(1, QtCore.Qt.UserRole, entity_type)
             self.project_tree_viewer_wdg.addTopLevelItem(item)
             return item
@@ -114,14 +116,15 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         """Refreshes the tree widget with the current show selected in the combobox"""
 
         self.project_tree_viewer_wdg.clear()
-        get_branches = Fetch().structure_entities().project_root_children()
+        get_branches = Fetch().project_structure_entities().root_documents(attrib_field="visual_parent",
+                                                                           attrib_value=OriginEnvar().show_name)
 
         if get_branches:
             for branch in get_branches:
                 doc_name = branch["entry_name"]
                 doc_id = branch["_id"]
-                doc_visual_children = branch["visual_children"]
                 doc_type = branch["type"]
+                doc_visual_children = branch["visual_children"]
 
                 item = QtWidgets.QTreeWidgetItem([doc_name])
                 item.setData(0, QtCore.Qt.UserRole, doc_id)
@@ -134,10 +137,10 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def on_item_expanded(self, item):
         if item.childCount() == 0:
             parent_doc_id = item.data(0, QtCore.Qt.UserRole)
-            children_ids = Fetch().structure_entities().entity_children_ids(parent_doc_id)
+            children_ids = Fetch().project_structure_entities().entity_children_ids(parent_doc_id)
 
             for child_id in children_ids:
-                child_full_doc = Fetch().structure_entities().entity_by_id(child_id)
+                child_full_doc = Fetch().project_structure_entities().entity_document(child_id)
                 child_name = child_full_doc["entry_name"]
                 child_type = child_full_doc["type"]
                 doc_visual_children = child_full_doc["visual_children"]
@@ -184,11 +187,13 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
             if sel_type == "asset":
                 asset_items.append(current_selection.text(0))
-                self.selection_data.emit({"sel_id": sel_id, "sel_type": sel_type})
 
             elif sel_type == "group":
                 group_items.append(current_selection.text(0))
                 asset_items.clear()
+
+            OriginEnvar.entity_id = sel_id
+            OriginEnvar.entity_type = sel_type
 
             get_parents(current_selection)
 
@@ -205,16 +210,20 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.resolve_context()
 
         context_menu = QtWidgets.QMenu()
+
         context_menu.addAction(self.create_group_action)
-        context_menu.addAction(self.create_asset_action)
-        context_menu.addAction(self.edit_entry_definition)
 
-        context_menu.addSeparator()
-        context_menu.addAction(self.save_task_schema_action)
-        context_menu.addAction(self.assignment_manager_action)
+        if len(OriginEnvar().origin_path_hierarchy) != 0:
+            context_menu.addAction(self.create_asset_action)
+            context_menu.addAction(self.edit_entry_definition)
 
-        context_menu.addSeparator()
-        context_menu.addAction(self.remove_selected_action)
+            context_menu.addSeparator()
+            context_menu.addAction(self.save_task_schema_action)
+            context_menu.addAction(self.assignment_manager_action)
+
+            context_menu.addSeparator()
+            context_menu.addAction(self.remove_selected_action)
+
         context_menu.exec_(self.mapToGlobal(point))
 
     def context_menu(self):
@@ -274,8 +283,9 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
 if __name__ == '__main__':
     import sys
+
     path = ["assets", "characters"]
-    OriginEnvar.show_name = "New_World"
+    OriginEnvar.show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
     asset_id = OriginEnvar().resolve_entity_id()

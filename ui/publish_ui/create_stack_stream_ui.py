@@ -56,7 +56,7 @@ class CreateStreamUI(QtWidgets.QDialog):
 
     def db_commit(self):
         stream_name = self.stream_name_le.text()
-        Add().entity_by_id(entity_id=self.entity_id).stack_stream = stream_name
+        Add().entity(entity_id=self.entity_id).stack_stream = stream_name
         self.stream_name_le.clear()
 
     def get_asset_categories(self):

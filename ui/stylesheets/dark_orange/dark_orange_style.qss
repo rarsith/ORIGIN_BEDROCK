@@ -1,6 +1,14 @@
 QLabel
 {
-    color: white;
+    border-style: transparent;
+    border-radius: 5;
+    color: rgba(200, 200, 200, 255);
+}
+
+QTableWidget::item:selected
+{
+    border: 2px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffa02f, stop: 1 #d7801a);
+
 }
 
 

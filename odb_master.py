@@ -1,6 +1,6 @@
 import sys
 from PySide2 import QtWidgets, QtCore
-
+from envars.origin_envars import OriginEnvar
 from ui.odb_main_publishes_view_core import MainPublishesViewCore
 from ui.odb_project_tree_viewer_core import ProjectTreeViewerCore
 from ui.odb02_task_viewer_core import TaskViewerCore
@@ -8,7 +8,7 @@ from ui.properties_ui.properties_viewer import PropertiesViewer
 from ui.app_launcher.app_launcher_ui import AppLauncher
 from ui.odb_sanity_checker_wdg import SanityChecker
 
-APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\ui\origin_globals_ui\settings\applications004.json"
+APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\config\applications\config_applications.json"
 thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\movie_pic.png"
 
 class OriginControlCenterUI(QtWidgets.QWidget):
@@ -26,7 +26,6 @@ class OriginControlCenterUI(QtWidgets.QWidget):
 
         self.create_layout()
         self.create_connections()
-        self.populate_main_publishes()
 
     def create_widgets(self):
         self.sanity_checker_wdg = SanityChecker()
@@ -91,58 +90,92 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         main_layout.addLayout(button_layout)
 
     def create_connections(self):
+
+        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.show_context)
+        self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.show_context)
+
+        # self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.set_proj_tree_focus)
+
         self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.populate_main_publishes)
         self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_task_viewer)
         self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.get_entry_properties)
+        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_main_publishes)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_shows)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_tree_widget)
+
+        # self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.set_task_viewer_focus)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.launcher_tw.populate_widget)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.clear_launch_app_wdg)
+        self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
+        self.middle_tabmenu_tab.currentChanged.connect(self.on_middle_tab_change)
 
+    def set_proj_tree_focus(self):
+        self.show_view_twd.setFocus()
+
+    def set_task_viewer_focus(self):
+        self.tasks_view_lwd.setFocus()
+
+    def show_context(self):
+        con = OriginEnvar().resolve_to_full_context()
+        print(con)
+
+    def on_middle_tab_change(self, index):
+        current_widget = self.middle_tabmenu_tab.widget(index)
+        if current_widget:
+            if current_widget == self.tasks_view_lwd:
+                current_widget.populate_tasks()
+            else:
+                self.tasks_view_lwd.task_viewer_wdg.clear()
+
+            if current_widget == self.versions_view_tvw:
+                self.populate_main_publishes()
+            else:
+                self.versions_view_tvw.publish_view_tw.clear()
 
     def populate_main_publishes(self):
-        main_pub_show_name = self.show_view_twd.show_select_cb.currentText()
-        main_pub_branch_name = ''
-        main_pub_category_name = ''
-        main_pub_entry_name = ''
-        main_pub_task_name = ''
+        tab_idx = self.middle_tabmenu_tab.currentIndex()
+        current_widget = self.middle_tabmenu_tab.widget(tab_idx)
+        if current_widget:
+            if current_widget == self.versions_view_tvw:
+                self.versions_view_tvw.populate_publishes()
 
-        try:
-            main_pub_branch_name = self.show_view_twd.get_sel_data()[1]
-            main_pub_category_name = self.show_view_twd.get_sel_data()[2]
-            main_pub_entry_name = self.show_view_twd.get_sel_data()[3]
-            main_pub_task_name = self.tasks_view_lwd.get_selected_task()
-        except:
-            pass
-
-        self.versions_view_tvw.show_name = main_pub_show_name
-        self.versions_view_tvw.branch_name = main_pub_branch_name
-        self.versions_view_tvw.category_name = main_pub_category_name
-        self.versions_view_tvw.entry_name = main_pub_entry_name
-        self.versions_view_tvw.task_name = main_pub_task_name
-        self.versions_view_tvw.populate_main_widget()
-        self.versions_view_tvw.publish_view_tw.clearSelection()
+    def populate_task_versions(self):
+        widget_selection = self.tasks_view_lwd.get_current_selected()
+        if len(widget_selection) != 0:
+            self.entity_details_viewer_wdg.versions_wdg.populate_publishes()
+        else:
+            self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clear()
 
     def clear_launch_app_wdg(self):
         widget_selection = self.tasks_view_lwd.get_current_selected()
         if len(widget_selection) == 0:
             self.launcher_tw.clear_app_widget()
+            self.tasks_view_lwd.task_viewer_wdg.clearSelection()
 
     def populate_task_viewer(self):
-        self.tasks_view_lwd.populate_tasks()
+        tab_idx = self.middle_tabmenu_tab.currentIndex()
+        current_widget = self.middle_tabmenu_tab.widget(tab_idx)
+        if current_widget:
+            if current_widget == self.tasks_view_lwd:
+                self.tasks_view_lwd.populate_tasks()
 
     def get_entry_properties(self):
         self.entity_details_viewer_wdg.properties_wdg.populate_properties_list()
+
 
 class MainUI(QtWidgets.QMainWindow):
     WINDOW_TITLE = "ORIGIN"
 
     def __init__(self, parent=None):
         super(MainUI, self).__init__(parent)
+
         self.setWindowTitle(self.WINDOW_TITLE)
 
         central_widget = OriginControlCenterUI()
+
         self.setCentralWidget(central_widget)
+
+        self.show()
 
 
 if __name__ == "__main__":
@@ -155,5 +188,8 @@ if __name__ == "__main__":
         app.setStyleSheet(_style)
 
     test_dialog = MainUI()
-    test_dialog.show()
+
+
+
+    # test_dialog.show()
     sys.exit(app.exec_())

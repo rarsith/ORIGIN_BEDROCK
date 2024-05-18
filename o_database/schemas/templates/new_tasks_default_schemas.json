@@ -3,7 +3,7 @@
     "tasks": {
       "concept": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "concept",
         "imports_from": [],
@@ -26,10 +26,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "sculpting": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "modeling",
         "imports_from": [],
@@ -52,10 +52,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "modeling": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "modeling",
         "imports_from": ["sculpting"],
@@ -78,10 +78,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "texturing": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "texturing",
         "imports_from": ["modeling"],
@@ -104,10 +104,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "rigging": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "rigging",
         "imports_from": ["modeling"],
@@ -130,10 +130,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "groom": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "grooming",
         "imports_from": ["modeling"],
@@ -156,10 +156,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "cfx_set": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "cfx",
         "imports_from": ["modeling", "grooming"],
@@ -182,10 +182,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "fx_set": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "fx",
         "imports_from": ["modeling", "grooming"],
@@ -208,10 +208,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "surfacing": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "shading",
         "imports_from": ["modeling", "texturing", "grooming", "fx"],
@@ -234,14 +234,14 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""}
+        "priority": "NORMAL"}
     }
   },
   "prop":{
     "tasks": {
       "concept": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "concept",
         "imports_from": [],
@@ -264,10 +264,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "sculpting": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "modeling",
         "imports_from": [],
@@ -290,10 +290,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "modeling": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "modeling",
         "imports_from": ["sculpting"],
@@ -316,10 +316,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "texturing": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "texturing",
         "imports_from": ["modeling"],
@@ -342,10 +342,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "rigging": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "rigging",
         "imports_from": ["modeling"],
@@ -368,10 +368,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "groom": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "grooming",
         "imports_from": ["modeling"],
@@ -394,10 +394,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "cfx_set": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "cfx",
         "imports_from": ["modeling", "grooming"],
@@ -420,10 +420,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "fx_set": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "fx",
         "imports_from": ["modeling", "grooming"],
@@ -446,10 +446,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "surfacing": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "shading",
         "imports_from": ["modeling", "texturing", "grooming", "fx"],
@@ -472,14 +472,14 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""}
+        "priority": "NORMAL"}
     }
   },
   "environment":{
     "tasks":{
       "concept": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "concept",
         "imports_from": [],
@@ -502,10 +502,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "assembly": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "assembly",
         "imports_from": [],
@@ -528,7 +528,7 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""}
+        "priority": "NORMAL"}
 
     }
   },
@@ -536,7 +536,7 @@
     "tasks": {
       "plateio": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "image_ingest",
         "imports_from": [],
@@ -559,10 +559,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "cam_track": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "camera_track",
         "imports_from": [],
@@ -585,10 +585,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "body_track": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "animation",
         "imports_from": [],
@@ -611,10 +611,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "layout": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "layout",
         "imports_from": [],
@@ -637,10 +637,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "animation": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "animation",
         "imports_from": [],
@@ -663,10 +663,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "cfx": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "cfx",
         "imports_from": [],
@@ -689,10 +689,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "fx": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "fx",
         "imports_from": [],
@@ -715,10 +715,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "lighting": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "lighting",
         "imports_from": [],
@@ -741,10 +741,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "roto": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "compositing",
         "imports_from": [],
@@ -767,10 +767,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "paint": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "compositing",
         "imports_from": [],
@@ -793,10 +793,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "compositing": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "compositing",
         "imports_from": [],
@@ -819,10 +819,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "retime": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "retime",
         "imports_from": [],
@@ -845,10 +845,10 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""},
+        "priority": "NORMAL"},
       "repo": {
         "active": true,
-        "status": "NOT-STARTED",
+        "status": "NOT STARTED",
         "artist": "None",
         "type": "repo",
         "imports_from": [],
@@ -871,7 +871,7 @@
         "start_date": "",
         "worked_days": "",
         "previous_artists": "",
-        "priority": ""}
+        "priority": "NORMAL"}
     }
   }
 }

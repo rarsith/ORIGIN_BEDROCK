@@ -1,56 +1,78 @@
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtCore, QtGui
 
 
-class MainPublishesViewWidgetBuild(QtWidgets.QTableWidget):
+class CustomDelegate(QtWidgets.QStyledItemDelegate):
+    def sizeHint(self, option, index):
+        size_hint = super().sizeHint(option, index)
+        size_hint.setHeight(25)  # Set the desired row height here
+        return size_hint
+
+
+class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):
         super(MainPublishesViewWidgetBuild, self).__init__(parent)
 
+        # self.widget_width = 400
         self.widget_build()
+        self.setItemDelegate(CustomDelegate())
 
     def widget_build(self):
-        self.setColumnCount(11)
+        self.setColumnCount(12)
+        width = 950
+
+        # self.setHeaderHidden(True)
+        header = self.header()
+        header.setStretchLastSection(True)
+        # header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+
+        # self.setColumnCount(2)
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.setShowGrid(False)
-        self.setSortingEnabled(True)
+        self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
 
-        for row in range(self.rowCount()):
-            self.setRowHeight(row, 7)
+        self.setHeaderLabels(['----',
+                              'Publish Name',
+                              'Version',
+                              'Status',
+                              'Asset Type',
+                              'Task Type',
+                              'Published by',
+                              'Published',      # try to include date and time in the same cell
+                              'Description',
+                              "Id",             # hidden by default
+                              "Parent Asset",   # hidden by default
+                              "Has Notes"       # hidden by default
+                              ])
 
-        self.setHorizontalHeaderLabels(['',
-                                        'Publish Name',
-                                        'Version',
-                                        'Status',
-                                        'Asset type',
-                                        'Task Type',
-                                        'User',
-                                        'Date',
-                                        'Time',
-                                        'Description',
-                                        'Id',
-                                        ])
+        # self.widget_columns_names = ["Task", "Task Type"]
+        # self.setColumnCount(len(self.widget_columns_names))
+        # self.setHeaderLabels(self.widget_columns_names)
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
+        self.setColumnWidth(0, round(width * 0.085))
+        self.setColumnWidth(1, round(width * 0.11))
+        self.setColumnWidth(2, round(width * 0.07))
+        self.setColumnWidth(3, round(width * 0.12))
+        self.setColumnWidth(4, round(width * 0.1))
+        self.setColumnWidth(5, round(width * 0.1))
+        self.setColumnWidth(6, round(width * 0.1))
+        self.setColumnWidth(7, round(width * 0.12))
+        self.setColumnWidth(8, round(width * 0.15))
+        self.setColumnWidth(9, round(width * 0.08))
+        self.setColumnWidth(10, round(width * 0.08))
+        self.setColumnWidth(11, round(width * 0.08))
+        self.setColumnWidth(12, round(width * 0.08))
 
-        new_width = event.size().width()
-
-        col_multiplier = [0.03, 0.187, 0.04, 0.085, 0.07, 0.07, 0.07, 0.05, 0.05, 0.346, 0]
-
-        for idx, mult in enumerate(col_multiplier):
-            self.setColumnWidth(idx, round(new_width * mult))
-
-        column_sizes = []
-        header = self.horizontalHeader()
-
-        for i in range(self.columnCount()):
-            column_width = header.sectionSize(i)
-            column_sizes.append(column_width)
-
+        self.setUniformRowHeights(True)
+        self.setColumnHidden(10, True)
+        self.setColumnHidden(11, True)
+        self.setColumnHidden(8, True)
 
 
 class MainPublishesViewUI(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(MainPublishesViewUI, self).__init__(parent)
+
         self.create_widgets()
         self.create_layout()
 
@@ -59,6 +81,8 @@ class MainPublishesViewUI(QtWidgets.QWidget):
 
         self.search_le = QtWidgets.QLineEdit()
         self.search_le.setPlaceholderText("Search")
+
+        self.save_changes_btn = QtWidgets.QPushButton("Save Changes")
 
         self.refresh_btn = QtWidgets.QPushButton("Refresh")
 
@@ -82,32 +106,46 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         self.show_total_pages_le = QtWidgets.QLineEdit()
         self.show_total_pages_le.setFixedSize(50, 20)
 
+        validator = QtGui.QIntValidator()
+        self.load_limit_le = QtWidgets.QLineEdit("30")
+        self.load_limit_le.setValidator(validator)
+        self.load_limit_le.setFixedSize(50, 20)
+
     def create_layout(self):
+        limit_form_layout = QtWidgets.QFormLayout()
+        limit_form_layout.addRow("Limit:", self.load_limit_le)
+
+
         top_layout = QtWidgets.QHBoxLayout()
         top_layout.addWidget(self.search_le)
+        top_layout.addWidget(self.save_changes_btn)
         top_layout.addWidget(self.refresh_btn)
         top_layout.addWidget(self.filter_menu_btn)
 
-        bottom_btn_layout =  QtWidgets.QHBoxLayout()
-        bottom_btn_layout.addStretch(1)
+        left_spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        right_spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+
+        bottom_btn_layout = QtWidgets.QHBoxLayout()
+
         bottom_btn_layout.addWidget(self.go_to_first_page_btn)
         bottom_btn_layout.addWidget(self.go_to_prev_page_btn)
         bottom_btn_layout.addWidget(self.show_total_pages_le)
         bottom_btn_layout.addWidget(self.show_amount_le)
         bottom_btn_layout.addWidget(self.go_to_next_page_btn)
         bottom_btn_layout.addWidget(self.go_to_last_page_btn)
+        bottom_btn_layout.addItem(right_spacer)
 
-        bottom_layout = QtWidgets.QHBoxLayout()
-        bottom_layout.addLayout(bottom_btn_layout)
+        bottom_btn_layout.addStretch(1)
+        bottom_btn_layout.addItem(left_spacer)
+        bottom_btn_layout.addLayout(limit_form_layout)
 
         slot_view_layout = QtWidgets.QHBoxLayout()
         slot_view_layout.addWidget(self.publish_view_tw)
 
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addLayout(top_layout)
-        main_layout.addLayout(slot_view_layout)
-        main_layout.addLayout(bottom_layout)
-
+        main_layout.addWidget(self.publish_view_tw)
+        main_layout.addLayout(bottom_btn_layout)
 
 
 if __name__ == "__main__":

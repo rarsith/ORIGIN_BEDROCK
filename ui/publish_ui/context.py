@@ -69,7 +69,7 @@ class EntryStackStream(QtWidgets.QWidget):
         if state == 2:
             self.project_tree.refresh_tree_widget()
         else:
-            created_item = self.project_tree.isolate_to_context(asset_id=self.entity_id)
+            created_item = self.project_tree.isolate_to_context(entity_id=self.entity_id)
             self.project_tree.project_tree_viewer_wdg.setCurrentItem(created_item)
             self.populate_streams()
 
@@ -103,8 +103,8 @@ class EntryStackStream(QtWidgets.QWidget):
     def get_stack_streams(self):
         item_id = self.entity_id
         spare_it = {}
-        curr_asset_type = Query().entity_by_id(entity_id=item_id).entity_type
-        stack_steams = Query().entity_by_id(entity_id=item_id).stack_stream
+        curr_asset_type = Query().entity(entity_id=item_id).entity_type
+        stack_steams = Query().entity(entity_id=item_id).stack_stream
 
         if curr_asset_type != "group":
             if len(stack_steams) == 0:
@@ -132,11 +132,11 @@ if __name__=="__main__":
 
     path = ["assets", "characters"]
 
-    OriginEnvar.show_name = "New_World"
+    OriginEnvar.show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
     asset_id = OriginEnvar().resolve_entity_id()
-    curr_stream = "facial_expressions"
+    curr_stream = "main"
 
     app = QtWidgets.QApplication(sys.argv)
     test_dialog = EntryStackStream(entity_id=asset_id, current_stream=curr_stream)

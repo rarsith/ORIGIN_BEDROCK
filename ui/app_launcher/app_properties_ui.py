@@ -44,7 +44,7 @@ class AppVersionsWidget(QtWidgets.QWidget):
     def populate_properties(self, version_name=None, executable_path=None, envar_data=None):
         self.version_name_le.setText(version_name)
         self.executable_path_le.setText(executable_path)
-        self.envar_data_pt.insertPlainText(envar_data)
+        self.envar_data_pt.insertPlainText(str(envar_data))
 
 
 class AppPropertiesWidget(QtWidgets.QWidget):

@@ -57,10 +57,10 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
         self.remove_idx_from_list()
         stream_name = self.get_list_items()
 
-        Set().entity_by_id(entity_id=self.entity_id).stack_stream = []
+        Set().entity(entity_id=self.entity_id).stack_stream = []
 
         for remaining_item in list(stream_name.values()):
-            Add().entity_by_id(entity_id=self.entity_id).stack_stream = remaining_item.text()
+            Add().entity(entity_id=self.entity_id).stack_stream = remaining_item.text()
         self.populate_streams()
 
     def populate_streams(self):
@@ -74,8 +74,8 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
 
     def get_stack_streams(self):
         spare_it = {}
-        curr_asset_type = Query().entity_by_id(entity_id=self.entity_id).entity_type
-        stack_steams = Query().entity_by_id(entity_id=self.entity_id).stack_stream
+        curr_asset_type = Query().entity(entity_id=self.entity_id).entity_type
+        stack_steams = Query().entity(entity_id=self.entity_id).stack_stream
 
         if curr_asset_type != "group":
             if len(stack_steams) == 0:

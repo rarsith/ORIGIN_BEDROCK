@@ -3,7 +3,7 @@ from PySide2 import QtWidgets
 from envars.origin_envars import OriginEnvar
 # from envars.dc_origin_envars import OriginEnvar
 from o_database.entities.actions import Create
-from o_database.entities.types import TaskTypes
+from o_database.entities.db_types import TaskTypes
 
 
 class CreateTaskUI(QtWidgets.QDialog):

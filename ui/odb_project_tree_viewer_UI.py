@@ -12,6 +12,7 @@ class ProjectTreeViewerBuild(QtWidgets.QTreeWidget):
         self.expandAll()
         self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
 
 
 class ProjectsBoxBuild(QtWidgets.QComboBox):

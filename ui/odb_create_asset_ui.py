@@ -1,7 +1,6 @@
 import sys
 from PySide2 import QtWidgets, QtCore
 from envars.origin_envars import OriginEnvar
-# from envars.dc_origin_envars import OriginEnvar
 from o_database.entities.actions import Create
 from o_database.schemas.actions import EntityDefaultSchemas
 from database.entities.db_structures import DbAssetCategories
@@ -88,12 +87,12 @@ class CreateAssetUI(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    db_path = ["assets", "characters"]
-    OriginEnvar.show_name = "GREEN"
+    db_path = []
+    OriginEnvar.show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = db_path
 
 
-    OriginEnvar.entry_name = "circle"
+    OriginEnvar.entry_name = "hulk"
     OriginEnvar.task_name = "rigging"
 
     app = QtWidgets.QApplication(sys.argv)
