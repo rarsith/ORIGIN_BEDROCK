@@ -43,10 +43,6 @@ class TaskViewerBuild(QtWidgets.QTreeWidget):
                               'Description',
                               ])
 
-        # self.widget_columns_names = ["Task", "Task Type"]
-        # self.setColumnCount(len(self.widget_columns_names))
-        # self.setHeaderLabels(self.widget_columns_names)
-
         self.setColumnWidth(0, round(width * 0.1))
         self.setColumnWidth(1, round(width * 0.11))
         self.setColumnWidth(2, round(width * 0.15))

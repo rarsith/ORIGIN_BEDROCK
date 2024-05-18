@@ -9,7 +9,8 @@ class ProjectTreeViewerBuild(QtWidgets.QTreeWidget):
 
     def widget_build(self):
         self.setHeaderHidden(True)
-        self.expandAll()
+        # self.expandAll()
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.setFocusPolicy(QtCore.Qt.NoFocus)

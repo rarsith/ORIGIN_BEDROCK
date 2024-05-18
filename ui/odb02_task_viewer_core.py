@@ -157,8 +157,9 @@ class TaskViewerCore(TaskViewerUI):
 
     def populate_tasks(self):
         self.changes_to_database.clear()
-        self.task_viewer_wdg.clear()
+
         self.task_viewer_wdg.clearSelection()
+        self.task_viewer_wdg.clear()
         # self.task_viewer_wdg.clearFocus()
         get_entry_tasks_names = self.get_tasks()
 
@@ -198,7 +199,7 @@ class TaskViewerCore(TaskViewerUI):
                 OriginEnvar.task_type = get_task_type
                 return get_task_name
         else:
-            OriginEnvar.task_name = None
+            OriginEnvar.task_name = None  # override Environment variable to update context
 
     def get_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
@@ -222,17 +223,13 @@ if __name__ == '__main__':
     path = ["assets", "characters"]
 
     OriginEnvar.show_name = "New_Era"
-    OriginEnvar().origin_path_hierarchy = path
+    OriginEnvar.origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
 
     app = QtWidgets.QApplication(sys.argv)
     font = app.instance().setFont(QtGui.QFont())
 
     test_dialog = TaskViewerCore()
-
-
-
     test_dialog.populate_tasks()
-
     test_dialog.show()
     sys.exit(app.exec_())

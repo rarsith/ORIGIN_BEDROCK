@@ -94,11 +94,11 @@ class EntryStackStream(QtWidgets.QWidget):
                     list_item = QtWidgets.QListWidgetItem(stream)
                     self.stack_stream_lw.addItem(list_item)
 
-    def selected_entry_id(self):
-        sel_item = self.project_tree.get_selected()
-        if sel_item:
-            self.current_asset_id = sel_item.data(0, QtCore.Qt.UserRole)
-            return self.current_asset_id
+    # def selected_entry_id(self):
+    #     sel_item = self.project_tree.get_selected()
+    #     if sel_item:
+    #         self.current_asset_id = sel_item.data(0, QtCore.Qt.UserRole)
+    #         return self.current_asset_id
 
     def get_stack_streams(self):
         item_id = self.entity_id

@@ -94,16 +94,13 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.show_context)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.show_context)
 
-        # self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.set_proj_tree_focus)
-
         self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.populate_main_publishes)
-        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_task_viewer)
+        self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_task_viewer)
         self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.get_entry_properties)
-        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_main_publishes)
+        self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_main_publishes)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_shows)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_tree_widget)
 
-        # self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.set_task_viewer_focus)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.launcher_tw.populate_widget)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.clear_launch_app_wdg)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
@@ -118,26 +115,46 @@ class OriginControlCenterUI(QtWidgets.QWidget):
     def show_context(self):
         con = OriginEnvar().resolve_to_full_context()
         print(con)
+        return con
 
     def on_middle_tab_change(self, index):
         current_widget = self.middle_tabmenu_tab.widget(index)
         if current_widget:
             if current_widget == self.tasks_view_lwd:
-                current_widget.populate_tasks()
+                self.populate_task_viewer()
             else:
+                self.tasks_view_lwd.task_viewer_wdg.clearSelection()
                 self.tasks_view_lwd.task_viewer_wdg.clear()
 
             if current_widget == self.versions_view_tvw:
                 self.populate_main_publishes()
             else:
+                self.versions_view_tvw.publish_view_tw.clearSelection()
                 self.versions_view_tvw.publish_view_tw.clear()
 
     def populate_main_publishes(self):
-        tab_idx = self.middle_tabmenu_tab.currentIndex()
-        current_widget = self.middle_tabmenu_tab.widget(tab_idx)
-        if current_widget:
-            if current_widget == self.versions_view_tvw:
-                self.versions_view_tvw.populate_publishes()
+        has_selection = self.show_view_twd.get_selected()
+        if len(has_selection) != 0:
+            tab_idx = self.middle_tabmenu_tab.currentIndex()
+            current_widget = self.middle_tabmenu_tab.widget(tab_idx)
+            if current_widget:
+                if current_widget == self.versions_view_tvw:
+                    self.versions_view_tvw.populate_publishes()
+        else:
+            self.show_view_twd.project_tree_viewer_wdg.clearSelection()
+            self.versions_view_tvw.publish_view_tw.clear()
+
+    def populate_task_viewer(self):
+        has_selection = self.show_view_twd.get_selected()
+        if len(has_selection) != 0:
+            tab_idx = self.middle_tabmenu_tab.currentIndex()
+            current_widget = self.middle_tabmenu_tab.widget(tab_idx)
+            if current_widget:
+                if current_widget == self.tasks_view_lwd:
+                    self.tasks_view_lwd.populate_tasks()
+        else:
+            self.show_view_twd.project_tree_viewer_wdg.clearSelection()
+            self.tasks_view_lwd.task_viewer_wdg.clear()
 
     def populate_task_versions(self):
         widget_selection = self.tasks_view_lwd.get_current_selected()
@@ -152,30 +169,23 @@ class OriginControlCenterUI(QtWidgets.QWidget):
             self.launcher_tw.clear_app_widget()
             self.tasks_view_lwd.task_viewer_wdg.clearSelection()
 
-    def populate_task_viewer(self):
-        tab_idx = self.middle_tabmenu_tab.currentIndex()
-        current_widget = self.middle_tabmenu_tab.widget(tab_idx)
-        if current_widget:
-            if current_widget == self.tasks_view_lwd:
-                self.tasks_view_lwd.populate_tasks()
-
     def get_entry_properties(self):
         self.entity_details_viewer_wdg.properties_wdg.populate_properties_list()
 
 
 class MainUI(QtWidgets.QMainWindow):
-    WINDOW_TITLE = "ORIGIN"
 
     def __init__(self, parent=None):
         super(MainUI, self).__init__(parent)
 
-        self.setWindowTitle(self.WINDOW_TITLE)
+        self.setWindowTitle(f"ORIGIN")
 
-        central_widget = OriginControlCenterUI()
+        self.central_widget = OriginControlCenterUI()
 
-        self.setCentralWidget(central_widget)
+        self.setCentralWidget(self.central_widget)
 
         self.show()
+
 
 
 if __name__ == "__main__":

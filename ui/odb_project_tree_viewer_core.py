@@ -153,10 +153,14 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
                     child_item.setChildIndicatorPolicy(QtWidgets.QTreeWidgetItem.ShowIndicator)
                 item.addChild(child_item)
 
-    def get_selected(self):
+    def get_selected_item(self):
         selected = self.project_tree_viewer_wdg.selectedItems()
         if selected:
             return selected[0]
+
+    def get_selected(self):
+        selected = self.project_tree_viewer_wdg.selectedItems()
+        return selected
 
     def get_selected_entry_name(self):
         """Returns the name of the current selection"""
@@ -173,7 +177,8 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         group_items = []
         asset_items = []
 
-        current_selection = self.get_selected()
+        current_selection = self.get_selected_item()
+
 
         def get_parents(current_item):
             sel_parent = current_item.parent()

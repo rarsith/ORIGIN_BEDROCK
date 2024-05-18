@@ -114,9 +114,9 @@ class OriginEnvar:
         Returns he path to the asset, does not include the task
         """
         to_master = ".".join([OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name
-                         ])
+                              OriginEnvar().origin_path_hierarchy,
+                              OriginEnvar().entry_name
+                              ])
 
         return to_master
 
@@ -143,7 +143,6 @@ class OriginEnvar:
             full_context = ".".join(check_items_return)
             return full_context
 
-
     def resolve_to_base_context(self):
         """
         Returns the path to the asset, it does not include the asset itself
@@ -153,9 +152,8 @@ class OriginEnvar:
             return OriginEnvar().show_name
 
         to_base_context = ".".join([OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy
-                         ])
-
+                                    OriginEnvar().origin_path_hierarchy
+                                    ])
 
         return to_base_context
 
@@ -182,4 +180,3 @@ if __name__ == "__main__":
 
     context = OriginEnvar().resolve_to_full_context()
     print(context)
-

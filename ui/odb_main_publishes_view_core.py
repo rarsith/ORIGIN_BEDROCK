@@ -152,12 +152,13 @@ class MainPublishesViewCore(MainPublishesViewUI):
     def get_publishes(self):
         get_limit_value = self.get_limit_load()
         context_resolve = OriginEnvar().resolve_to_full_context()
-        print(context_resolve)
         fetch_ent = Fetch().project_publish_entities()
+
         if get_limit_value != 0:
             fetch_ent.limit = get_limit_value
         else:
             fetch_ent.limit = 1
+
         fetch_ent.sort_documents = -1
         fetch_ent.sort_attribute = "date"
 
