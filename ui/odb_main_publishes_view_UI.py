@@ -30,6 +30,7 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.setSortingEnabled(True)
 
         self.setHeaderLabels(['----',
                               'Publish Name',
@@ -66,6 +67,7 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         self.setUniformRowHeights(True)
         self.setColumnHidden(10, True)
         self.setColumnHidden(11, True)
+        self.setColumnHidden(9, True)
         self.setColumnHidden(8, True)
 
 
@@ -100,11 +102,12 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         self.go_to_last_page_btn = QtWidgets.QPushButton(">>")
         self.go_to_last_page_btn.setFixedSize(30, 20)
 
-        self.show_amount_le = QtWidgets.QLineEdit("50")
-        self.show_amount_le.setFixedSize(50, 20)
+        self.show_current_page_le = QtWidgets.QLineEdit("1")
+        self.show_current_page_le.setFixedSize(50, 20)
 
         self.show_total_pages_le = QtWidgets.QLineEdit()
         self.show_total_pages_le.setFixedSize(50, 20)
+        self.show_total_pages_le.setReadOnly(True)
 
         validator = QtGui.QIntValidator()
         self.load_limit_le = QtWidgets.QLineEdit("30")
@@ -130,7 +133,7 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         bottom_btn_layout.addWidget(self.go_to_first_page_btn)
         bottom_btn_layout.addWidget(self.go_to_prev_page_btn)
         bottom_btn_layout.addWidget(self.show_total_pages_le)
-        bottom_btn_layout.addWidget(self.show_amount_le)
+        bottom_btn_layout.addWidget(self.show_current_page_le)
         bottom_btn_layout.addWidget(self.go_to_next_page_btn)
         bottom_btn_layout.addWidget(self.go_to_last_page_btn)
         bottom_btn_layout.addItem(right_spacer)

@@ -114,7 +114,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
     def refresh_tree_widget(self):
         """Refreshes the tree widget with the current show selected in the combobox"""
-
+        self.curr_sel_show()
         self.project_tree_viewer_wdg.clear()
         get_branches = Fetch().project_structure_entities().root_documents(attrib_field="visual_parent",
                                                                            attrib_value=OriginEnvar().show_name)
@@ -215,10 +215,10 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.resolve_context()
 
         context_menu = QtWidgets.QMenu()
-
         context_menu.addAction(self.create_group_action)
+        current_selection = self.get_selected()
 
-        if len(OriginEnvar().origin_path_hierarchy) != 0:
+        if len(current_selection) != 0:
             context_menu.addAction(self.create_asset_action)
             context_menu.addAction(self.edit_entry_definition)
 

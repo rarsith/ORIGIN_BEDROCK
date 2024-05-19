@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 
 class OriginDBPipelines:
@@ -71,7 +71,7 @@ class OriginDBPipelines:
     def _create_match_stage(self, criteria):
         return {"$match": criteria}
 
-    def generate_pipeline(self, criteria):
+    def generate_pipeline(self, criteria, ids_only=False):
         match_stage = self._create_match_stage(criteria)
         pipeline = [match_stage]
 
@@ -81,6 +81,9 @@ class OriginDBPipelines:
             pipeline.append({"$limit": self._limit})
         if self._skip is not None:
             pipeline.append({"$skip": self._skip})
+
+        if ids_only:
+            pipeline.append({"$project": {"_id": 1}})
 
         return pipeline
 

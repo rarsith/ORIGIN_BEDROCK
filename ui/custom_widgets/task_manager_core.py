@@ -171,7 +171,7 @@ class TaskManagerCore(QtWidgets.QWidget):
         self.tasks_imports_from_properties_wdg.populate_main_widget()
 
     def get_tasks(self):
-        self.tasks_view_lwd.populate_tasks()
+        self.tasks_view_lwd.populate_widget()
 
     def get_selected_type(self):
         task_selected = self.tasks_view_lwd.task_viewer_wdg.hasFocus()

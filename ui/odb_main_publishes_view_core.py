@@ -3,7 +3,6 @@ from database.db_statuses import DbStatuses
 from envars.origin_envars import OriginEnvar
 from database.entities.db_entities import DbPublish
 from ui.odb_main_publishes_view_UI import MainPublishesViewUI
-from ui.odb_main_publishes_view_UI import MainPublishesViewUI
 from ui.odb_publish_status_wdg import PublishStatusWidget
 from o_database.entities.actions import Fetch, Query, Set, Add, Remove
 
@@ -34,6 +33,8 @@ class PublishThumbnailViewer(QtWidgets.QWidget):
 
 class MainPublishesViewCore(MainPublishesViewUI):
     changes_to_database = []
+    paginated_ids = []
+
     def __init__(self, parent=None):
         super(MainPublishesViewCore, self).__init__(parent)
 
@@ -41,20 +42,33 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
     def create_connections(self):
         self.load_limit_le.returnPressed.connect(self.get_limit_load)
-        self.load_limit_le.returnPressed.connect(self.populate_publishes)
-        self.publish_view_tw.itemSelectionChanged.connect(self.get_current_selected_publish())
-        self.refresh_btn.clicked.connect(self.populate_publishes)
+        self.load_limit_le.returnPressed.connect(self.populate_widget)
+
+        self.publish_view_tw.itemSelectionChanged.connect(self.get_current_selected_publish)
+
+        self.go_to_next_page_btn.clicked.connect(self.go_to_next_page)
+        self.go_to_prev_page_btn.clicked.connect(self.go_to_previous_page)
+        self.go_to_first_page_btn.clicked.connect(self.go_to_first_page)
+        self.go_to_last_page_btn.clicked.connect(self.go_to_last_page)
+
+        self.show_current_page_le.returnPressed.connect(self.populate_widget_from_page)
+
+        self.refresh_btn.clicked.connect(self.populate_widget)
+        self.save_changes_btn.clicked.connect(self.commit_changes)
 
     def get_limit_load(self):
         limit_val = self.load_limit_le.text()
         return int(limit_val)
 
+    def set_total_pages_cnt(self):
+        pass
+
     def deselect_all(self):
         self.publish_view_tw.clearSelection()
 
     def commit_changes(self):
-        Set().tasks(entity_id=OriginEnvar().entity_id).multiple_ops(self.changes_to_database)
-        self.populate_tasks()
+        Set().publishes().multiple_ops(self.changes_to_database)
+        self.populate_widget()
         return self.changes_to_database.clear()
 
     def set_date_from_string(self, date: str):
@@ -113,7 +127,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         publish_item.setText(6, self.published_by)
         publish_item.setText(7, self.published_date)
         publish_item.setText(8, self.get_description)
-        publish_item.setText(9, self.published_id)
+        publish_item.setData(9, 1, self.published_id)
         publish_item.setText(10, self.published_parent)
         publish_item.setText(11, self.published_has_notes)
 
@@ -121,23 +135,12 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
     def changed_status(self, data):
         sender = self.sender()
-        current_publish_name = self.get_current_selected_publish()
-        if current_publish_name:
+        current_publish_id = self.get_current_selected_publish()
+        if current_publish_id:
             attr_path = "status"
             attr_value = sender.currentText()
-            self.changes_to_database.append({attr_path: attr_value})
+            self.changes_to_database.append({current_publish_id: {attr_path: attr_value}})
             return {attr_path: attr_value}
-
-    def populate_publishes(self):
-        self.changes_to_database.clear()
-        get_entry_tasks_names = self.get_publishes()
-        if get_entry_tasks_names is not None:
-            self.publish_view_tw.clear()
-            for published_doc in get_entry_tasks_names:
-                root_item = self.publish_view_tw.invisibleRootItem()
-                row_item = self.publish_widget_construct(root_item=root_item, publish_data=published_doc)
-                self.publish_view_tw.addTopLevelItem(row_item)
-            self.get_rows_count()
 
     def get_rows_count(self):
         rows_cnt = self.publish_view_tw.topLevelItemCount()
@@ -145,44 +148,115 @@ class MainPublishesViewCore(MainPublishesViewUI):
             self.publish_view_tw.sizeHintForRow(20) * row
         return rows_cnt
 
-    def sort_documens(self, doc_list, by_field, revr=False):
+    def populate_widget(self):
+        self.changes_to_database.clear()
+        self.get_publishes()
+
+        self.show_total_pages_le.setText(str(len(self.paginated_ids)))
+
+        self.show_current_page_le.setText("1")
+        current_page = self.show_current_page_le.text()
+
+        current_ids = self.paginated_ids[int(current_page)-1]
+
+        self.publish_view_tw.clear()
+
+        published_doc_buff = self.try_buffer(current_ids)
+
+        for pub_id in published_doc_buff:
+            root_item = self.publish_view_tw.invisibleRootItem()
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=pub_id)
+            self.publish_view_tw.addTopLevelItem(row_item)
+        self.get_rows_count()
+
+    def try_buffer(self, doc_id_list):
+        buffer=[]
+        for doc_id in doc_id_list:
+            published_doc = Fetch().project_publish_entities().entity_document(doc_id["_id"])
+            buffer.append(published_doc)
+        return buffer
+
+
+    def sort_documentsX(self, doc_list, by_field, revr=False):
         sorted_list = sorted(doc_list, key=lambda x: x[by_field], reverse=revr)
         return sorted_list
 
-    def get_publishes(self):
+    def get_publishes(self) -> list[list]:
         get_limit_value = self.get_limit_load()
         context_resolve = OriginEnvar().resolve_to_full_context()
         fetch_ent = Fetch().project_publish_entities()
 
-        if get_limit_value != 0:
-            fetch_ent.limit = get_limit_value
-        else:
-            fetch_ent.limit = 1
-
         fetch_ent.sort_documents = -1
         fetch_ent.sort_attribute = "date"
 
-        get_publishes_test = fetch_ent.entities_attr_value_starts_with(attr_field="origin_db_path",
-                                                                       val_starts_with=context_resolve)
+        publishes_ids = fetch_ent.entities_attr_value_starts_with(attr_field="origin_db_path",
+                                                                  val_starts_with=context_resolve,
+                                                                  ids_only=True)
 
-        return get_publishes_test
+        self.paginate_publishes(publishes_ids, get_limit_value)
 
-    def get_selected_task(self):
-        names = []
-        get_selected_objects = self.task_viewer_wdg.selectedItems()
-        if len(get_selected_objects) == 0:
-            return None
-        elif len(get_selected_objects) >= 1:
-            for item in get_selected_objects:
-                names.append(item.data(11, 1))
-            return names[0]
+        return self.paginated_ids
+
+    def paginate_publishes(self, target_list, page_size) -> list[list]:
+        if len(target_list) != 0:
+            self.paginated_ids = []
+            for i in range(0, len(target_list), page_size):
+                self.paginated_ids.append(target_list[i:i + page_size])
+            return self.paginated_ids
+        else:
+            return self.paginated_ids
+
+    def go_to_next_page(self):
+        current_page = self.show_current_page_le.text()
+        next_page = int(current_page) + 1
+        total_pages = len(self.paginated_ids)
+        if next_page >= total_pages:
+            self.show_current_page_le.setText(str(total_pages))
+            self.populate_widget_from_page()
+        else:
+            self.show_current_page_le.setText(str(next_page))
+            self.populate_widget_from_page()
+
+    def go_to_previous_page(self):
+        current_page = self.show_current_page_le.text()
+        previous_page = int(current_page) - 1
+        if previous_page != 0:
+            self.show_current_page_le.setText(str(previous_page))
+        else:
+            self.show_current_page_le.setText("1")
+        self.populate_widget_from_page()
+
+    def go_to_first_page(self):
+        self.show_current_page_le.setText("1")
+        self.populate_widget_from_page()
+
+    def go_to_last_page(self):
+        total_pages = len(self.paginated_ids)
+        self.show_current_page_le.setText(str(total_pages))
+        self.populate_widget_from_page()
+
+    def populate_widget_from_page(self):
+        self.changes_to_database.clear()
+        self.show_total_pages_le.setText(str(len(self.paginated_ids)))
+        current_page = self.show_current_page_le.text()
+        current_ids = self.paginated_ids[int(current_page) - 1]
+
+        self.publish_view_tw.clear()
+
+        published_doc_buff = self.try_buffer(current_ids)
+
+        for pub_id in published_doc_buff:
+            root_item = self.publish_view_tw.invisibleRootItem()
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=pub_id)
+            self.publish_view_tw.addTopLevelItem(row_item)
+        self.get_rows_count()
 
     def get_current_selected_publish(self):
         get_selected_publish = self.publish_view_tw.selectedItems()
         if get_selected_publish:
             for item in get_selected_publish:
-                get_task_name = item.data(9, 0)
-                return get_task_name
+                get_publish_id = item.data(9, 1)
+                return get_publish_id
 
     def get_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
@@ -197,20 +271,51 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
 if __name__ == "__main__":
     import sys
+    import random
     from envars.origin_envars import OriginEnvar
+    from o_database.odb_statuses import DbVersionStatuses
+
+
+    def randomize_pub_statuses(widget: MainPublishesViewCore):
+        pubs_ids = widget.get_publishes()
+
+        buffer_all_ids = []
+        for item_lists in pubs_ids:
+            for id_dict in item_lists:
+                buffer_all_ids.append(id_dict["_id"])
+
+        commands_list = []
+        for buff in buffer_all_ids:
+            commands_list.append({buff: {"status": random.choice(pub_statuses)}})
+
+        Set().publishes().multiple_ops(commands_list)
+
+        print("All DONE!")
+
 
     db_path = ["assets", "characters"]
 
     OriginEnvar.show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = db_path
     # print(OriginEnvar().origin_path_hierarchy)
-    OriginEnvar.entry_name = "hulk"
-    OriginEnvar.task_name = "texturing"
+    # OriginEnvar.entry_name = "hulk"
+    # OriginEnvar.task_name = "texturing"
+
+    # Set().publishes().multiple_ops(self.changes_to_database)
+
+    pub_statuses = DbVersionStatuses().list_all()
+
 
     app = QtWidgets.QApplication(sys.argv)
 
     test_dialog = MainPublishesViewCore()
-    test_dialog.populate_publishes()
-    # test_dialog.populate_main_widget()
+
+    # randomize_pub_statuses(widget=test_dialog)
+
+    test_dialog.populate_widget()
+
     test_dialog.show()
     sys.exit(app.exec_())
+
+
+

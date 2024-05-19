@@ -124,38 +124,31 @@ class OriginEnvar:
         """
         Returns FULL path, including current task
         """
-        check_items_return = []
 
         context_items = [OriginEnvar().show_name,
                          OriginEnvar().origin_path_hierarchy,
                          OriginEnvar().entry_name,
                          OriginEnvar().task_name]
 
-        for idx, item_val in enumerate(context_items):
-            if item_val is None:
-                check_items_return = context_items[:idx]
-                break
+        check_items_return = [x for x in context_items if x is not None]
+        clean_selected = [x for x in check_items_return if len(x) != 0]
 
-        if len(check_items_return) == 0:
-            full_context = ".".join(context_items)
-            return full_context
-        else:
-            full_context = ".".join(check_items_return)
-            return full_context
+        full_context = ".".join(clean_selected)
+        return full_context
 
     def resolve_to_base_context(self):
         """
         Returns the path to the asset, it does not include the asset itself
         """
-
-        if len(OriginEnvar().origin_path_hierarchy) == 0:
+        if not OriginEnvar().origin_path_hierarchy:
             return OriginEnvar().show_name
+        else:
 
-        to_base_context = ".".join([OriginEnvar().show_name,
-                                    OriginEnvar().origin_path_hierarchy
-                                    ])
+            to_base_context = ".".join([OriginEnvar().show_name,
+                                        OriginEnvar().origin_path_hierarchy
+                                        ])
 
-        return to_base_context
+            return to_base_context
 
     def resolve_entity_id(self):
         """
@@ -165,6 +158,13 @@ class OriginEnvar:
 
         resolve_id = self.resolve_to_master()
         return resolve_id
+
+    @classmethod
+    def reset_context(cls):
+        cls.task_name = None
+        cls.entry_name = None
+        cls.entity_id = None
+        cls.origin_path_hierarchy = None
 
 
 if __name__ == "__main__":

@@ -48,7 +48,7 @@ class PropertiesViewer(QtWidgets.QWidget):
         current_widget = self.middle_tabmenu_tab.widget(index)
         if current_widget:
             if current_widget == self.tasks_view_lwd:
-                current_widget.populate_tasks()
+                current_widget.populate_widget()
             else:
                 self.tasks_view_lwd.task_viewer_wdg.clear()
 

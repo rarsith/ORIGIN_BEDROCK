@@ -34,31 +34,31 @@ class PublishStatusWidget(QtWidgets.QComboBox):
             self.setStyleSheet("background-color: #BBCB0F; color: black")
 
         elif current_text == "IN PROGRESS":
-            self.setStyleSheet("background-color: #5EBEA6; color: black")
+            self.setStyleSheet("background-color: #80ccff; color: black")
 
-        elif current_text == "PENDING_REVIEW":
-            self.setStyleSheet("background-color: #5EBEA6; color: black")
+        elif current_text == "PENDING REVIEW":
+            self.setStyleSheet("background-color: #ffc266; color: black")
 
         elif current_text == "TWEAK":
-            self.setStyleSheet("background-color: #1F8918; color: black")
+            self.setStyleSheet("background-color: #db70b8; color: black")
 
         elif current_text == "IGNORE":
-            self.setStyleSheet("background-color: #936E94; color: black")
+            self.setStyleSheet("background-color: #bfbfbf; color: #595959")
 
         elif current_text == "REJECTED":
-            self.setStyleSheet("background-color: #A41A1A; color: black")
+            self.setStyleSheet("background-color: #c86851; color: #d9d9d9")
 
         elif current_text == "INTERNAL APPROVED":
-            self.setStyleSheet("background-color: #636363; color: #A8A8A8")
+            self.setStyleSheet("background-color: #99cc00; color: #404040")
 
         elif current_text == "CLIENT APPROVED":
-            self.setStyleSheet("background-color: #A41A1A; color: black")
+            self.setStyleSheet("background-color: #00802b; color: #333333")
 
         elif current_text == "READY TO DELIVER":
-            self.setStyleSheet("background-color: #636363; color: #A8A8A8")
+            self.setStyleSheet("background-color: #00802b; color: #333333")
 
         elif current_text == "TEMP APPROVED":
-            self.setStyleSheet("background-color: #636363; color: #A8A8A8")
+            self.setStyleSheet("background-color: #e6e600; color: #0d0d0d")
 
         else:
             self.setStyleSheet("background-color: lightgrey;")

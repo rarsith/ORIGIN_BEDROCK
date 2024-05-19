@@ -20,14 +20,14 @@ class TaskViewerCore(TaskViewerUI):
         self.add_btn.clicked.connect(self.create_task_menu)
         self.task_viewer_wdg.itemSelectionChanged.connect(self.get_task_list_current_selected)
         self.save_changes_btn.clicked.connect(self.commit_changes)
-        self.refresh_btn.clicked.connect(self.populate_tasks)
+        self.refresh_btn.clicked.connect(self.populate_widget)
 
     def deselect_all(self):
         self.task_viewer_wdg.clearSelection()
 
     def commit_changes(self):
         Set().tasks(entity_id=OriginEnvar().entity_id).multiple_ops(self.changes_to_database)
-        self.populate_tasks()
+        self.populate_widget()
         return self.changes_to_database.clear()
 
     def set_date_from_string(self, date: str):
@@ -155,7 +155,7 @@ class TaskViewerCore(TaskViewerUI):
             self.changes_to_database.append({attr_path: date_to_string})
             return {attr_path: date_to_string}
 
-    def populate_tasks(self):
+    def populate_widget(self):
         self.changes_to_database.clear()
 
         self.task_viewer_wdg.clearSelection()
@@ -190,7 +190,6 @@ class TaskViewerCore(TaskViewerUI):
 
     def get_task_list_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
-
         if len(get_selected_task) != 0:
             for item in get_selected_task:
                 get_task_name = item.data(11, 1)
@@ -199,7 +198,7 @@ class TaskViewerCore(TaskViewerUI):
                 OriginEnvar.task_type = get_task_type
                 return get_task_name
         else:
-            OriginEnvar.task_name = None  # override Environment variable to update context
+            OriginEnvar.task_name = None
 
     def get_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
@@ -214,8 +213,8 @@ class TaskViewerCore(TaskViewerUI):
     def create_task_menu(self):
         self.ui = CreateTaskUI()
         self.ui.show()
-        self.ui.create_btn.clicked.connect(self.populate_tasks)
-        self.ui.create_and_close_btn.clicked.connect(self.populate_tasks)
+        self.ui.create_btn.clicked.connect(self.populate_widget)
+        self.ui.create_and_close_btn.clicked.connect(self.populate_widget)
 
 if __name__ == '__main__':
     import sys
@@ -230,6 +229,6 @@ if __name__ == '__main__':
     font = app.instance().setFont(QtGui.QFont())
 
     test_dialog = TaskViewerCore()
-    test_dialog.populate_tasks()
+    test_dialog.populate_widget()
     test_dialog.show()
     sys.exit(app.exec_())

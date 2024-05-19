@@ -19,7 +19,7 @@ class DbTaskStatuses:
 class DbVersionStatuses:
     wip: str = "WIP"
     in_progress: str = "IN PROGRESS"
-    pending_rev: str = "PENDING_REVIEW"
+    pending_rev: str = "PENDING REVIEW"
     tweak: str = "TWEAK"
     ignore: str = "IGNORE"
     rejected: str = "REJECTED"

@@ -91,8 +91,8 @@ class OriginBaseActions(OriginDatabaseActions):
     def work(self):
         return WorkFiles(operation=self.db_operand, db_operation=self.db_operation)
 
-    def publishes(self):
-        return TaskPublish(operation=self.db_operand, db_operation=self.db_operation)
+    def publishes(self, entity_id=None):
+        return TaskPublish(entity_id=entity_id, operation=self.db_operand, db_operation=self.db_operation)
 
 
 class Query(OriginBaseActions):
@@ -232,16 +232,18 @@ class Create:
 
 if __name__ == "__main__":
     import random
+    from o_database.odb_statuses import DbVersionStatuses
     path_elem = ["assets", "characters"]
 
     OriginEnvar().show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = path_elem
     # OriginEnvar().entry_name = "green_hulk"
 
-    tasks = ["modeling", "texturing", "groom", "concept"]
+    tasks = ["modeling", "texturing", "groom", "concept", "rigging", "cfx_set", "fx_set", "sculpting", "surfacing"]
     assets = ["hulk", "red_hulk", "green_hulk", "blue_hulk"]
+    pub_statuses = DbVersionStatuses().list_all()
 
-    for pub_ver in range(1, 101):
+    for pub_ver in range(1, 300):
 
         task_rand_choice = random.choice(tasks)
         asset_rand_choice = random.choice(assets)

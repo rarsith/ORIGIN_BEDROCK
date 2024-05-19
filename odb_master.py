@@ -91,13 +91,17 @@ class OriginControlCenterUI(QtWidgets.QWidget):
 
     def create_connections(self):
 
-        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.show_context)
-        self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.show_context)
-
         self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.populate_main_publishes)
+
         self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_task_viewer)
-        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.get_entry_properties)
+        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_task_viewer)
+
         self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_main_publishes)
+        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_main_publishes)
+
+        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.get_entry_properties)
+
+
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_shows)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_tree_widget)
 
@@ -105,6 +109,10 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.clear_launch_app_wdg)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
         self.middle_tabmenu_tab.currentChanged.connect(self.on_middle_tab_change)
+
+        self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.show_context)
+        self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.show_context)
+        self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.show_context)
 
     def set_proj_tree_focus(self):
         self.show_view_twd.setFocus()
@@ -114,7 +122,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
 
     def show_context(self):
         con = OriginEnvar().resolve_to_full_context()
-        print(con)
+        # print(con)
         return con
 
     def on_middle_tab_change(self, index):
@@ -139,8 +147,9 @@ class OriginControlCenterUI(QtWidgets.QWidget):
             current_widget = self.middle_tabmenu_tab.widget(tab_idx)
             if current_widget:
                 if current_widget == self.versions_view_tvw:
-                    self.versions_view_tvw.populate_publishes()
+                    self.versions_view_tvw.populate_widget()
         else:
+
             self.show_view_twd.project_tree_viewer_wdg.clearSelection()
             self.versions_view_tvw.publish_view_tw.clear()
 
@@ -151,15 +160,16 @@ class OriginControlCenterUI(QtWidgets.QWidget):
             current_widget = self.middle_tabmenu_tab.widget(tab_idx)
             if current_widget:
                 if current_widget == self.tasks_view_lwd:
-                    self.tasks_view_lwd.populate_tasks()
+                    self.tasks_view_lwd.populate_widget()
         else:
+
             self.show_view_twd.project_tree_viewer_wdg.clearSelection()
             self.tasks_view_lwd.task_viewer_wdg.clear()
 
     def populate_task_versions(self):
         widget_selection = self.tasks_view_lwd.get_current_selected()
         if len(widget_selection) != 0:
-            self.entity_details_viewer_wdg.versions_wdg.populate_publishes()
+            self.entity_details_viewer_wdg.versions_wdg.populate_widget()
         else:
             self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clear()
 

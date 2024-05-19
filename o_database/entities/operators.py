@@ -266,7 +266,7 @@ class CollectionOperators:
         if db_document:
             return db_document.get('visual_children', [])
 
-    def entities_attr_value_starts_with(self, attr_field, val_starts_with):
+    def entities_attr_value_starts_with(self, attr_field, val_starts_with, ids_only=False):
         orig_pipes = OriginDBPipelines()
         orig_pipes.attribute_field = attr_field
         orig_pipes.value_field = val_starts_with
@@ -276,7 +276,7 @@ class CollectionOperators:
         orig_pipes.sort_attr = self._sort_attribute
 
         criteria = orig_pipes.criteria_value_startswith()
-        pipe = orig_pipes.generate_pipeline(criteria)
+        pipe = orig_pipes.generate_pipeline(criteria, ids_only=ids_only)
         try:
             if self.db_collection is not None:
                 results = list(self.db_collection.aggregate(pipe))
@@ -712,9 +712,27 @@ class WorkFiles:
 
 
 class TaskPublish:
-    def __init__(self, operation=None, db_operation=None):
+    def __init__(self, entity_id=None, operation=None, db_operation=None):
         self.operation = operation
         self.db_operation = db_operation
+        self.entity_id = entity_id
+
+    def _create_op_inst(self, attribute_path, value=None):
+        method = getattr(self.operation(db_collection=ProjectCollections().project_publishes_collection(),
+                                        entry_id=self.entity_id,
+                                        attribute=attribute_path), self.db_operation)
+
+        if value:
+            method(value)
+        else:
+            return method()
+
+    def multiple_ops(self, ops_list):
+        for operation_set in ops_list:
+            for item_id, operation in operation_set.items():
+                for attr_path, attr_value in operation.items():
+                    self.entity_id = item_id
+                    self._create_op_inst(attribute_path=attr_path, value=attr_value)
 
     def all(self, limit=None):
         print("These are all publishes")
