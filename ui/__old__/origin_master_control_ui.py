@@ -2,7 +2,6 @@ import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 
 import o_database.mongo_connection
-from database import db_connection as mdbconn
 # from origin_data_base import xcg_db_connection as xcon
 # from origin_data_base import xcg_db_helpers as xhlp
 # from origin_data_base import xcg_db_actions as xac
@@ -10,13 +9,13 @@ from database import db_connection as mdbconn
 # from origin_utilities import utils as xutil
 # from origin_ui import edit_entry_definition_ui
 
-from ui.task_imports_from_core import TasksImportFromCore
-from ui.task_publishing_slots_core import PublishSlotsWidgetCore
-from ui.main_publishes_view_core import MainPublishesViewCore
-from ui.slots_publishes_view_core import SlotPublishesViewCore
-from ui.project_tree_viewer_core import ProjectTreeViewerCore
-from ui.task_viewer_core import TaskViewerCore
-from ui.slot_component_viewer_core import SlotComponentsViewerCore
+from ui.__old__.task_imports_from_core import TasksImportFromCore
+from ui.__old__.task_publishing_slots_core import PublishSlotsWidgetCore
+from ui.__old__.main_publishes_view_core import MainPublishesViewCore
+from ui.__old__.slots_publishes_view_core import SlotPublishesViewCore
+from ui.__old__.project_tree_viewer_core import ProjectTreeViewerCore
+from ui.__old__.task_viewer_core import TaskViewerCore
+from ui.__old__.slot_component_viewer_core import SlotComponentsViewerCore
 
 
 

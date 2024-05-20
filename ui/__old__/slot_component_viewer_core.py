@@ -1,7 +1,7 @@
 import sys
 from PySide2 import QtWidgets, QtGui
 from database.entities.db_entities import DbPublish
-from ui.properties_ui.component_viewer_UI import SlotComponentsViewerUI
+from ui.__old__.slot_component_viewer_UI import SlotComponentsViewerUI
 
 
 img_path = "/Users/arsithra/Documents/Learning_Python/PycharmProjects/Xchange/xcg_icons/play_icon_vsmall.png"
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
 
     app = QtWidgets.QApplication(sys.argv)
-    pub_id = 'Test.assets.characters.hulk.look_dev'
+    pub_id = 'Test.assets.characters.red_hulk.surfacing.look_dev.v0001'
     sl_collection = 'publish_slots_surfacing'
     test_dialog = SlotComponentsViewerCore(slot_pub_id=pub_id, slot_collection=sl_collection)
 

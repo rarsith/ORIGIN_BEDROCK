@@ -2,7 +2,7 @@ import sys
 from PySide2 import QtWidgets, QtCore, QtGui
 from envars.envars import Envars
 
-from ui.task_imports_from_UI import TasksImportFromUI
+from ui.__old__.task_imports_from_UI import TasksImportFromUI
 from database.entities.db_entities import DbTasks, DbPubSlot
 
 

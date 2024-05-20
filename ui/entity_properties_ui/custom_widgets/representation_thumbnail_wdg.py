@@ -24,7 +24,7 @@ class ThumbnailViewer(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\movie_pic.png"
+    APP_CONFIG_FILE = r"/dcc/icons/movie_pic.png"
 
     app = QtWidgets.QApplication(sys.argv)
 

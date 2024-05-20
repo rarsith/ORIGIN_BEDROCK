@@ -4,7 +4,7 @@ from PySide2 import QtWidgets, QtCore, QtGui
 class CustomDelegate(QtWidgets.QStyledItemDelegate):
     def sizeHint(self, option, index):
         size_hint = super().sizeHint(option, index)
-        size_hint.setHeight(25)  # Set the desired row height here
+        size_hint.setHeight(50)  # Set the desired row height here
         return size_hint
 
 

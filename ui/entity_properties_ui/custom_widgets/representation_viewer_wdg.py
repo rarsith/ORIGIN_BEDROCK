@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets
 
-from ui.properties_ui.representation_summary_wdg import EntitySummaryInfo
-from ui.properties_ui.representation_thumbnail_wdg import ThumbnailViewer
+from ui.entity_properties_ui.custom_widgets.representation_summary_wdg import EntitySummaryInfo
+from ui.entity_properties_ui.custom_widgets.representation_thumbnail_wdg import ThumbnailViewer
 
 
 class RepresentationViewer(QtWidgets.QWidget):
@@ -24,7 +24,7 @@ class RepresentationViewer(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\movie_pic.png"
+    APP_CONFIG_FILE = r"/dcc/icons/movie_pic.png"
 
     app = QtWidgets.QApplication(sys.argv)
 

@@ -1,10 +1,10 @@
 from PySide2 import QtWidgets
 
 from ui.odb_entry_properties_editor_UI import EntryPropertiesEditorUI
-from ui.properties_ui.odb_links_ui import ButtonsWidget
-from ui.properties_ui.odb_notes_ui import NotesWidget
-from ui.properties_ui.component_viewer_core import SlotComponentsViewerCore
-from ui.properties_ui.representation_viewer_wdg import RepresentationViewer
+from ui.entity_properties_ui.custom_widgets.odb_links_ui import ButtonsWidget
+from ui.entity_properties_ui.custom_widgets.odb_notes_ui import NotesWidget
+from ui.entity_properties_ui.custom_widgets.component_viewer_core import SlotComponentsViewerCore
+from ui.entity_properties_ui.custom_widgets.representation_viewer_wdg import RepresentationViewer
 from ui.odb_main_publishes_view_core import MainPublishesViewCore
 
 icon_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\mvoie.png"

@@ -3,8 +3,9 @@ from envars.origin_envars import OriginEnvar
 # from envars.dc_origin_envars import OriginEnvar
 from ui.odb_project_tree_viewer_UI import ProjectTreeViewerUI
 from o_database.entities.actions import Query, Fetch
-from ui import odb_create_asset_ui, odb_task_manager_core, assignment_manager_core, odb_create_show_ui, \
+from ui import odb_create_asset_ui, odb_task_manager_core, odb_create_show_ui, \
     odb_create_group_ui
+from ui.__old__ import assignment_manager_core
 
 
 class ProjectTreeViewerCore(ProjectTreeViewerUI):

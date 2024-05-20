@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 from envars.envars import Envars
-from ui.task_viewer_UI import TaskViewerUI
+from ui.__old__.task_viewer_UI import TaskViewerUI
 from database.entities.db_entities import DbTasks
 
 class TaskViewerCore(TaskViewerUI):

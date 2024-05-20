@@ -1,7 +1,7 @@
 import json
 from PySide2 import QtWidgets, QtCore
-from ui.app_launcher.app_browser_ui import AppBrowser
-from ui.app_launcher.app_properties_ui import AppProperties
+from ui.app_launcher.custom_widgets.app_browser_ui import AppBrowser
+from ui.app_launcher.custom_widgets.app_properties_ui import AppProperties
 
 
 class AppLauncherSettings(QtWidgets.QWidget):

@@ -1,9 +1,9 @@
 from PySide2 import QtWidgets, QtGui
 from database.db_statuses import DbStatuses
 from database.entities.db_entities import DbPublish
-from ui.main_publishes_view_UI import MainPublishesViewUI
+from ui.__old__.main_publishes_view_UI import MainPublishesViewUI
 
-img_path = "../icons/play_icon_vsmall.png"
+img_path = "../../icons/play_icon_vsmall.png"
 
 class SetReviewableComponent(QtWidgets.QPushButton):
     def __init__(self, parent=None):

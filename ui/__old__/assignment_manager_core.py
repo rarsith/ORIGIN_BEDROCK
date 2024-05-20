@@ -1,10 +1,10 @@
 from PySide2 import QtWidgets, QtGui
-from ui.assignment_manager_UI import AssignmentManagerUI
+from ui.__old__.assignment_manager_UI import AssignmentManagerUI
 from database.db_types import BranchTypes
 from database.entities.db_entities import DbProject
 from database.utils.db_q_entity import *
 from database.db_ids import DbIds
-from database.entities.db_structures import DbProjectBranch, DbAssetCategories
+from database.entities.db_structures import DbProjectBranch
 from database.entities.db_entities import DbAsset
 from common_utils import get_deep_value as gdeepval
 from common_utils.version_increment import number_increment as numup

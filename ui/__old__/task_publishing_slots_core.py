@@ -1,6 +1,6 @@
 import sys
 from PySide2 import QtWidgets, QtCore, QtGui
-from ui.task_publishing_slots_UI import PublishSlotsWidgetUI
+from ui.__old__.task_publishing_slots_UI import PublishSlotsWidgetUI
 from database.entities.db_entities import DbTasks, DbPubSlot
 from common_utils.users import Users
 from envars.envars import Envars

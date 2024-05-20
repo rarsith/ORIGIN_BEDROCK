@@ -19,11 +19,10 @@ class EntryStackStream(QtWidgets.QWidget):
         self.create_connections()
         self.context_display_control(state=0)
 
-
     def create_widgets(self):
         self.project_tree = ProjectTreeViewerCore(has_project_select_wdg=False,
-                                                     has_context_menu=False,
-                                                     has_create_new_proj=False)
+                                                  has_context_menu=False,
+                                                  has_create_new_proj=False)
 
         self.stack_stream_lw = QtWidgets.QListWidget()
 
@@ -32,7 +31,7 @@ class EntryStackStream(QtWidgets.QWidget):
 
         self.current_stream_context = QtWidgets.QRadioButton("Current Stream")
         self.current_stream_context.setChecked(True)
-        
+
         self.all_streams = QtWidgets.QRadioButton("All Streams")
         self.unlock_context = QtWidgets.QCheckBox("Unlock Context")
 
@@ -125,8 +124,7 @@ class EntryStackStream(QtWidgets.QWidget):
         self.ui.delete_and_close_btn.clicked.connect(self.populate_streams)
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     import sys
     from envars.origin_envars import OriginEnvar
 

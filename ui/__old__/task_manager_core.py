@@ -10,15 +10,15 @@ from database.db_ids import DbIds
 from common_utils.json_utils import write_json, open_json
 from common_utils import version_increment as vin
 
-from ui.custom_widgets.task_imports_from_core import TasksImportFromCore
-from ui.custom_widgets.task_publishing_slots_core import PublishSlotsWidgetCore
-from ui.custom_widgets.task_viewer_core import TaskViewerCore
+from ui.__old__.task_imports_from_core import TasksImportFromCore
+from ui.__old__.task_publishing_slots_core import PublishSlotsWidgetCore
+from ui.__old__.task_viewer_core import TaskViewerCore
 
-import pprint
+
 def dive_deep(key_attr_path, dict_data, delimiter="."):
     if delimiter in key_attr_path:
         get_keys = key_attr_path.split(delimiter)
-        return [reduce(dict.get, get_keys, dict_data)]
+        return reduce(dict.get, get_keys, dict_data)
 
 
 class ProgressBar():
@@ -171,7 +171,7 @@ class TaskManagerCore(QtWidgets.QWidget):
         self.tasks_imports_from_properties_wdg.populate_main_widget()
 
     def get_tasks(self):
-        self.tasks_view_lwd.populate_widget()
+        self.tasks_view_lwd.populate_tasks()
 
     def get_selected_type(self):
         task_selected = self.tasks_view_lwd.task_viewer_wdg.hasFocus()
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     Envars.show_name = "Green"
     Envars.branch_name = "assets"
     Envars.category = "characters"
-    Envars.entry_name = "hulk"
+    Envars.entry_name = "monster"
 
     app = QtWidgets.QApplication(sys.argv)
 

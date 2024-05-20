@@ -4,7 +4,7 @@ from envars.origin_envars import OriginEnvar
 from ui.odb_main_publishes_view_core import MainPublishesViewCore
 from ui.odb_project_tree_viewer_core import ProjectTreeViewerCore
 from ui.odb02_task_viewer_core import TaskViewerCore
-from ui.properties_ui.properties_viewer import PropertiesViewer
+from ui.entity_properties_ui.properties_viewer import PropertiesViewer
 from ui.app_launcher.app_launcher_ui import AppLauncher
 from ui.odb_sanity_checker_wdg import SanityChecker
 
@@ -99,7 +99,8 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_main_publishes)
         self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_main_publishes)
 
-        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.get_entry_properties)
+        self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_entry_properties)
+        self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_entry_properties)
 
 
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_shows)
@@ -108,7 +109,9 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.launcher_tw.populate_widget)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.clear_launch_app_wdg)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
+
         self.middle_tabmenu_tab.currentChanged.connect(self.on_middle_tab_change)
+        self.entity_details_viewer_wdg.details_tabmenu_tab.currentChanged.connect(self.on_properties_tab_change)
 
         self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.show_context)
         self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.show_context)
@@ -140,6 +143,39 @@ class OriginControlCenterUI(QtWidgets.QWidget):
                 self.versions_view_tvw.publish_view_tw.clearSelection()
                 self.versions_view_tvw.publish_view_tw.clear()
 
+    def on_properties_tab_change(self, index):
+        current_widget = self.entity_details_viewer_wdg.details_tabmenu_tab.widget(index)
+        if current_widget:
+            if current_widget == self.entity_details_viewer_wdg.versions_wdg:
+                self.populate_task_versions()
+            else:
+                self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clearSelection()
+                self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clear()
+
+            if current_widget == self.entity_details_viewer_wdg.components_wdg:
+                pass
+
+            else:
+                pass
+
+            if current_widget == self.entity_details_viewer_wdg.links_wdg:
+                pass
+
+            else:
+                pass
+
+            if current_widget == self.entity_details_viewer_wdg.notes_wdg:
+                pass
+
+            else:
+                pass
+
+            if current_widget == self.entity_details_viewer_wdg.properties_wdg:
+                self.populate_entry_properties()
+
+            else:
+                self.entity_details_viewer_wdg.properties_wdg.properties_viewer.clear()
+
     def populate_main_publishes(self):
         has_selection = self.show_view_twd.get_selected()
         if len(has_selection) != 0:
@@ -169,8 +205,13 @@ class OriginControlCenterUI(QtWidgets.QWidget):
     def populate_task_versions(self):
         widget_selection = self.tasks_view_lwd.get_current_selected()
         if len(widget_selection) != 0:
-            self.entity_details_viewer_wdg.versions_wdg.populate_widget()
+            tab_idx = self.entity_details_viewer_wdg.details_tabmenu_tab.currentIndex()
+            current_widget = self.entity_details_viewer_wdg.details_tabmenu_tab.widget(tab_idx)
+            if current_widget:
+                if current_widget == self.entity_details_viewer_wdg.versions_wdg:
+                    self.entity_details_viewer_wdg.versions_wdg.populate_widget()
         else:
+            self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clearSelection()
             self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clear()
 
     def clear_launch_app_wdg(self):
@@ -179,8 +220,16 @@ class OriginControlCenterUI(QtWidgets.QWidget):
             self.launcher_tw.clear_app_widget()
             self.tasks_view_lwd.task_viewer_wdg.clearSelection()
 
-    def get_entry_properties(self):
-        self.entity_details_viewer_wdg.properties_wdg.populate_properties_list()
+    def populate_entry_properties(self):
+        widget_selection = self.show_view_twd.get_selected()
+        if len(widget_selection) != 0:
+            tab_idx = self.entity_details_viewer_wdg.details_tabmenu_tab.currentIndex()
+            current_widget = self.entity_details_viewer_wdg.details_tabmenu_tab.widget(tab_idx)
+            if current_widget:
+                if current_widget == self.entity_details_viewer_wdg.properties_wdg:
+                    self.entity_details_viewer_wdg.properties_wdg.populate_properties_list()
+        else:
+            self.entity_details_viewer_wdg.properties_wdg.properties_viewer.clear()
 
 
 class MainUI(QtWidgets.QMainWindow):
@@ -199,7 +248,7 @@ class MainUI(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    qss_style_file = "ui/stylesheets/dark_orange/dark_orange_style.qss"
+    qss_style_file = "ui/style/stylesheets/dark_orange/dark_orange_style.qss"
 
     app = QtWidgets.QApplication(sys.argv)
 

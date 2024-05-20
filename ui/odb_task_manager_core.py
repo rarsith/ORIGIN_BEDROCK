@@ -10,9 +10,9 @@ from database.db_ids import DbIds
 from common_utils.json_utils import write_json, open_json
 from common_utils import version_increment as vin
 
-from ui.task_imports_from_core import TasksImportFromCore
-from ui.task_publishing_slots_core import PublishSlotsWidgetCore
-from ui.task_viewer_core import TaskViewerCore
+from ui.__old__.task_imports_from_core import TasksImportFromCore
+from ui.__old__.task_publishing_slots_core import PublishSlotsWidgetCore
+from ui.__old__.task_viewer_core import TaskViewerCore
 
 
 def dive_deep(key_attr_path, dict_data, delimiter="."):

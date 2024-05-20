@@ -1,11 +1,11 @@
 from PySide2 import QtWidgets, QtGui
 
-from ui.slots_publishes_view_UI import SlotsPublishesViewUI
+from ui.__old__.slots_publishes_view_UI import SlotsPublishesViewUI
 from database.db_statuses import DbStatuses
 from database.entities.db_entities import DbPublish
 from database.utils.db_q_entity import DbReferences
 
-img_path = "../icons/play_icon_vsmall.png"
+img_path = "../../icons/play_icon_vsmall.png"
 
 class SetReviewableComponent(QtWidgets.QPushButton):
     def __init__(self, parent=None):

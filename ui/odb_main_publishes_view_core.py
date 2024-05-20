@@ -69,7 +69,8 @@ class MainPublishesViewCore(MainPublishesViewUI):
     def commit_changes(self):
         Set().publishes().multiple_ops(self.changes_to_database)
         self.populate_widget()
-        return self.changes_to_database.clear()
+        self.changes_to_database.clear()
+        self.check_changes()
 
     def set_date_from_string(self, date: str):
         if date:
@@ -140,7 +141,27 @@ class MainPublishesViewCore(MainPublishesViewUI):
             attr_path = "status"
             attr_value = sender.currentText()
             self.changes_to_database.append({current_publish_id: {attr_path: attr_value}})
+            self.check_changes()
             return {attr_path: attr_value}
+
+    def check_changes(self):
+        current_button_style = "color: #b1b1b1;" \
+                               "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);" \
+                               "border-width: 1px;" \
+                               "border-color: #1e1e1e;" \
+                               "border-style: solid;" \
+                               "border-radius: 3;" \
+                               "padding: 3px;" \
+                               "font-size: 10px;" \
+                               "padding-left: 3px;" \
+                               "padding-right: 3px;"
+
+        if len(self.changes_to_database) != 0:
+            self.save_changes_btn.setStyleSheet("background-color: #db70b8; color: black")
+        else:
+            self.save_changes_btn.setStyleSheet(current_button_style)
+
+
 
     def get_rows_count(self):
         rows_cnt = self.publish_view_tw.topLevelItemCount()

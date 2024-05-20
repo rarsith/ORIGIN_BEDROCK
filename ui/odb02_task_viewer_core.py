@@ -49,10 +49,8 @@ class TaskViewerCore(TaskViewerUI):
         self.task_name_capture.setReadOnly(True)
 
         self.task_type_capture = QtWidgets.QLineEdit()
-        task_type = task_data["type"]
-        task_type_cap = task_type.capitalize()
-        self.task_type_capture.setText(f"Task ( {task_type_cap} )")
-        self.task_type_capture.setReadOnly(True)
+        task_type = f"task ( {task_data['type']} )"
+        task_type_nice = task_type.capitalize()
 
         self.get_status = task_data["status"]
         self.status_cb = TaskStatusWidget()
@@ -94,8 +92,10 @@ class TaskViewerCore(TaskViewerUI):
         except ValueError as e:
             raise e
 
-        self.task_viewer_wdg.setItemWidget(task_item, 0, self.task_name_capture)
-        self.task_viewer_wdg.setItemWidget(task_item, 1, self.task_type_capture)
+        task_item.setText(0, task_name)
+        task_item.setText(1, task_type_nice)
+        # self.task_viewer_wdg.setItemWidget(task_item, 0, self.task_name_capture)
+        # self.task_viewer_wdg.setItemWidget(task_item, 1, self.task_type_capture)
         self.task_viewer_wdg.setItemWidget(task_item, 2, self.status_cb)
         task_item.setText(3, task_data["bid_days"])
         task_item.setText(4, self.get_used_days)

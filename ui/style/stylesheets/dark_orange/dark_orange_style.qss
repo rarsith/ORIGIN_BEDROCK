@@ -113,7 +113,7 @@ QWidget:focus
 
 QLineEdit
 {
-    background-color: rgba(50, 50, 50, 50);
+    background-color: rgba(75, 75, 75, 255);
     padding: 3px;
     border-style: transparent;
     border-radius: 5;

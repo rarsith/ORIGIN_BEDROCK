@@ -1,11 +1,11 @@
 from PySide2 import QtWidgets, QtGui
 from envars.envars import Envars
-from ui.project_tree_viewer_UI import ProjectTreeViewerUI
+from ui.__old__.project_tree_viewer_UI import ProjectTreeViewerUI
 from database.entities.db_entities import DbProject
 from database.entities.db_structures import DbProjectBranch
 from common_utils import get_deep_value as gdeepval
-from ui import create_asset_ui, create_asset_category_ui, task_manager_core, assignment_manager_core, create_branch_ui, \
-    create_seq_ui, create_show_ui, create_shot_ui
+from ui.__old__ import create_show_ui, create_branch_ui, create_shot_ui, create_seq_ui, create_asset_ui, \
+    create_asset_category_ui, assignment_manager_core, task_manager_core
 
 
 class ProjectTreeViewerCore(ProjectTreeViewerUI):
