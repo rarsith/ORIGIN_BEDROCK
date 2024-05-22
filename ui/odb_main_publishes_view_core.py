@@ -107,7 +107,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         pub_date = publish_data["date"]
         pub_time = publish_data["time"]
 
-        self.published_date = f"{pub_date}/{pub_time}"
+        self.published_date = f"{pub_date} {pub_time}"
 
         self.get_description = "This is the description"  # TODO: implement DESCRIPTION in the task attributes
 
@@ -122,6 +122,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         # publish_item.setText(0, "---")
         publish_item.setText(1, self.publish_name_capture)
         publish_item.setText(2, self.get_version)
+        publish_item.setText(3, self.status_cb.currentText())
         self.publish_view_tw.setItemWidget(publish_item, 3, self.status_cb)
         publish_item.setText(4, self.pub_asset_type)
         publish_item.setText(5, self.asset_task_type)
@@ -147,27 +148,11 @@ class MainPublishesViewCore(MainPublishesViewUI):
     def check_changes(self):
         current_button_style = "color: #b1b1b1;" \
                                "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);" \
-                               "border-width: 1px;" \
-                               "border-color: #1e1e1e;" \
-                               "border-style: solid;" \
-                               "border-radius: 3;" \
-                               "padding: 3px;" \
-                               "font-size: 10px;" \
-                               "padding-left: 3px;" \
-                               "padding-right: 3px;"
 
         if len(self.changes_to_database) != 0:
             self.save_changes_btn.setStyleSheet("background-color: #db70b8; color: black")
         else:
             self.save_changes_btn.setStyleSheet(current_button_style)
-
-
-
-    def get_rows_count(self):
-        rows_cnt = self.publish_view_tw.topLevelItemCount()
-        for row in range(self.publish_view_tw.topLevelItemCount()):
-            self.publish_view_tw.sizeHintForRow(20) * row
-        return rows_cnt
 
     def populate_widget(self):
         self.changes_to_database.clear()
@@ -178,54 +163,120 @@ class MainPublishesViewCore(MainPublishesViewUI):
         self.show_current_page_le.setText("1")
         current_page = self.show_current_page_le.text()
 
-        current_ids = self.paginated_ids[int(current_page)-1]
+        if len(self.paginated_ids) != 0:
+            current_ids = self.paginated_ids[int(current_page)-1]
+            self.publish_view_tw.clear()
+            published_doc_buff = self.try_buffer(current_ids)
+            self.publish_view_tw.setUpdatesEnabled(False)
+            self.publish_view_tw.addTopLevelItems(published_doc_buff)
+            self.publish_view_tw.setUpdatesEnabled(True)
+            self.go_to_next_page_btn.setEnabled(True)
+            self.go_to_prev_page_btn.setEnabled(True)
+            self.go_to_first_page_btn.setEnabled(True)
+            self.go_to_last_page_btn.setEnabled(True)
+            self.show_current_page_le.setEnabled(True)
+            self.show_total_pages_le.setEnabled(True)
+            self.load_limit_le.setEnabled(True)
+        else:
+            self.publish_view_tw.clear()
+            self.go_to_next_page_btn.setEnabled(False)
+            self.go_to_prev_page_btn.setEnabled(False)
+            self.go_to_first_page_btn.setEnabled(False)
+            self.go_to_last_page_btn.setEnabled(False)
+            self.show_current_page_le.setEnabled(False)
+            self.show_total_pages_le.setEnabled(False)
+            self.load_limit_le.setEnabled(False)
 
-        self.publish_view_tw.clear()
+    def populate_widget_from_page(self):
+        self.changes_to_database.clear()
+        self.show_total_pages_le.setText(str(len(self.paginated_ids)))
+        current_page = self.show_current_page_le.text()
 
-        published_doc_buff = self.try_buffer(current_ids)
+        if len(self.paginated_ids) != 0:
+            current_ids = self.paginated_ids[int(current_page) - 1]
+            self.publish_view_tw.clear()
+            published_doc_buff = self.try_buffer(current_ids)
+            self.publish_view_tw.setUpdatesEnabled(False)
+            self.publish_view_tw.addTopLevelItems(published_doc_buff)
+            self.publish_view_tw.setUpdatesEnabled(True)
+            self.go_to_next_page_btn.setEnabled(True)
+            self.go_to_prev_page_btn.setEnabled(True)
+            self.go_to_first_page_btn.setEnabled(True)
+            self.go_to_last_page_btn.setEnabled(True)
+            self.show_current_page_le.setEnabled(True)
+            self.show_total_pages_le.setEnabled(True)
+            self.load_limit_le.setEnabled(True)
 
-        for pub_id in published_doc_buff:
-            root_item = self.publish_view_tw.invisibleRootItem()
-            row_item = self.publish_widget_construct(root_item=root_item, publish_data=pub_id)
-            self.publish_view_tw.addTopLevelItem(row_item)
-        self.get_rows_count()
+        else:
+            self.publish_view_tw.clear()
+            self.go_to_next_page_btn.setEnabled(False)
+            self.go_to_prev_page_btn.setEnabled(False)
+            self.go_to_first_page_btn.setEnabled(False)
+            self.go_to_last_page_btn.setEnabled(False)
+            self.show_current_page_le.setEnabled(False)
+            self.show_total_pages_le.setEnabled(False)
+            self.load_limit_le.setEnabled(False)
 
     def try_buffer(self, doc_id_list):
-        buffer=[]
+        buffer = []
         for doc_id in doc_id_list:
-            published_doc = Fetch().project_publish_entities().entity_document(doc_id["_id"])
-            buffer.append(published_doc)
+            # published_doc = Fetch().project_publish_entities().entity_document(doc_id["_id"])
+            root_item = self.publish_view_tw.invisibleRootItem()
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=doc_id)
+            buffer.append(row_item)
         return buffer
 
-
-    def sort_documentsX(self, doc_list, by_field, revr=False):
-        sorted_list = sorted(doc_list, key=lambda x: x[by_field], reverse=revr)
-        return sorted_list
-
-    def get_publishes(self) -> list[list]:
+    def get_publishes(self):
         get_limit_value = self.get_limit_load()
         context_resolve = OriginEnvar().resolve_to_full_context()
         fetch_ent = Fetch().project_publish_entities()
 
-        fetch_ent.sort_documents = -1
-        fetch_ent.sort_attribute = "date"
-
-        publishes_ids = fetch_ent.entities_attr_value_starts_with(attr_field="origin_db_path",
+        publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="origin_db_path",
                                                                   val_starts_with=context_resolve,
-                                                                  ids_only=True)
+                                                                  ids_only=False)
 
-        self.paginate_publishes(publishes_ids, get_limit_value)
-
+        self.paginate_publishes(publishes_docs, get_limit_value)
         return self.paginated_ids
 
-    def paginate_publishes(self, target_list, page_size) -> list[list]:
+    def buffer_pub_items(self, doc_list):
+        buffer = []
+        for pub_doc in doc_list:
+            root_item = self.publish_view_tw.invisibleRootItem()
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=pub_doc)
+            buffer.append(row_item)
+        return buffer
+
+    def paginate_pub_items(self, target_list, page_size):
         if len(target_list) != 0:
             self.paginated_ids = []
             for i in range(0, len(target_list), page_size):
                 self.paginated_ids.append(target_list[i:i + page_size])
-            return self.paginated_ids
         else:
-            return self.paginated_ids
+            self.paginated_ids = []
+
+    def paginate_publishes(self, target_list, page_size):
+        if len(target_list) != 0:
+            self.paginated_ids = []
+            for i in range(0, len(target_list), page_size):
+                self.paginated_ids.append(target_list[i:i + page_size])
+        else:
+            self.paginated_ids = []
+
+    def XXpaginate_publishes(self, target_list, page_size):
+        if len(target_list) != 0:
+            self.paginated_ids = []
+            for i in range(0, len(target_list), page_size):
+                end_index = min(i + page_size, len(target_list))
+                self.paginated_ids.append((i, end_index))
+
+            print("paginated idx:  ", self.paginated_ids)
+
+        else:
+            self.paginated_ids = []
+
+    def sort_documentsX(self, doc_list, by_field, revr=False):
+        sorted_list = sorted(doc_list, key=lambda x: x[by_field], reverse=revr)
+        return sorted_list
 
     def go_to_next_page(self):
         current_page = self.show_current_page_le.text()
@@ -255,22 +306,6 @@ class MainPublishesViewCore(MainPublishesViewUI):
         total_pages = len(self.paginated_ids)
         self.show_current_page_le.setText(str(total_pages))
         self.populate_widget_from_page()
-
-    def populate_widget_from_page(self):
-        self.changes_to_database.clear()
-        self.show_total_pages_le.setText(str(len(self.paginated_ids)))
-        current_page = self.show_current_page_le.text()
-        current_ids = self.paginated_ids[int(current_page) - 1]
-
-        self.publish_view_tw.clear()
-
-        published_doc_buff = self.try_buffer(current_ids)
-
-        for pub_id in published_doc_buff:
-            root_item = self.publish_view_tw.invisibleRootItem()
-            row_item = self.publish_widget_construct(root_item=root_item, publish_data=pub_id)
-            self.publish_view_tw.addTopLevelItem(row_item)
-        self.get_rows_count()
 
     def get_current_selected_publish(self):
         get_selected_publish = self.publish_view_tw.selectedItems()
@@ -316,7 +351,7 @@ if __name__ == "__main__":
 
     db_path = ["assets", "characters"]
 
-    OriginEnvar.show_name = "New_Era"
+    OriginEnvar.show_name = "New_Dawn"
     OriginEnvar().origin_path_hierarchy = db_path
     # print(OriginEnvar().origin_path_hierarchy)
     # OriginEnvar.entry_name = "hulk"
@@ -331,7 +366,7 @@ if __name__ == "__main__":
 
     test_dialog = MainPublishesViewCore()
 
-    # randomize_pub_statuses(widget=test_dialog)
+    randomize_pub_statuses(widget=test_dialog)
 
     test_dialog.populate_widget()
 

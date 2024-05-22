@@ -191,12 +191,6 @@ class CollectionOperators:
     def __init__(self, db_collection=None):
         self.db = MongoConnection().origin_production_database()
 
-        self._limit: Any = None
-        self._buffer_list: Any = None
-        self._skip_doc: Any = None
-        self._sort_documents: Any = None
-        self._sort_attribute: Any = None
-
         if db_collection is None or len(db_collection) == 0:
             self.collection_name = "empty"
         else:
@@ -204,50 +198,11 @@ class CollectionOperators:
 
         self.db_collection = self.db[self.collection_name]
 
-    @property
-    def limit(self):
-        return self._limit
-
-    @limit.setter
-    def limit(self, limit: int):
-        self._limit = limit
-
-    @property
-    def buffer_list(self):
-        return self._buffer_list
-
-    @buffer_list.setter
-    def buffer_list(self, b_list: list):
-        self._buffer_list = b_list
-
-    @property
-    def skip_doc(self):
-        return self._skip_doc
-
-    @skip_doc.setter
-    def skip_doc(self, skip_doc: int):
-        self._skip_doc = skip_doc
-
-    @property
-    def sort_documents(self):
-        return self._sort_documents
-
-    @sort_documents.setter
-    def sort_documents(self, value: int):
-        self._sort_documents = value
-
-    @property
-    def sort_attribute(self):
-        return self._sort_attribute
-
-    @sort_attribute.setter
-    def sort_attribute(self, attr: str):
-        self._sort_attribute = attr
-
     def root_documents(self, attrib_field, attrib_value):
         ppe = OriginDBPipelines()
-        criteria = {attrib_field: attrib_value}
-        pipe = ppe.generate_pipeline(criteria)
+        ppe.add_match_attribute(attribute_field=attrib_field, value_field=attrib_value)
+
+        pipe = ppe.create_pipeline()
 
         try:
             if self.db_collection is not None:
@@ -266,26 +221,52 @@ class CollectionOperators:
         if db_document:
             return db_document.get('visual_children', [])
 
-    def entities_attr_value_starts_with(self, attr_field, val_starts_with, ids_only=False):
-        orig_pipes = OriginDBPipelines()
-        orig_pipes.attribute_field = attr_field
-        orig_pipes.value_field = val_starts_with
-        orig_pipes.limit_op = self._limit
-        orig_pipes.skip_op = self._skip_doc
-        orig_pipes.sort_docs = self._sort_documents
-        orig_pipes.sort_attr = self._sort_attribute
+    def entities_attr_value_starts_with(self, attr_field: str, val_starts_with: str, ids_only=False):
+        pipe = OriginDBPipelines()
+        pipe.add_attr_value_startswith(attribute_field=attr_field, value_field=val_starts_with)
 
-        criteria = orig_pipes.criteria_value_startswith()
-        pipe = orig_pipes.generate_pipeline(criteria, ids_only=ids_only)
+        pipe.add_sort(sort_by_attr="time", sort_value=-1)
+        pipe.add_sort(sort_by_attr="date", sort_value=-1)
+
+        if ids_only:
+            pipe.ids_only(only_id=ids_only)
+
+        pipeline = pipe.create_pipeline()
+
         try:
             if self.db_collection is not None:
-                results = list(self.db_collection.aggregate(pipe))
+                results = list(self.db_collection.aggregate(pipeline))
+                # print(results)
                 return results
 
         except Exception as e:
             print(__file__, e)
 
-    def entities_with_statuses(self, status: list):
+    # def entities_attr_value_starts_with_custom(self, attr_field: str, val_starts_with:str, custom_match: list,  ids_only=False):
+    #     pipe = OriginDBPipelines()
+    #     pipe.add_attr_value_startswith(attribute_field=attr_field, value_field=val_starts_with)
+    #
+    #     if len(custom_match) != 0:
+    #         for custom_attr in custom_match:
+    #             pipe.add_match_attribute(attribute_field=custom_attr[])
+    #
+    #     pipe.add_sorting(sort_by_attr="date", sort_value=1)
+    #     pipe.ids_only(only_id=ids_only)
+    #
+    #     pipeline = pipe.create_pipeline()
+    #
+    #     try:
+    #         if self.db_collection is not None:
+    #             results = list(self.db_collection.aggregate(pipeline))
+    #             return results
+    #
+    #     except Exception as e:
+    #         print(__file__, e)
+
+
+    def entities_with_statuses(self, status: str, ids_only=False):
+        pipe = OriginDBPipelines()
+        pipe.add_attr_value_startswith(attribute_field=attr_field, value_field=val_starts_with)
         pass
 
     def entities_with_owners(self, user_names: list):
@@ -326,8 +307,8 @@ class ProjectStructureOperations:
 
     def root_children(self):
         ppe = OriginDBPipelines()
-        crit = {"visual_parent": f"{self.collection_name}"}
-        pipe = ppe.generate_pipeline(crit)
+        ppe.add_match_attribute(attribute_field="visual_parent", value_field=self.collection_name)
+        pipe = ppe.create_pipeline()
 
         try:
             if self.db_collection is not None:

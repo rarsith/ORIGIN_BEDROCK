@@ -1,6 +1,7 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 from envars.origin_envars import OriginEnvar
-# from envars.dc_origin_envars import OriginEnvar
+# from context_manager.origin_session import context_session
+
 from ui.odb_project_tree_viewer_UI import ProjectTreeViewerUI
 from o_database.entities.actions import Query, Fetch
 from ui import odb_create_asset_ui, odb_task_manager_core, odb_create_show_ui, \
@@ -76,9 +77,9 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         return sorted(store)
 
     def curr_sel_show(self):
+        import os
         """Returns the current selected show in the combobox"""
         text = self.show_select_cb.currentText()
-        # project = Project(name=text).select()
         OriginEnvar.show_name = text
         OriginEnvar.project_publishes = "__".join([text, "PUBLISHES"])
         OriginEnvar.project_work = "__".join([text, "WORK"])
@@ -93,29 +94,29 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         """Sets the show to the current show in the combobox"""
         self.show_select_cb.setCurrentText(self.show_name)
 
-    def isolate_to_context(self, entity_id):
-        import os
-        asset_document = Fetch().project_structure_entities().entity_document(doc_id=entity_id)
-        get_full_context = asset_document["origin_db_path"]
-        entity_name = asset_document["entry_name"]
-        entity_type = asset_document["type"]
-
-        separate_elements = get_full_context.split(".")[1:]
-        separate_elements.append(entity_name)
-        full_context_path = os.path.join(*separate_elements)
-
-        if entity_type != "group":
-            self.project_tree_viewer_wdg.clear()
-
-            item = QtWidgets.QTreeWidgetItem([full_context_path])
-            item.setData(0, QtCore.Qt.UserRole, entity_id)
-            item.setData(1, QtCore.Qt.UserRole, entity_type)
-            self.project_tree_viewer_wdg.addTopLevelItem(item)
-            return item
+    # def isolate_to_context(self, entity_id):
+    #     import os
+    #     asset_document = Fetch().project_structure_entities().entity_document(doc_id=entity_id)
+    #     get_full_context = asset_document["origin_db_path"]
+    #     entity_name = asset_document["entry_name"]
+    #     entity_type = asset_document["type"]
+    #
+    #     separate_elements = get_full_context.split(".")[1:]
+    #     separate_elements.append(entity_name)
+    #     full_context_path = os.path.join(*separate_elements)
+    #
+    #     if entity_type != "group":
+    #         self.project_tree_viewer_wdg.clear()
+    #
+    #         item = QtWidgets.QTreeWidgetItem([full_context_path])
+    #         item.setData(0, QtCore.Qt.UserRole, entity_id)
+    #         item.setData(1, QtCore.Qt.UserRole, entity_type)
+    #         self.project_tree_viewer_wdg.addTopLevelItem(item)
+    #         return item
 
     def refresh_tree_widget(self):
         """Refreshes the tree widget with the current show selected in the combobox"""
-        self.curr_sel_show()
+        # self.curr_sel_show()
         self.project_tree_viewer_wdg.clear()
         get_branches = Fetch().project_structure_entities().root_documents(attrib_field="visual_parent",
                                                                            attrib_value=OriginEnvar().show_name)
@@ -207,9 +208,10 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         OriginEnvar().origin_path_hierarchy = reversed_group_list
 
         if len(asset_items) != 0:
-            OriginEnvar().entry_name = asset_items[0]
+            OriginEnvar.entry_name = asset_items[0]
         else:
-            OriginEnvar().entry_name = ""
+            OriginEnvar.entry_name = ''
+
 
     def context_menu_build(self, point):
         """Shows the context menu for the project tree viewer"""

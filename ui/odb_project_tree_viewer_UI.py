@@ -34,9 +34,6 @@ class ProjectTreeViewerUI(QtWidgets.QWidget):
     def create_widgets(self):
         self.create_project_btn = QtWidgets.QPushButton("New Project")
         self.create_project_btn.setFixedWidth(70)
-        # self.create_project_btn.setMinimumWidth(50)
-        # self.create_project_btn.setMaximumWidth(200)
-
 
         self.show_select_cb = ProjectsBoxBuild()
         self.project_tree_viewer_wdg = ProjectTreeViewerBuild()

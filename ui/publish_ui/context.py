@@ -1,11 +1,40 @@
 import sys
 from PySide2 import QtWidgets, QtCore
-from ui.odb_project_tree_viewer_core import ProjectTreeViewerCore
+from ui.odb_project_tree_viewer_UI import ProjectTreeViewerUI
 from ui.publish_ui.create_stack_stream_ui import CreateStreamUI
 from ui.publish_ui.delete_stack_stream_ui import DeleteEmptyStreamsUI
 from common_utils import nice_names as nice_names
-from o_database.entities.actions import Query, Set
+from o_database.entities.actions import Query, Set, Fetch
+from envars.origin_envars import OriginEnvar
 
+
+class ContextViewer(ProjectTreeViewerUI):
+    def __init__(self, parent=None):
+        super(ContextViewer, self).__init__(parent)
+
+        self.create_project_btn.setVisible(False)
+        self.show_select_cb.setVisible(False)
+
+    def isolate_to_context(self, entity_id):
+        import os
+        asset_document = Fetch().project_structure_entities().entity_document(doc_id=entity_id)
+
+        get_full_context = asset_document["origin_db_path"]
+        entity_name = asset_document["entry_name"]
+        entity_type = asset_document["type"]
+
+        separate_elements = get_full_context.split(".")[1:]
+        separate_elements.append(entity_name)
+        full_context_path = os.path.join(*separate_elements)
+
+        if entity_type != "group":
+            self.project_tree_viewer_wdg.clear()
+
+            item = QtWidgets.QTreeWidgetItem([full_context_path])
+            item.setData(0, QtCore.Qt.UserRole, entity_id)
+            item.setData(1, QtCore.Qt.UserRole, entity_type)
+            self.project_tree_viewer_wdg.addTopLevelItem(item)
+            return item
 
 class EntryStackStream(QtWidgets.QWidget):
     def __init__(self, entity_id=None, current_stream=None, parent=None):
@@ -20,9 +49,7 @@ class EntryStackStream(QtWidgets.QWidget):
         self.context_display_control(state=0)
 
     def create_widgets(self):
-        self.project_tree = ProjectTreeViewerCore(has_project_select_wdg=False,
-                                                  has_context_menu=False,
-                                                  has_create_new_proj=False)
+        self.project_tree = ContextViewer()
 
         self.stack_stream_lw = QtWidgets.QListWidget()
 
@@ -106,6 +133,8 @@ class EntryStackStream(QtWidgets.QWidget):
         stack_steams = Query().entity(entity_id=item_id).stack_stream
 
         if curr_asset_type != "group":
+            if stack_steams is None:
+                return spare_it
             if len(stack_steams) == 0:
                 return spare_it
             else:
@@ -126,18 +155,18 @@ class EntryStackStream(QtWidgets.QWidget):
 
 if __name__ == "__main__":
     import sys
-    from envars.origin_envars import OriginEnvar
+    # from envars.origin_envars import OriginEnvar
 
     path = ["assets", "characters"]
 
     OriginEnvar.show_name = "New_Era"
     OriginEnvar().origin_path_hierarchy = path
-    OriginEnvar.entry_name = "hulk"
+    OriginEnvar.entry_name = "red_hulk"
     asset_id = OriginEnvar().resolve_entity_id()
     curr_stream = "main"
 
     app = QtWidgets.QApplication(sys.argv)
-    test_dialog = EntryStackStream(entity_id=asset_id, current_stream=curr_stream)
+    test_dialog = EntryStackStream(entity_id=asset_id)
 
     test_dialog.show()
     sys.exit(app.exec_())

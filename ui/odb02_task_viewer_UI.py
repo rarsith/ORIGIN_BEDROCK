@@ -4,7 +4,7 @@ from PySide2 import QtWidgets, QtCore, QtGui
 class CustomDelegate(QtWidgets.QStyledItemDelegate):
     def sizeHint(self, option, index):
         size_hint = super().sizeHint(option, index)
-        size_hint.setHeight(25)  # Set the desired row height here
+        size_hint.setHeight(35)  # Set the desired row height here
         return size_hint
 
 class TaskViewerBuild(QtWidgets.QTreeWidget):
@@ -14,6 +14,7 @@ class TaskViewerBuild(QtWidgets.QTreeWidget):
         # self.widget_width = 400
         self.widget_build()
         self.setItemDelegate(CustomDelegate())
+        self.setObjectName("TaskViewerBuild")
 
     def widget_build(self):
         self.setColumnCount(11)

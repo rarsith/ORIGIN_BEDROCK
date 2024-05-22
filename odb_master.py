@@ -1,6 +1,7 @@
 import sys
 from PySide2 import QtWidgets, QtCore
 from envars.origin_envars import OriginEnvar
+from context_manager.origin_session import ContextHandler
 from ui.odb_main_publishes_view_core import MainPublishesViewCore
 from ui.odb_project_tree_viewer_core import ProjectTreeViewerCore
 from ui.odb02_task_viewer_core import TaskViewerCore

@@ -6,7 +6,7 @@ class DateTime(object):
 
     @property
     def curr_time(self):
-        return self.time_now.strftime("%H:%M")
+        return self.time_now.strftime("%H:%M:%S")
 
     @property
     def curr_date(self):

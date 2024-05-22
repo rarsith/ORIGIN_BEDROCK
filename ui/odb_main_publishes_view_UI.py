@@ -4,7 +4,7 @@ from PySide2 import QtWidgets, QtCore, QtGui
 class CustomDelegate(QtWidgets.QStyledItemDelegate):
     def sizeHint(self, option, index):
         size_hint = super().sizeHint(option, index)
-        size_hint.setHeight(50)  # Set the desired row height here
+        size_hint.setHeight(35)  # Set the desired row height here
         return size_hint
 
 
@@ -30,7 +30,7 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         self.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.setSortingEnabled(True)
+
 
         self.setHeaderLabels(['----',
                               'Publish Name',
@@ -65,10 +65,14 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         self.setColumnWidth(12, round(width * 0.08))
 
         self.setUniformRowHeights(True)
+
         self.setColumnHidden(10, True)
         self.setColumnHidden(11, True)
         self.setColumnHidden(9, True)
         self.setColumnHidden(8, True)
+
+        self.setSortingEnabled(True)
+        self.sortItems(1, QtCore.Qt.AscendingOrder)
 
 
 class MainPublishesViewUI(QtWidgets.QWidget):
@@ -82,7 +86,8 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         self.publish_view_tw = MainPublishesViewWidgetBuild()
 
         self.search_le = QtWidgets.QLineEdit()
-        self.search_le.setPlaceholderText("Search")
+        self.search_le.setPlaceholderText("Search for Publish Name, Asset Type, Owner")
+
 
         self.save_changes_btn = QtWidgets.QPushButton("Save Changes")
 

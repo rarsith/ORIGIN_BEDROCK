@@ -2,188 +2,66 @@ from typing import Any, Dict
 
 
 class OriginDBPipelines:
+
     def __init__(self):
-        self._skip: Any = None
-        self._buffer: Any = None
-        self._limit: Any = None
-        self._sort: Any = None
-        self._sort_attr: Any = None
-        self._attribute_field: Any = None
-        self._value_field: Any = None
-        self._pipeline: Any = None
+        self._sort: list = []
+        self._pipeline: list = []
+        self._criteria: list = []
 
-    @property
-    def skip_op(self):
-        return self._skip
+    @classmethod
+    def _create_match_stage(cls, criteria: list):
+        extended_criteria = [crit for crit in criteria]
+        pipe = {"$match": {"$and": extended_criteria}}
+        return pipe
 
-    @skip_op.setter
-    def skip_op(self, skip_val: int):
-        self._skip = skip_val
+    @classmethod
+    def _create_sort_stage(cls, criteria: list):
+        merged_terms = {key: value for crit in criteria for key, value in crit.items()}
+        pipe = {"$sort": merged_terms}
+        return pipe
 
-    @property
-    def buffer_op(self):
-        return self._buffer
+    def create_pipeline(self):
+        match_stage = self._create_match_stage(self._criteria)
+        if len(self._sort) != 0:
+            sort_stage = self._create_sort_stage(self._sort)
+            self._pipeline.append(sort_stage)
+        self._pipeline.insert(0, match_stage)
+        return self._pipeline
 
-    @buffer_op.setter
-    def buffer_op(self, buffer_val: list):
-        self._buffer = buffer_val
-
-    @property
-    def limit_op(self):
-        return self._limit
-
-    @limit_op.setter
-    def limit_op(self, limit_val: int):
-        self._limit = limit_val
-
-    @property
-    def attribute_field(self):
-        return self._attribute_field
-
-    @attribute_field.setter
-    def attribute_field(self, attrib_name: str):
-        self._attribute_field = attrib_name
-
-    @property
-    def value_field(self):
-        return self._value_field
-
-    @value_field.setter
-    def value_field(self, value: str):
-        self._value_field = value
-
-    @property
-    def sort_docs(self):
-        return self._sort
-
-    @sort_docs.setter
-    def sort_docs(self, value: int):
-        self._sort = value
-
-    @property
-    def sort_attr(self):
-        return self._sort_attr
-
-    @sort_attr.setter
-    def sort_attr(self, attr: str):
-        self._sort_attr = attr
-
-    def _create_match_stage(self, criteria):
-        return {"$match": criteria}
-
-    def generate_pipeline(self, criteria, ids_only=False):
-        match_stage = self._create_match_stage(criteria)
-        pipeline = [match_stage]
-
-        if self._sort is not None:
-            pipeline.append({"$sort": {self._sort_attr: self._sort}})
-        if self._limit is not None:
-            pipeline.append({"$limit": self._limit})
-        if self._skip is not None:
-            pipeline.append({"$skip": self._skip})
-
-        if ids_only:
-            pipeline.append({"$project": {"_id": 1}})
-
-        return pipeline
-
-    def criteria_value_startswith(self):
-        """
-        returns MongoDB filter for aggregation
-        """
-        if not isinstance(self._attribute_field, str):
-            raise TypeError(f"{self._attribute_field} must be a of type string")
-
-        criteria = {self._attribute_field: {"$regex": f"^{self._value_field}"}}
-
+    def add_attr_value_startswith(self, attribute_field: str, value_field: str):
+        criteria = {attribute_field: {"$regex": f"^{value_field}"}}
+        self._criteria.append(criteria)
         return criteria
 
-    def criteria_value_matches(self):
-        """
-        returns MongoDB filter for aggregation
-        it returns the documents that have the field value matching exactly with the inputted :param sel_filter:
-
-        Args:
-            doc_field:
-        """
-        if not isinstance(self._attribute_field, str):
-            raise TypeError(f"{self._attribute_field} must be a of type string")
-
-        criteria = {self._attribute_field: self._value_field}
-
+    def add_match_attribute(self, attribute_field: str, value_field: str):
+        criteria = {attribute_field: value_field}
+        self._criteria.append(criteria)
         return criteria
 
-from pymongo import MongoClient
+    def add_sorting(self, sort_by_attr: str, sort_value: int):
+        criteria = {"$sort": {sort_by_attr, sort_value}}
+        self._pipeline.append(criteria)
+        return criteria
 
-# Function to retrieve data by date
-def get_data_by_date(db_name, collection_name):
-    client = MongoClient()
-    db = client[db_name]
-    collection = db[collection_name]
-    pipeline = [
-        {"$sort": {"date_field_name": 1}}
-    ]
-    result = list(collection.aggregate(pipeline))
-    return result
+    def add_sort(self, sort_by_attr: str, sort_value: int):
+        criteria = {sort_by_attr:sort_value}
+        self._sort.append(criteria)
+        return criteria
 
-# Function to retrieve data by name
-def get_data_by_name(db_name, collection_name):
-    client = MongoClient()
-    db = client[db_name]
-    collection = db[collection_name]
-    pipeline = [
-        {"$sort": {"name_field_name": 1}}
-    ]
-    result = list(collection.aggregate(pipeline))
-    return result
+    def add_limit(self, limit_value: int):
+        criteria = {"$limit": limit_value}
+        self._pipeline.append(criteria)
+        return criteria
 
-# Function to retrieve data by version
-def get_data_by_version():
-    db_O = MongoConnection().origin_production_database()
-    collection_name = ProjectCollections().project_publishes_collection()
-    collection = db_O[collection_name]
+    def add_skip(self, skip_value: int):
+        criteria = {"$skip": skip_value}
+        self._pipeline.append(criteria)
+        return criteria
 
-    pipeline = [
-        {"$sort": {"version_cnt": 1}}
-    ]
-    result = list(collection.aggregate(pipeline))
-    return result
-
-# Function to retrieve data by database path
-def get_data_by_db_path():
-    db_O = MongoConnection().origin_production_database()
-    collection_name = ProjectCollections().project_publishes_collection()
-    collection = db_O[collection_name]
-
-    pipeline = [
-        {"$sort": {"db_path_field_name": 1}}
-    ]
-    result = list(collection.aggregate(pipeline))
-    return result
-
-def get_data_by_versionX():
-    db_O = MongoConnection().origin_production_database()
-    collection_name = ProjectCollections().project_publishes_collection()
-    collection = db_O[collection_name]
-
-    pipeline = [
-
-        {"$match": {"parent_task": "concept"}},
-
-        {"$group": {"_id": None, "max_version_cnt": {"$max": "$version_cnt"}}}
-
-                ]
-
-    result = list(collection.aggregate(pipeline))
-
-    if result:
-        max_version = result[0]["max_version_cnt"]
-
-        documents = list(collection.find({"version_cnt": max_version}))
-        return documents
-    else:
-        return []
-
+    def ids_only(self, only_id: False):
+        criteria = {"$project": {"_id": int(only_id)}}
+        self._pipeline.append(criteria)
+        return criteria
 
 if __name__ == "__main__":
     import pprint
@@ -197,14 +75,14 @@ if __name__ == "__main__":
     collection_db = ProjectCollections().project_publishes_collection()
 
     orig_pipes = OriginDBPipelines()
-    orig_pipes.attribute_field = "xxx"
-    orig_pipes.value_field = "cucu.looku.mokku"
+    orig_pipes.add_attr_value_startswith("origin_db_path", "New_Era")
+    orig_pipes.add_match_attribute("status", "IN PROGRESS")
+    orig_pipes.add_match_attribute("owner", "arsithra")
+    orig_pipes.add_sort("status", -1)
+    orig_pipes.add_sort("date", -1)
+    orig_pipes.add_sort("time", -1)
+    orig_pipes.add_limit(20)
+    orig_pipes.ids_only(True)
+    print(orig_pipes.create_pipeline())
 
 
-    crit = orig_pipes.criteria_value_startswith()
-    crit02 = orig_pipes.criteria_value_matches()
-
-    pipe1 = orig_pipes.generate_pipeline(crit)
-    pipe2 = orig_pipes.generate_pipeline(crit02)
-    print(pipe1)
-    print(pipe2)

@@ -119,6 +119,7 @@ class Fetch:
 
     def project_structure_entities(self):
         return CollectionOperators(ProjectCollections().project_main_collection())
+        # return CollectionOperators("New_Era")
 
     def project_control_entities(self):
         return CollectionOperators(ProjectCollections().project_control_collection())
@@ -232,10 +233,11 @@ class Create:
 
 if __name__ == "__main__":
     import random
+    import time
     from o_database.odb_statuses import DbVersionStatuses
     path_elem = ["assets", "characters"]
 
-    OriginEnvar().show_name = "New_Era"
+    OriginEnvar().show_name = "New_Dawn"
     OriginEnvar().origin_path_hierarchy = path_elem
     # OriginEnvar().entry_name = "green_hulk"
 
@@ -243,7 +245,7 @@ if __name__ == "__main__":
     assets = ["hulk", "red_hulk", "green_hulk", "blue_hulk"]
     pub_statuses = DbVersionStatuses().list_all()
 
-    for pub_ver in range(1, 300):
+    for pub_ver in range(10159, 20000):
 
         task_rand_choice = random.choice(tasks)
         asset_rand_choice = random.choice(assets)
@@ -252,3 +254,4 @@ if __name__ == "__main__":
 
         version_string = "{:04d}".format(pub_ver)
         Create().publish(version=version_string)
+        # time.sleep(1)

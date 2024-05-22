@@ -30,6 +30,25 @@ QWidget
 QTreeWidget::item
 {
     padding: 2px;
+    margin-top: 3px;
+}
+
+QTreeWidget::header
+{
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+QTreeWidget#TaskViewerBuild::item
+{
+    padding: 2px;
+    margin-top: 7px;
+}
+
+QTreeWidget#PropertiesPublishesViewer::item
+{
+    padding: 2px;
+    margin-top: 4px;
 }
 
 QTreeWidget::item:selected

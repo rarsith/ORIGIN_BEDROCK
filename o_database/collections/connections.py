@@ -1,6 +1,7 @@
 from envars.origin_envars import OriginEnvar
 
 
+
 class ProjectCollections:
     def __init__(self):
         self.main_collection_name = OriginEnvar().show_name
