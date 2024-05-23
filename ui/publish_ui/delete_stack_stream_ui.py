@@ -1,7 +1,7 @@
 import sys
 from PySide2 import QtWidgets, QtCore
 from envars.origin_envars import OriginEnvar
-from o_database.entities.actions import Query, Add, Set
+from o_database.entities.actions import Query, Add, Set, Remove
 
 
 class DeleteEmptyStreamsUI(QtWidgets.QDialog):
@@ -20,7 +20,7 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
 
     def create_widgets(self):
         self.show_name_le = QtWidgets.QLabel()
-        item_path = ".".join([OriginEnvar().show_name, OriginEnvar().origin_path_hierarchy, OriginEnvar().entry_name])
+        item_path = ".".join([OriginEnvar.show_name, OriginEnvar.origin_path_hierarchy, OriginEnvar.entry_name])
         self.show_name_le.setText(item_path)
 
         self.stream_name_lw = QtWidgets.QListWidget()
@@ -57,7 +57,7 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
         self.remove_idx_from_list()
         stream_name = self.get_list_items()
 
-        Set().entity(entity_id=self.entity_id).stack_stream = []
+        Set().entity(entity_id=self.entity_id).stack_stream = list()
 
         for remaining_item in list(stream_name.values()):
             Add().entity(entity_id=self.entity_id).stack_stream = remaining_item.text()
@@ -109,7 +109,7 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
 if __name__ == "__main__":
     db_path = ["assets", "characters"]
     OriginEnvar.show_name = "New_World"
-    OriginEnvar().origin_path_hierarchy = db_path
+    OriginEnvar.origin_path_hierarchy = db_path
 
     OriginEnvar.entry_name = "hulk"
     OriginEnvar.task_name = "modeling"

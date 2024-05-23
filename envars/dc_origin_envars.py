@@ -158,7 +158,7 @@ class OriginEnvar:
                 context.append(value)
 
         if len(context) == 1:
-            return OriginEnvar().show_name
+            return OriginEnvar.show_name
         else:
             current_context = ".".join(context)
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     from database import db_connection as mdbconn
     db = o_database.mongo_connection.server[o_database.mongo_connection.database_name]
 
-    context = OriginEnvar()
+    context = OriginEnvar
 
     selection_list = ["sequences", "XXP", "templates"]
 
@@ -187,7 +187,7 @@ if __name__ == "__main__":
 
 
 
-    # db_filter = OriginEnvar().resolve_db_filter()
+    # db_filter = OriginEnvar.resolve_db_filter()
     # print(db_filter)
 
 

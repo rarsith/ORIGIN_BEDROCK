@@ -97,7 +97,7 @@ class _DbConstructors:
             _id=entity_id,
             type='asset',
             entry_name=name,
-            origin_db_path=OriginEnvar().current_context(),
+            origin_db_path=OriginEnvar.current_context(),
             status=" ",
             assignment={},
             assigned_to=[],
@@ -107,8 +107,8 @@ class _DbConstructors:
             date=DateTime().curr_date,
             time=DateTime().curr_time,
             owner=Users.curr_user(),
-            parent=OriginEnvar().show_name,
-            visual_parent=OriginEnvar().current_context()
+            parent=OriginEnvar.show_name,
+            visual_parent=OriginEnvar.current_context()
 
         )
         return entity_id, entity_attributes
@@ -119,14 +119,14 @@ class _DbConstructors:
             _id=entity_id,
             type='group',
             entry_name=name,
-            origin_db_path=OriginEnvar().current_context(),
+            origin_db_path=OriginEnvar.current_context(),
             definition={},
             data={},
             date=DateTime().curr_date,
             time=DateTime().curr_time,
             owner=Users.curr_user(),
-            parent=OriginEnvar().show_name,
-            visual_parent=OriginEnvar().current_context()
+            parent=OriginEnvar.show_name,
+            visual_parent=OriginEnvar.current_context()
         )
         return entity_id, entity_attributes
 

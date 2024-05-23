@@ -17,7 +17,7 @@ class DbProjectAttrPath:
 
     @classmethod
     def to_curr_show(cls):
-        return OriginEnvar().show_name
+        return OriginEnvar.show_name
 
     @classmethod
     def to_is_active(cls):

@@ -42,8 +42,8 @@ class BaseConstructor:
         self.data: Dict[str, Any] = {}
         self.config: Dict[str, Any] = {}
 
-        self.origin_db_path: str = OriginEnvar().resolve_to_base_context()
-        self.parent: str = OriginEnvar().show_name
+        self.origin_db_path: str = OriginEnvar.resolve_to_base_context()
+        self.parent: str = OriginEnvar.show_name
         self.definition: dict = EntityDefaultSchemas().entry_definition.skeleton_schema
         self.date: str = DateTime().curr_date
         self.time: str = DateTime().curr_time
@@ -148,7 +148,7 @@ class DbConstructors:
         else:
             tasks = task_schema
 
-        v_parent = OriginEnvar().resolve_to_base_context()
+        v_parent = OriginEnvar.resolve_to_base_context()
 
         entity_constructor = EntityConstructor(_id=entity_id,
                                                entry_name=name,
@@ -168,7 +168,7 @@ class DbConstructors:
         else:
             tasks = task_schema
 
-        v_parent = OriginEnvar().resolve_to_base_context()
+        v_parent = OriginEnvar.resolve_to_base_context()
 
         entity_constructor = EntityConstructor(_id=entity_id,
                                                entry_name=name,
@@ -186,9 +186,9 @@ class DbConstructors:
         task_constructor = TaskConstructor(
                                             active=True,
                                             type=task_type,
-                                            status="NOT-STARTED",
+                                            status="READY TO START",
                                             artist="None",
-                                            priority="",
+                                            priority="NORMAL",
                                             description="",
                                             imports_from={},
                                             bid_days="",
@@ -207,7 +207,7 @@ class DbConstructors:
         version = DBVersionIncrease().db_wip_files_version_increase(
             ProjectCollections().project_work_files_collection())
 
-        set_base_name = "_".join([OriginEnvar().entry_name, OriginEnvar().task_name])
+        set_base_name = "_".join([OriginEnvar.entry_name, OriginEnvar.task_name])
         set_display_name = "__".join([set_base_name, "work_file", Users.curr_user(), version])
 
         common_id = DbIds.get_wip_file_id(version)
@@ -217,15 +217,15 @@ class DbConstructors:
             entry_name=set_display_name,
             type="work_file",
             description=[],
-            task_name=OriginEnvar().task_name,
+            task_name=OriginEnvar.task_name,
             status=None,
             version=version,
             components=dict(main_path=OutputPaths(version, output_file_name=file_name).wip_file_path()),
             session_content={"inputs": []},
-            origin_db_path=OriginEnvar().resolve_to_full_context(),
+            origin_db_path=OriginEnvar.resolve_to_full_context(),
             children=None,
             visual_children=None,
-            parent=OriginEnvar().entry_name,
+            parent=OriginEnvar.entry_name,
             visual_parent=None,
             representation={},
             date=DateTime().curr_date,
@@ -239,7 +239,7 @@ class DbConstructors:
         status = DbStatuses.pending_rev
         version = DBVersionIncrease().db_master_bundle_ver_increase()
         common_id = DbIds.get_master_bundle_id(version)
-        set_display_name = "_".join([OriginEnvar().entry_name, "stack", version])
+        set_display_name = "_".join([OriginEnvar.entry_name, "stack", version])
 
         entity_attributes = dict(
             _id=common_id,
@@ -249,10 +249,10 @@ class DbConstructors:
             status=status,
             version=version,
             components="compute slots order and names from tasks outputs dependency resolve",  # TODO
-            origin_db_path=OriginEnvar().resolve_to_full_context(),
+            origin_db_path=OriginEnvar.resolve_to_full_context(),
             children=[],
             visual_children=[],
-            parent=OriginEnvar().entry_name,
+            parent=OriginEnvar.entry_name,
             visual_parent=None,
             date=DateTime().curr_date,
             time=DateTime().curr_time,
@@ -265,7 +265,7 @@ class DbConstructors:
         if version is None:
             version = DBVersionIncrease().db_main_pub_ver_increase()
 
-        set_display_name = "_".join([OriginEnvar().entry_name, OriginEnvar().task_name,"main_publish", version])
+        set_display_name = "_".join([OriginEnvar.entry_name, OriginEnvar.task_name,"main_publish", version])
         common_id = DbIds.get_main_pub_id(version)
 
         save_content = dict(
@@ -273,16 +273,16 @@ class DbConstructors:
             entry_name=set_display_name,
             type="publish",
             asset_type="Dummy",
-            task=OriginEnvar().task_name,
-            task_type=OriginEnvar().task_type,
-            parent_task=OriginEnvar().resolve_to_full_context(),
+            task=OriginEnvar.task_name,
+            task_type=OriginEnvar.task_type,
+            parent_task=OriginEnvar.resolve_to_full_context(),
             description=[],
             status="PENDING REVIEW",
             version=version,
             version_cnt=int(version),
             components="Needs to be a separate compute that is inked to the task type",  # TODO
-            origin_db_path=OriginEnvar().resolve_to_full_context(),
-            parent=OriginEnvar().resolve_to_master(),
+            origin_db_path=OriginEnvar.resolve_to_full_context(),
+            parent=OriginEnvar.resolve_to_master(),
             date=DateTime().curr_date,
             time=DateTime().curr_time,
             owner=Users.curr_user())

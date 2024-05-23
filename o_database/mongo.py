@@ -65,6 +65,9 @@ class DBAdd:
         """
         check_if_exists = DBFind(self.collection, self.entry_id, self.attribute).attr_values()
 
+        if check_if_exists is None:
+            DBSet(self.collection, self.entry_id, self.attribute).attribute_value(data=[data])
+
         if not isinstance(data, list):
             if data not in check_if_exists:
                 self.db[self.collection].update_one({"_id": self.entry_id}, {"$push": {self.attribute: data}})
@@ -106,6 +109,7 @@ class DBSet:
         Returns:
 
         """
+        print(self.attribute, self.entry_id)
         self.db[self.collection].update_one({"_id": self.entry_id}, {"$set": {self.attribute: data}})
 
 

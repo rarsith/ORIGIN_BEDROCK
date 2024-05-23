@@ -26,7 +26,7 @@ class TaskViewerCore(TaskViewerUI):
         self.task_viewer_wdg.clearSelection()
 
     def commit_changes(self):
-        Set().tasks(entity_id=OriginEnvar().entity_id).multiple_ops(self.changes_to_database)
+        Set().tasks(entity_id=OriginEnvar.entity_id).multiple_ops(self.changes_to_database)
         self.populate_widget()
         return self.changes_to_database.clear()
 
@@ -106,7 +106,7 @@ class TaskViewerCore(TaskViewerUI):
         self.task_viewer_wdg.setItemWidget(task_item, 9, self.artist_cb)
         task_item.setText(10, self.get_description)
         task_item.setData(11, 1, task_name)
-        task_item.setData(11, 0, task_type)
+        task_item.setData(11, 0, task_data['type'])
 
         return task_item
 
@@ -170,8 +170,8 @@ class TaskViewerCore(TaskViewerUI):
 
     def get_tasks(self):
         spare_it = {}
-        entity_id = OriginEnvar().entity_id
-        curr_asset_type = OriginEnvar().entity_type
+        entity_id = OriginEnvar.entity_id
+        curr_asset_type = OriginEnvar.entity_type
         tasks_list = Query().entity(entity_id=entity_id).tasks
 
         if curr_asset_type != "group":

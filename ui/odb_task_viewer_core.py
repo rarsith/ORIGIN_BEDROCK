@@ -111,7 +111,7 @@ if __name__ == '__main__':
     path = ["assets", "characters"]
 
     OriginEnvar.show_name = "New_World"
-    OriginEnvar().origin_path_hierarchy = path
+    OriginEnvar.origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
     # Envars.task_name = "cfx_set"
 

@@ -50,9 +50,9 @@ if __name__ == "__main__":
 
     path = ["assets", "characters"]
     OriginEnvar.show_name = "New_Era"
-    OriginEnvar().origin_path_hierarchy = path
+    OriginEnvar.origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
-    asset_id = OriginEnvar().resolve_entity_id()
+    asset_id = OriginEnvar.resolve_entity_id()
 
     setter_class = MyClass(operation=DBSet, db_operation="attribute_value", entity_id=asset_id)
     getter_class = MyClass(operation=DBFind, db_operation="attr_values", entity_id=asset_id)

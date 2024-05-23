@@ -94,6 +94,16 @@ class OriginBaseActions(OriginDatabaseActions):
     def publishes(self, entity_id=None):
         return TaskPublish(entity_id=entity_id, operation=self.db_operand, db_operation=self.db_operation)
 
+    def db_execute(self, attribute_path, value=None):
+        method = getattr(self.operation(db_collection=ProjectCollections().project_main_collection(),
+                                        entry_id=self.entity_id,
+                                        attribute=attribute_path), self.db_operation)
+
+        if value:
+            method(value)
+        else:
+            return method()
+
 
 class Query(OriginBaseActions):
     def __init__(self):
@@ -111,8 +121,17 @@ class Set(OriginBaseActions):
 
 
 class Remove(OriginBaseActions):
-    def __init__(self):
-        super().__init__(operand=DBRemove, operation="attribute_value")
+    @classmethod
+    def attribute_from_document(cls):
+        return cls(operand=DBRemove, operation="attribute_from_document")
+
+    @classmethod
+    def attribute_value(cls):
+        return cls(operand=DBRemove, operation="attribute_value")
+
+    @classmethod
+    def value_from_array(cls):
+        return cls(operand=DBRemove, operation="value_from_array")
 
 
 class Fetch:
@@ -132,10 +151,6 @@ class Fetch:
 
     def users_entities(self):
         pass
-
-
-
-
 
 
 class Create:
@@ -181,7 +196,7 @@ class Create:
         print("{} Group created!".format(name))
 
     def asset(self, name, task_schema=None):
-        db_collection = self.db[OriginEnvar().show_name]
+        db_collection = self.db[OriginEnvar.show_name]
         created_id, save_data, visual_parent = DbConstructors().asset_construct(name=name,
                                                                                 entity_id=DbIds.create_entity_id(name),
                                                                                 task_schema=task_schema)
@@ -201,7 +216,7 @@ class Create:
     def task(self, name, task_type):
         task_data = DbConstructors().task_construct(task_type=task_type)
 
-        add_attr = DBAdd(db_collection=OriginEnvar().show_name,
+        add_attr = DBAdd(db_collection=OriginEnvar.show_name,
                          entry_id=self.current_entity_id,
                          attribute=DbEntityAttrPath.to_tasks()).attribute_to_document(attr_name=name,
                                                                                       attr_value=task_data)
@@ -237,20 +252,20 @@ if __name__ == "__main__":
     from o_database.odb_statuses import DbVersionStatuses
     path_elem = ["assets", "characters"]
 
-    OriginEnvar().show_name = "New_Dawn"
-    OriginEnvar().origin_path_hierarchy = path_elem
-    # OriginEnvar().entry_name = "green_hulk"
+    OriginEnvar.show_name = "Corvinius"
+    OriginEnvar.origin_path_hierarchy = path_elem
+    # OriginEnvar.entry_name = "green_hulk"
 
-    tasks = ["modeling", "texturing", "groom", "concept", "rigging", "cfx_set", "fx_set", "sculpting", "surfacing"]
-    assets = ["hulk", "red_hulk", "green_hulk", "blue_hulk"]
+    tasks = ["modeling", "texturing", "groom", "concept", "rigging", "cfx_set", "fx_set", "sculpting", "surfacing", "scorging"]
+    assets = ["corvin"]
     pub_statuses = DbVersionStatuses().list_all()
 
-    for pub_ver in range(10159, 20000):
+    for pub_ver in range(1, 500):
 
         task_rand_choice = random.choice(tasks)
         asset_rand_choice = random.choice(assets)
-        OriginEnvar().entry_name = asset_rand_choice
-        OriginEnvar().task_name = task_rand_choice
+        OriginEnvar.entry_name = asset_rand_choice
+        OriginEnvar.task_name = task_rand_choice
 
         version_string = "{:04d}".format(pub_ver)
         Create().publish(version=version_string)

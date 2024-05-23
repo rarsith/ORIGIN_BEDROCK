@@ -21,7 +21,7 @@ class Entity:
                                         entry_id=self.entity_id,
                                         attribute=attribute_path), self.db_operation)
 
-        if value:
+        if value is not None:
             method(value)
         else:
             return method()

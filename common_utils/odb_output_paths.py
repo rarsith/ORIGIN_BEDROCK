@@ -9,10 +9,10 @@ class OutputPaths(object):
         self.output_file_name = output_file_name
 
     def base_path(self):
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
-                         OriginEnvar().task_name]
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
+                         OriginEnvar.task_name]
         return path_entities
 
     def main_publish_path(self):
@@ -24,10 +24,10 @@ class OutputPaths(object):
 
     def original_images_path(self):
         #TODO need to find a way to contain the file image seq with a REGEX pattern
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
-                         OriginEnvar().task_name,
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
+                         OriginEnvar.task_name,
                          "output",
                          self.version,
                          "original",
@@ -37,11 +37,11 @@ class OutputPaths(object):
         return path_entities
 
     def review_video_path(self):
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
                          "data",
-                         OriginEnvar().task_name,
+                         OriginEnvar.task_name,
                          self.version,
                          self.pub_slot,
                          self.output_file_name]
@@ -49,11 +49,11 @@ class OutputPaths(object):
         return path_entities
 
     def preview_video_path(self):
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
                          "data",
-                         OriginEnvar().task_name,
+                         OriginEnvar.task_name,
                          self.version,
                          self.pub_slot,
                          self.output_file_name]
@@ -64,10 +64,10 @@ class OutputPaths(object):
         pass
 
     def work_file_path(self):
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
-                         OriginEnvar().task_name,
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
+                         OriginEnvar.task_name,
                          "output",
                          self.version,
                          self.output_file_name]
@@ -75,10 +75,10 @@ class OutputPaths(object):
         return path_entities
 
     def wip_file_path(self):
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
-                         OriginEnvar().task_name,
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
+                         OriginEnvar.task_name,
                          "users",
                          Users.curr_user(),
                          self.version,

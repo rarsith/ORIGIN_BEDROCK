@@ -20,7 +20,7 @@ class CreateAssetUI(QtWidgets.QDialog):
 
     def create_widgets(self):
         self.show_name_le = QtWidgets.QLabel()
-        item_path = ".".join([OriginEnvar().show_name, OriginEnvar().origin_path_hierarchy])
+        item_path = ".".join([OriginEnvar.show_name, OriginEnvar.origin_path_hierarchy])
         self.show_name_le.setText(item_path)
 
         self.category_cb = QtWidgets.QComboBox()
@@ -89,7 +89,7 @@ class CreateAssetUI(QtWidgets.QDialog):
 if __name__ == "__main__":
     db_path = []
     OriginEnvar.show_name = "New_Era"
-    OriginEnvar().origin_path_hierarchy = db_path
+    OriginEnvar.origin_path_hierarchy = db_path
 
 
     OriginEnvar.entry_name = "hulk"

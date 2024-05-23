@@ -8,10 +8,10 @@ class OutputPaths(object):
         self.output_file_name = output_file_name
 
     def base_path(self):
-        path_entities = [OriginEnvar().show_name,
-                         OriginEnvar().origin_path_hierarchy,
-                         OriginEnvar().entry_name,
-                         OriginEnvar().task_name]
+        path_entities = [OriginEnvar.show_name,
+                         OriginEnvar.origin_path_hierarchy,
+                         OriginEnvar.entry_name,
+                         OriginEnvar.task_name]
         return path_entities
 
     def main_publish_path(self):

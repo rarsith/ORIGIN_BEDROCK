@@ -68,7 +68,7 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
     def save_properties_to_db(self):
         data_to_insert = self.extract_properties()
-        entity_id = OriginEnvar().entity_id
+        entity_id = OriginEnvar.entity_id
         Set().entity(entity_id=entity_id).definition = data_to_insert
 
     def create_properties(self, properties):
@@ -98,8 +98,8 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
     def get_entry_properties(self):
         spare_it = {}
-        curr_asset_id = OriginEnvar().entity_id
-        curr_asset_type = OriginEnvar().entity_type
+        curr_asset_id = OriginEnvar.entity_id
+        curr_asset_type = OriginEnvar.entity_type
 
         definitions_list = Query().entity(entity_id=curr_asset_id).definition
 

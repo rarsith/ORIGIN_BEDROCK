@@ -19,7 +19,7 @@ class CreateTaskUI(QtWidgets.QDialog):
 
     def create_widgets(self):
         self.show_name_le = QtWidgets.QLabel()
-        item_path = ".".join([OriginEnvar().show_name, OriginEnvar().origin_path_hierarchy, OriginEnvar().entry_name])
+        item_path = ".".join([OriginEnvar.show_name, OriginEnvar.origin_path_hierarchy, OriginEnvar.entry_name])
         self.show_name_le.setText(item_path)
 
         self.task_type_cb = QtWidgets.QComboBox()
@@ -68,7 +68,7 @@ class CreateTaskUI(QtWidgets.QDialog):
 if __name__ == "__main__":
     db_path = ["test_entities"]
     OriginEnvar.show_name = "NEWERA"
-    OriginEnvar().origin_path_hierarchy = db_path
+    OriginEnvar.origin_path_hierarchy = db_path
 
 
     OriginEnvar.entry_name = "entity_one"

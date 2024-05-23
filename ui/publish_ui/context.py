@@ -4,7 +4,7 @@ from ui.odb_project_tree_viewer_UI import ProjectTreeViewerUI
 from ui.publish_ui.create_stack_stream_ui import CreateStreamUI
 from ui.publish_ui.delete_stack_stream_ui import DeleteEmptyStreamsUI
 from common_utils import nice_names as nice_names
-from o_database.entities.actions import Query, Set, Fetch
+from o_database.entities.actions import Query, Set, Fetch, Remove
 from envars.origin_envars import OriginEnvar
 
 
@@ -160,9 +160,9 @@ if __name__ == "__main__":
     path = ["assets", "characters"]
 
     OriginEnvar.show_name = "New_Era"
-    OriginEnvar().origin_path_hierarchy = path
-    OriginEnvar.entry_name = "red_hulk"
-    asset_id = OriginEnvar().resolve_entity_id()
+    OriginEnvar.origin_path_hierarchy = path
+    OriginEnvar.entry_name = "green_hulk"
+    asset_id = OriginEnvar.resolve_entity_id()
     curr_stream = "main"
 
     app = QtWidgets.QApplication(sys.argv)

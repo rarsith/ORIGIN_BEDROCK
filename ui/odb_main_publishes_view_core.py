@@ -228,7 +228,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
     def get_publishes(self):
         get_limit_value = self.get_limit_load()
-        context_resolve = OriginEnvar().resolve_to_full_context()
+        context_resolve = OriginEnvar.resolve_to_full_context()
         fetch_ent = Fetch().project_publish_entities()
 
         publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="origin_db_path",
@@ -351,9 +351,9 @@ if __name__ == "__main__":
 
     db_path = ["assets", "characters"]
 
-    OriginEnvar.show_name = "New_Dawn"
-    OriginEnvar().origin_path_hierarchy = db_path
-    # print(OriginEnvar().origin_path_hierarchy)
+    OriginEnvar.show_name = "New_Bubu"
+    OriginEnvar.origin_path_hierarchy = db_path
+    # print(OriginEnvar.origin_path_hierarchy)
     # OriginEnvar.entry_name = "hulk"
     # OriginEnvar.task_name = "texturing"
 

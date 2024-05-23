@@ -81,9 +81,9 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         """Returns the current selected show in the combobox"""
         text = self.show_select_cb.currentText()
         OriginEnvar.show_name = text
-        OriginEnvar.project_publishes = "__".join([text, "PUBLISHES"])
-        OriginEnvar.project_work = "__".join([text, "WORK"])
-        OriginEnvar.project_control = "__".join([text, "CONTROL"])
+        # OriginEnvar.project_publishes = "__".join([text, "PUBLISHES"])
+        # OriginEnvar.project_work = "__".join([text, "WORK"])
+        # OriginEnvar.project_control = "__".join([text, "CONTROL"])
 
         return text
 
@@ -119,10 +119,11 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         # self.curr_sel_show()
         self.project_tree_viewer_wdg.clear()
         get_branches = Fetch().project_structure_entities().root_documents(attrib_field="visual_parent",
-                                                                           attrib_value=OriginEnvar().show_name)
+                                                                           attrib_value=OriginEnvar.show_name)
 
         if get_branches:
             for branch in get_branches:
+
                 doc_name = branch["entry_name"]
                 doc_id = branch["_id"]
                 doc_type = branch["type"]
@@ -169,6 +170,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         names = []
         get_selected_objects = self.project_tree_viewer_wdg.selectedItems()
         if len(get_selected_objects) == 0:
+            OriginEnvar.reset_to_project()
             return []
         elif len(get_selected_objects) >= 1:
             for item in get_selected_objects:
@@ -180,7 +182,6 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         asset_items = []
 
         current_selection = self.get_selected_item()
-
 
         def get_parents(current_item):
             sel_parent = current_item.parent()
@@ -205,13 +206,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             get_parents(current_selection)
 
         reversed_group_list = group_items[::-1]
-        OriginEnvar().origin_path_hierarchy = reversed_group_list
+        OriginEnvar.origin_path_hierarchy = reversed_group_list
 
         if len(asset_items) != 0:
             OriginEnvar.entry_name = asset_items[0]
         else:
-            OriginEnvar.entry_name = ''
-
+            OriginEnvar.entry_name = None
 
     def context_menu_build(self, point):
         """Shows the context menu for the project tree viewer"""
@@ -294,9 +294,9 @@ if __name__ == '__main__':
 
     path = ["assets", "characters"]
     OriginEnvar.show_name = "New_Era"
-    OriginEnvar().origin_path_hierarchy = path
+    OriginEnvar.origin_path_hierarchy = path
     OriginEnvar.entry_name = "hulk"
-    asset_id = OriginEnvar().resolve_entity_id()
+    asset_id = OriginEnvar.resolve_entity_id()
 
     # Envars.task_name = "cfx_set"
 
