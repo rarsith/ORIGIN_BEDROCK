@@ -1,11 +1,15 @@
 import sys
 from PySide2 import QtWidgets
+from ui.style.icons import OriginIcons
+from ui.style import buttons_styles as btns
 from common_utils import nice_names as nice_names
 from o_database.entities.actions import Query, Set
 from envars.origin_envars import OriginEnvar
 
 
 class EntryPropertiesEditorUI(QtWidgets.QWidget):
+    changes_to_database = []
+
     def __init__(self, parent=None):
         super(EntryPropertiesEditorUI, self).__init__(parent)
 
@@ -14,6 +18,20 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
         self.create_connections()
 
     def create_widget(self):
+        buttons_style = """
+                    QPushButton {
+                        border: none;
+                        background: transparent;
+                    }
+                    QPushButton:pressed {
+                        background: transparent;
+                    }
+                    QPushButton:hover {
+                        border: 2px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffa02f, stop: 1 #d7801a);
+                        background: transparent;
+                    }
+                """
+
         self.properties_viewer = QtWidgets.QTableWidget()
         self.properties_viewer.setColumnCount(2)
         self.properties_viewer.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
@@ -39,17 +57,27 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
         horizontal_header.setMaximumHeight(3)
         horizontal_header.hide()
 
-        self.refresh_btn = QtWidgets.QPushButton("Refresh")
-        self.commit_btn = QtWidgets.QPushButton("Save Changes")
+        self.refresh_btn = QtWidgets.QPushButton()
+        self.refresh_btn.setIcon(OriginIcons().refresh_button_icon())
+        self.refresh_btn.setFixedSize(32, 32)
+        self.refresh_btn.setStyleSheet(btns.hover_orange)
+
+
+        self.commit_btn = QtWidgets.QPushButton()
+        self.commit_btn.setIcon(OriginIcons().save_button_icon())
+        self.commit_btn.setFixedSize(32, 32)
+        self.commit_btn.setStyleSheet(btns.hover_orange)
 
     def create_layout(self):
         buttons_layout = QtWidgets.QHBoxLayout()
+        buttons_layout.addStretch()
         buttons_layout.addWidget(self.commit_btn)
         buttons_layout.addWidget(self.refresh_btn)
 
         main_layout = QtWidgets.QVBoxLayout(self)
-        main_layout.addWidget(self.properties_viewer)
         main_layout.addLayout(buttons_layout)
+        main_layout.addWidget(self.properties_viewer)
+
 
     def create_connections(self):
         self.commit_btn.clicked.connect(self.save_properties_to_db)
@@ -117,6 +145,11 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
         else:
             return spare_it
 
+    def check_changes(self):
+        if len(self.changes_to_database) != 0:
+            self.commit_btn.setStyleSheet("background-color: #db70b8; color: black")
+        else:
+            self.commit_btn.setStyleSheet("QPushButton { border: none; background: transparent; }")
 
 if __name__=="__main__":
     definition = {

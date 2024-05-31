@@ -28,6 +28,7 @@ class TaskViewerCore(TaskViewerUI):
     def commit_changes(self):
         Set().tasks(entity_id=OriginEnvar.entity_id).multiple_ops(self.changes_to_database)
         self.populate_widget()
+        self.check_changes()
         return self.changes_to_database.clear()
 
     def set_date_from_string(self, date: str):
@@ -117,6 +118,7 @@ class TaskViewerCore(TaskViewerUI):
             attr_path = ".".join(["tasks", current_task_name, "status"])
             attr_value = sender.currentText()
             self.changes_to_database.append({attr_path: attr_value})
+            self.check_changes()
             return {attr_path: attr_value}
 
     def changed_prio(self, data):
@@ -126,6 +128,7 @@ class TaskViewerCore(TaskViewerUI):
             attr_path = ".".join(["tasks", current_task_name, "priority"])
             attr_value = sender.currentText()
             self.changes_to_database.append({attr_path: attr_value})
+            self.check_changes()
             return {attr_path: attr_value}
 
     def changed_artist(self, data):
@@ -135,6 +138,7 @@ class TaskViewerCore(TaskViewerUI):
             attr_path = ".".join(["tasks", current_task_name, "artist"])
             attr_value = sender.currentText()
             self.changes_to_database.append({attr_path: attr_value})
+            self.check_changes()
             return {attr_path: attr_value}
 
     def changed_start_date(self, data):
@@ -144,6 +148,7 @@ class TaskViewerCore(TaskViewerUI):
             date_to_string = self.set_date_as_string(sender.date())
             attr_path = ".".join(["tasks", current_task_name, "start_date"])
             self.changes_to_database.append({attr_path: date_to_string})
+            self.check_changes()
             return {attr_path: date_to_string}
 
     def changed_end_date(self, data):
@@ -153,7 +158,14 @@ class TaskViewerCore(TaskViewerUI):
             date_to_string = self.set_date_as_string(sender.date())
             attr_path = ".".join(["tasks", current_task_name, "end_date"])
             self.changes_to_database.append({attr_path: date_to_string})
+            self.check_changes()
             return {attr_path: date_to_string}
+
+    def check_changes(self):
+        if len(self.changes_to_database) != 0:
+            self.save_changes_btn.setStyleSheet("background-color: #db70b8; color: black")
+        else:
+            self.save_changes_btn.setStyleSheet("QPushButton { border: none; background: transparent; }")
 
     def populate_widget(self):
         self.changes_to_database.clear()

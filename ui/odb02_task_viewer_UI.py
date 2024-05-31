@@ -1,4 +1,6 @@
 from PySide2 import QtWidgets, QtCore, QtGui
+from ui.style.icons import OriginIcons
+from ui.style import buttons_styles as btns
 
 
 class CustomDelegate(QtWidgets.QStyledItemDelegate):
@@ -63,21 +65,35 @@ class TaskViewerBuild(QtWidgets.QTreeWidget):
 class TaskViewerUI(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(TaskViewerUI, self).__init__(parent)
-        # self.setMinimumWidth(800)
-        # self.setMaximumWidth(170)
         self.create_widgets()
         self.create_layout()
 
     def create_widgets(self):
+
         self.task_viewer_wdg = TaskViewerBuild()
-        self.add_btn = QtWidgets.QPushButton("New Task")
-        self.save_changes_btn = QtWidgets.QPushButton("Save Changes")
-        self.export_btn = QtWidgets.QPushButton("Export")
-        self.refresh_btn = QtWidgets.QPushButton("Refresh")
-        # self.add_btn.setFixedSize(30, 20)
+        self.add_btn = QtWidgets.QPushButton()
+        self.add_btn.setIcon(OriginIcons().add_button_icon())
+        self.add_btn.setFixedSize(32, 32)
+        self.add_btn.setStyleSheet(btns.hover_orange)
+
+        self.save_changes_btn = QtWidgets.QPushButton()
+        self.save_changes_btn.setIcon(OriginIcons().save_button_icon())
+        self.save_changes_btn.setFixedSize(32, 32)
+        self.save_changes_btn.setStyleSheet(btns.hover_orange)
+
+        self.export_btn = QtWidgets.QPushButton()
+        self.export_btn.setIcon(OriginIcons().export_button_icon())
+        self.export_btn.setFixedSize(32, 32)
+        self.export_btn.setStyleSheet(btns.hover_orange)
+
+        self.refresh_btn = QtWidgets.QPushButton()
+        self.refresh_btn.setIcon(OriginIcons().refresh_button_icon())
+        self.refresh_btn.setFixedSize(32, 32)
+        self.refresh_btn.setStyleSheet(btns.hover_orange)
 
     def create_layout(self):
         top_layout = QtWidgets.QHBoxLayout()
+        top_layout.addStretch()
         top_layout.addWidget(self.add_btn)
         top_layout.addWidget(self.save_changes_btn)
         top_layout.addWidget(self.export_btn)

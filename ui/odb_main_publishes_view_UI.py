@@ -1,3 +1,5 @@
+from ui.style.icons import OriginIcons
+from ui.style import buttons_styles as btns
 from PySide2 import QtWidgets, QtCore, QtGui
 
 
@@ -83,29 +85,46 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         self.create_layout()
 
     def create_widgets(self):
+
         self.publish_view_tw = MainPublishesViewWidgetBuild()
 
         self.search_le = QtWidgets.QLineEdit()
         self.search_le.setPlaceholderText("Search for Publish Name, Asset Type, Owner")
 
+        self.save_changes_btn = QtWidgets.QPushButton()
+        self.save_changes_btn.setIcon(OriginIcons().save_button_icon())
+        self.save_changes_btn.setFixedSize(32, 32)
+        self.save_changes_btn.setStyleSheet(btns.hover_orange)
 
-        self.save_changes_btn = QtWidgets.QPushButton("Save Changes")
+        self.refresh_btn = QtWidgets.QPushButton()
+        self.refresh_btn.setIcon(OriginIcons().refresh_button_icon())
+        self.refresh_btn.setFixedSize(32, 32)
+        self.refresh_btn.setStyleSheet(btns.hover_orange)
 
-        self.refresh_btn = QtWidgets.QPushButton("Refresh")
+        self.filter_menu_btn = QtWidgets.QPushButton()
+        self.filter_menu_btn.setIcon(OriginIcons().filter_button_icon())
+        self.filter_menu_btn.setFixedSize(32, 32)
+        self.filter_menu_btn.setStyleSheet(btns.hover_orange)
 
-        self.filter_menu_btn = QtWidgets.QPushButton("Custom_Filters")
+        self.go_to_first_page_btn = QtWidgets.QPushButton()
+        self.go_to_first_page_btn.setIcon(OriginIcons().first_page_icon())
+        self.go_to_first_page_btn.setFixedSize(32, 32)
+        self.go_to_first_page_btn.setStyleSheet(btns.hover_orange)
 
-        self.go_to_first_page_btn = QtWidgets.QPushButton("<<")
-        self.go_to_first_page_btn.setFixedSize(30, 20)
+        self.go_to_prev_page_btn = QtWidgets.QPushButton()
+        self.go_to_prev_page_btn.setIcon(OriginIcons().previous_page_icon())
+        self.go_to_prev_page_btn.setFixedSize(32, 32)
+        self.go_to_prev_page_btn.setStyleSheet(btns.hover_orange)
 
-        self.go_to_prev_page_btn = QtWidgets.QPushButton("<")
-        self.go_to_prev_page_btn.setFixedSize(30, 20)
+        self.go_to_next_page_btn = QtWidgets.QPushButton()
+        self.go_to_next_page_btn.setIcon(OriginIcons().next_page_icon())
+        self.go_to_next_page_btn.setFixedSize(32, 32)
+        self.go_to_next_page_btn.setStyleSheet(btns.hover_orange)
 
-        self.go_to_next_page_btn = QtWidgets.QPushButton(">")
-        self.go_to_next_page_btn.setFixedSize(30, 20)
-
-        self.go_to_last_page_btn = QtWidgets.QPushButton(">>")
-        self.go_to_last_page_btn.setFixedSize(30, 20)
+        self.go_to_last_page_btn = QtWidgets.QPushButton()
+        self.go_to_last_page_btn.setIcon(OriginIcons().last_page_icon())
+        self.go_to_last_page_btn.setFixedSize(32, 32)
+        self.go_to_last_page_btn.setStyleSheet(btns.hover_orange)
 
         self.show_current_page_le = QtWidgets.QLineEdit("1")
         self.show_current_page_le.setFixedSize(50, 20)

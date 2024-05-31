@@ -171,6 +171,7 @@ class TaskTypes:
         ]
 
 
+
 if __name__ == "__main__":
     '''test the module '''
     x = EntityTypes.asset()

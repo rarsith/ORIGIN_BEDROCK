@@ -109,7 +109,6 @@ class DBSet:
         Returns:
 
         """
-        print(self.attribute, self.entry_id)
         self.db[self.collection].update_one({"_id": self.entry_id}, {"$set": {self.attribute: data}})
 
 

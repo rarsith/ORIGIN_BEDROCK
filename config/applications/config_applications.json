@@ -141,7 +141,7 @@
             "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\dcc\\icons\\pureRef.ico",
             "display_name": "Pureref",
             "versions": {
-                "1.11.1": {
+                "2.0": {
                     "executable_path": "D:\\Program Files\\PureRef\\PureRef.exe",
                     "envar_data": ""
                 }

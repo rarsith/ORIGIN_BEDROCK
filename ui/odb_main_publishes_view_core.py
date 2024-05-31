@@ -146,13 +146,12 @@ class MainPublishesViewCore(MainPublishesViewUI):
             return {attr_path: attr_value}
 
     def check_changes(self):
-        current_button_style = "color: #b1b1b1;" \
-                               "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #565656, stop: 0.1 #525252, stop: 0.5 #4e4e4e, stop: 0.9 #4a4a4a, stop: 1 #464646);" \
+        from ui.style import buttons_styles as btns
 
         if len(self.changes_to_database) != 0:
             self.save_changes_btn.setStyleSheet("background-color: #db70b8; color: black")
         else:
-            self.save_changes_btn.setStyleSheet(current_button_style)
+            self.save_changes_btn.setStyleSheet(btns.hover_orange)
 
     def populate_widget(self):
         self.changes_to_database.clear()

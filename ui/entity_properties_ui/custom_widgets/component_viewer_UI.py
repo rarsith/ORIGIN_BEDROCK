@@ -1,5 +1,7 @@
 import sys
 from PySide2 import QtWidgets
+from ui.style.icons import OriginIcons
+from ui.style import buttons_styles as btns
 
 
 
@@ -43,15 +45,21 @@ class SlotComponentsViewerUI(QtWidgets.QWidget):
 
     def create_widgets(self):
         self.slot_component_viewer_tw = SlotComponentsViewerBuild()
-        self.play_btn = QtWidgets.QPushButton("Play")
-        self.open_in_cb = QtWidgets.QPushButton("Play Using...")
+        self.play_btn = QtWidgets.QPushButton()
+        self.play_btn.setIcon(OriginIcons().play_icon())
+        self.play_btn.setFixedSize(32, 32)
+        self.play_btn.setStyleSheet(btns.hover_orange)
+
+        self.open_in_cb = QtWidgets.QPushButton("...")
+        self.open_in_cb.setIcon(OriginIcons().play_icon())
+        self.open_in_cb.setFixedSize(32, 32)
+        self.open_in_cb.setStyleSheet(btns.hover_orange)
 
     def create_layout(self):
         top_buttons_layout = QtWidgets.QHBoxLayout()
+        top_buttons_layout.addStretch()
         top_buttons_layout.addWidget(self.play_btn)
         top_buttons_layout.addWidget(self.open_in_cb)
-        top_buttons_layout.setStretch(0, 1)
-
 
         slot_view_layout = QtWidgets.QVBoxLayout()
         slot_view_layout.addWidget(self.slot_component_viewer_tw)

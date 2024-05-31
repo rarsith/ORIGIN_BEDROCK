@@ -250,6 +250,9 @@ class ContextHandler:
         self.session_context.task_name = None
         self.session_context.task_type = None
 
+    def snapshot_session(self) -> dict:
+        return self.session_context.__dict__
+
 
 OriginEnvar = ContextHandler()
 
@@ -270,7 +273,7 @@ if __name__ == "__main__":
     # print(OriginEnvar.entry_name)
     # print(OriginEnvar.task_name)
     #
-    # print(OriginEnvar.session_context.__dict__)
-    # print(os.getenv("BASE_APP_CURRENT_SESSION"))
+    print(OriginEnvar.session_context.__dict__)
+    print(os.getenv("BASE_APP_CURRENT_SESSION"))
 
-    OriginEnvar.end_session()
+    # OriginEnvar.end_session()

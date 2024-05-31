@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     # print(applications_config_file)
 
-    config_file_path = r"/ui/origin_globals_ui/settings/applications004.json"
+    config_file_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\ui\origin_globals_ui\settings\applications004.json"
 
     app = QtWidgets.QApplication(sys.argv)
 
