@@ -113,7 +113,7 @@ class Entity:
 
     @origin_db_path.setter
     def origin_db_path(self, set_origin_db_path):
-        attribute_path = DbEntityAttrPath().to_tasks()
+        attribute_path = DbEntityAttrPath().to_origin_db_path()
         self._create_op_inst(attribute_path=attribute_path, value=set_origin_db_path)
 
     @property
@@ -123,7 +123,7 @@ class Entity:
 
     @children.setter
     def children(self, set_children):
-        attribute_path = DbEntityAttrPath().to_tasks()
+        attribute_path = DbEntityAttrPath().to_children()
         self._create_op_inst(attribute_path=attribute_path, value=set_children)
 
     def all_tasks(self):

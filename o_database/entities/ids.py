@@ -1,6 +1,7 @@
 from common_utils.users import Users
 from o_database.utils import attribute_path_utils
 from envars.origin_envars import OriginEnvar
+from envars.origin_envars import ContextHandler
 # from envars.dc_origin_envars import OriginEnvar
 
 
@@ -11,104 +12,107 @@ class DbIds:
     To be used for generating ids for entities at creation time
     """
 
-    @classmethod
-    def create_project_id(cls, name):
+    def __init__(self):
+        self.context_snapshot = OriginEnvar.snapshot_session()
+        self.context = ContextHandler()
+        self.context.load_session(self.context_snapshot)
+
+    def create_project_id(self, name):
         return attribute_path_utils.make_path("root", name)
 
-    @classmethod
-    def create_entity_id(cls, name):
-        entry_id = attribute_path_utils.make_path(OriginEnvar.show_name,
-                                                  OriginEnvar.origin_path_hierarchy,
+    def create_entity_id(self, name):
+        entry_id = attribute_path_utils.make_path(self.context.show_name,
+                                                  self.context.origin_path_hierarchy,
                                                   name)
 
         return entry_id
 
-    @classmethod
-    def create_main_pub_id(cls, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
-                                              OriginEnvar.task_name,
+    def create_db_asset_id(self, name):
+        entry_id = attribute_path_utils.make_path(self.context.show_name,
+                                                  self.context.origin_path_hierarchy,
+                                                  self.context.entry_name,
+                                                  self.context.task_type,
+                                                  "db_asset",
+                                                  name,
+                                                  )
+
+        return entry_id
+
+    def create_main_pub_id(self, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
+                                              self.context.task_name,
                                               "main_pub",
                                               version)
 
-    @classmethod
-    def create_pub_slot_id(cls, pub_slot, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
-                                              OriginEnvar.task_name,
+    def create_pub_slot_id(self, pub_slot, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
+                                              self.context.task_name,
                                               pub_slot,
                                               version)
 
-    @classmethod
-    def create_master_bundle_id(cls, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
+    def create_master_bundle_id(self, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
                                               "bundle",
                                               version)
 
-    @classmethod
-    def create_wip_file_id(cls, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
-                                              OriginEnvar.task_name,
+    def create_wip_file_id(self, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
+                                              self.context.task_name,
                                               "wip",
                                               version)
 
-    @classmethod
-    def curr_project_id(cls):
-        return attribute_path_utils.make_path("root", OriginEnvar.show_name)
+    def curr_project_id(self):
+        return attribute_path_utils.make_path("root", self.context.show_name)
 
-    @classmethod
-    def all_in_collection(cls):
+    def all_in_collection(self):
         return {}
 
-    @classmethod
-    def curr_entry_id(cls):
-        entry_id = attribute_path_utils.make_path(OriginEnvar.show_name,
-                                                  OriginEnvar.origin_path_hierarchy,
-                                                  OriginEnvar.entry_name)
+    def curr_entry_id(self):
+        entry_id = attribute_path_utils.make_path(self.context.show_name,
+                                                  self.context.origin_path_hierarchy,
+                                                  self.context.entry_name)
         if entry_id is not None:
             return entry_id
 
         return ""
 
-    @classmethod
-    def get_wip_file_id(cls, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
-                                              OriginEnvar.task_name,
+    def get_wip_file_id(self, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
+                                              self.context.task_name,
                                               Users().curr_user(),
                                               "wip",
                                               version)
 
-    @classmethod
-    def get_main_pub_id(cls, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
-                                              OriginEnvar.task_name,
+    def get_main_pub_id(self, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
+                                              self.context.task_name,
                                               "main_pub",
                                               version)
 
-    @classmethod
-    def get_pub_slot_id(cls, pub_slot, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
-                                              OriginEnvar.task_name,
+    def get_pub_slot_id(self, pub_slot, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
+                                              self.context.task_name,
                                               pub_slot,
                                               version)
 
-    @classmethod
-    def get_master_bundle_id(cls, version):
-        return attribute_path_utils.make_path(OriginEnvar.show_name,
-                                              OriginEnvar.origin_path_hierarchy,
-                                              OriginEnvar.entry_name,
+    def get_master_bundle_id(self, version):
+        return attribute_path_utils.make_path(self.context.show_name,
+                                              self.context.origin_path_hierarchy,
+                                              self.context.entry_name,
                                               "bundle",
                                               version)
 

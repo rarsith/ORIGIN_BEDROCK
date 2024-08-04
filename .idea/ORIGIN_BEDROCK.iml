@@ -11,4 +11,15 @@
     <option name="format" value="GOOGLE" />
     <option name="myDocStringFormat" value="Google" />
   </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/config" />
+        <option value="$MODULE_DIR$/context_manager" />
+        <option value="$MODULE_DIR$/__to_delete" />
+        <option value="$MODULE_DIR$/exchange" />
+        <option value="$MODULE_DIR$/usd_dev" />
+      </list>
+    </option>
+  </component>
 </module>

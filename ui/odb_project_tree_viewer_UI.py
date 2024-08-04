@@ -1,4 +1,6 @@
 from PySide2 import QtWidgets, QtCore, QtGui
+from ui.style.icons import OriginIcons
+from ui.style import buttons_styles as btns
 
 
 class ProjectTreeViewerBuild(QtWidgets.QTreeWidget):
@@ -19,21 +21,22 @@ class ProjectTreeViewerBuild(QtWidgets.QTreeWidget):
 class ProjectsBoxBuild(QtWidgets.QComboBox):
     def __init__(self, parent=None):
         super(ProjectsBoxBuild, self).__init__(parent)
+        self.setObjectName("ProjectsBoxBuild")
 
 
 class ProjectTreeViewerUI(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(ProjectTreeViewerUI, self).__init__(parent)
-        # self.setMinimumWidth(200)
-        # self.setMaximumWidth(220)
         self.setContentsMargins(2,2,2,2)
 
         self.create_widgets()
         self.create_layout()
 
     def create_widgets(self):
-        self.create_project_btn = QtWidgets.QPushButton("New Project")
-        self.create_project_btn.setFixedWidth(70)
+        self.create_project_btn = QtWidgets.QPushButton()
+        self.create_project_btn.setIcon(OriginIcons().add_button_icon())
+        self.create_project_btn.setFixedSize(32, 32)
+        self.create_project_btn.setStyleSheet(btns.hover_orange)
 
         self.show_select_cb = ProjectsBoxBuild()
         self.project_tree_viewer_wdg = ProjectTreeViewerBuild()

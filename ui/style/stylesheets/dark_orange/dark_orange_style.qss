@@ -239,7 +239,7 @@ QComboBox::drop-down
 
 QComboBox::down-arrow
 {
-     image: url(:down_arrow.png);
+     image: url(C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/ui/style/icons/keyboard_arrow_down_48dp_FILL0_wght400_GRAD0_opsz48_16x16.png);
 }
 
 QGroupBox

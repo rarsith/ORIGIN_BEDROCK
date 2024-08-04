@@ -26,16 +26,7 @@ class PropertiesViewer(QtWidgets.QWidget):
         self.components_wdg = SlotComponentsViewerCore()
 
         self.versions_wdg = MainPublishesViewCore()
-        self.versions_wdg.publish_view_tw.setObjectName("PropertiesPublishesViewer")
-        self.versions_wdg.publish_view_tw.setColumnHidden(11, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(10, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(9, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(8, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(7, True)
-        # self.versions_wdg.publish_view_tw.setColumnHidden(6, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(5, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(4, True)
-        self.versions_wdg.publish_view_tw.setColumnHidden(1, True)
+        self.main_publish_overrides()
 
         self.details_tabmenu_tab = QtWidgets.QTabWidget()
         self.details_tabmenu_tab.setTabPosition(QtWidgets.QTabWidget.North)
@@ -58,9 +49,20 @@ class PropertiesViewer(QtWidgets.QWidget):
             else:
                 self.versions_view_tvw.publish_view_tw.clear()
 
+    def main_publish_overrides(self):
+        self.versions_wdg.publish_view_tw.setObjectName("PropertiesPublishesViewer")
+        self.versions_wdg.publish_view_tw.setColumnHidden(11, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(10, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(9, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(8, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(7, True)
+        # self.versions_wdg.publish_view_tw.setColumnHidden(6, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(5, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(4, True)
+        self.versions_wdg.publish_view_tw.setColumnHidden(1, True)
+
     def set_thumbnail_icon(self, icon_path):
         self.representation_wdg.thumbnail_wdg.set_thumbnail(icon_path=icon_path)
-
 
     def create_layout(self):
         details_layout = QtWidgets.QVBoxLayout(self)

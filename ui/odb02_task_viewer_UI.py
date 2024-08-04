@@ -61,7 +61,6 @@ class TaskViewerBuild(QtWidgets.QTreeWidget):
         self.setUniformRowHeights(True)
 
 
-
 class TaskViewerUI(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(TaskViewerUI, self).__init__(parent)

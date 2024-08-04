@@ -163,10 +163,10 @@ if __name__ == "__main__":
     OriginEnvar.origin_path_hierarchy = path
     OriginEnvar.entry_name = "green_hulk"
     asset_id = OriginEnvar.resolve_entity_id()
-    curr_stream = "main"
+    curr_stream = "green_hulk_main"
 
     app = QtWidgets.QApplication(sys.argv)
-    test_dialog = EntryStackStream(entity_id=asset_id)
+    test_dialog = EntryStackStream(entity_id=asset_id, current_stream=curr_stream)
 
     test_dialog.show()
     sys.exit(app.exec_())

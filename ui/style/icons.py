@@ -51,3 +51,7 @@ class OriginIcons:
     def play_icon(self):
         icon = QtGui.QIcon(os.path.join(self.icon_path, "play_arrow_48dp_FILL0_wght400_GRAD0_opsz48_32x32.png"))
         return icon
+
+    def expand_down_icon(self):
+        icon = QtGui.QIcon(os.path.join(self.icon_path, "keyboard_arrow_down_48dp_FILL0_wght400_GRAD0_opsz48_32x32.png"))
+        return icon

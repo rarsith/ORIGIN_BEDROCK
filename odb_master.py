@@ -20,7 +20,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.setWindowTitle(self.WINDOW_TITLE)
 
         self.setMinimumHeight(850)
-        self.setMinimumWidth(1700)
+        self.setMinimumWidth(1800)
 
         self.create_widgets()
 
@@ -78,7 +78,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         vertical_splitter.insertWidget(1, horizontal_splitter)
         vertical_splitter.insertWidget(2, self.entity_details_viewer_wdg)
         vertical_splitter.insertWidget(3, self.launcher_tw)
-        vertical_splitter.setSizes([100, 950, 350, 150])
+        vertical_splitter.setSizes([180, 1000, 350, 200])
 
         button_layout = QtWidgets.QVBoxLayout()
         button_layout.addWidget(self.refresh_btn)

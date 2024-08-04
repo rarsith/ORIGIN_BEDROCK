@@ -48,9 +48,14 @@ class ContextHandler:
         self.session_context = SessionContext()
         self.set_session()
 
-    def resolve_path_to_file(self):
+    def resolve_path_to_context_file(self):
         origin_dev_root = os.getenv("ORIGIN_ROOT")
         save_path = os.path.join(origin_dev_root, "context_manager", "sessions")
+        return save_path
+
+    def resolve_server_path(self):
+        origin_dev_root = os.getenv("ORIGIN_ROOT")
+        save_path = os.path.join(origin_dev_root, self.show_name, self.origin_path_hierarchy, self.entry_name)
         return save_path
 
     def set_session(self):
@@ -67,12 +72,13 @@ class ContextHandler:
             os.environ.pop("BASE_APP_CURRENT_SESSION", None)
             print(f"Session file {session_filename} deleted and environment variable cleared.")
 
-    def load_session(self):
-        session_filename = os.getenv("BASE_APP_CURRENT_SESSION")
-        if session_filename and os.path.exists(session_filename):
-            with open(session_filename, "r") as f:
-                session_data = json.load(f)
-                self.session_context = SessionContext(**session_data)
+    def load_session(self, session_data):
+        # session_filename = os.getenv("BASE_APP_CURRENT_SESSION")
+        # if session_filename and os.path.exists(session_filename):
+        #     with open(session_filename, "r") as f:
+        #         session_data = json.load(f)
+        self.session_context = SessionContext(**session_data)
+        return self.session_context
 
     def save_session(self):
         root_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\context_manager"
@@ -142,7 +148,6 @@ class ContextHandler:
         self.session_context.origin_path_hierarchy = resolve_path
 
         self.session_context.entry_name = None
-        # self.session_context.entity_type = None
         self.session_context.task_name = None
         self.session_context.task_type = None
 
@@ -155,10 +160,6 @@ class ContextHandler:
     @entry_name.setter
     def entry_name(self, value):
         self.session_context.entry_name = value
-
-        # self.session_context.task_name = None
-        # self.session_context.task_type = None
-
         self.save_session()
 
     @property
@@ -211,7 +212,7 @@ class ContextHandler:
         Returns FULL path, including current task
         """
         origin_context = ".".join(
-            filter(None, [self.show_name, self.origin_path_hierarchy, self.entry_name, self.task_name]))
+            filter(None, [self.show_name, self.origin_path_hierarchy, self.entry_name, self.task_type]))
         return origin_context
 
     def resolve_to_base_context(self):
@@ -253,6 +254,11 @@ class ContextHandler:
     def snapshot_session(self) -> dict:
         return self.session_context.__dict__
 
+    def ingest_session(self, session):
+        pass
+
+    def server_root_path(self):
+        pass
 
 OriginEnvar = ContextHandler()
 
@@ -273,7 +279,13 @@ if __name__ == "__main__":
     # print(OriginEnvar.entry_name)
     # print(OriginEnvar.task_name)
     #
-    print(OriginEnvar.session_context.__dict__)
-    print(os.getenv("BASE_APP_CURRENT_SESSION"))
+    context_data_details = OriginEnvar.snapshot_session()
+    # print(context_data_details)
+    # print(os.getenv("BASE_APP_CURRENT_SESSION"))
 
     # OriginEnvar.end_session()
+
+    context = ContextHandler()
+    context.load_session(context_data_details)
+    print(context.resolve_to_full_context())
+    print(context.resolve_to_base_context())
