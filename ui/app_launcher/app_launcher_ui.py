@@ -154,7 +154,7 @@ class AppLauncher(QtWidgets.QWidget):
         import subprocess
         exe_path = self.get_ver_exec_path()
         self.update_launch_btn()
-        subprocess.Popen(exe_path, shell=True)
+        subprocess.Popen(exe_path, shell=False)
 
     def load_app_versions(self):
         versions = self.get_app_versions()
@@ -174,7 +174,7 @@ class AppLauncher(QtWidgets.QWidget):
             item_data = curr_sel.data(QtCore.Qt.UserRole)
             curr_sel_ver = self.app_version_select_cb.currentText()
             exe_path = item_data[curr_sel.text().lower()]["versions"][curr_sel_ver]["executable_path"]
-
+            print(exe_path)
             return exe_path
 
     def get_app_versions(self):
