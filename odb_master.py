@@ -14,8 +14,8 @@ thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\mo
 class OriginControlCenterUI(QtWidgets.QWidget):
     WINDOW_TITLE = "Origin Control Center"
 
-    def __init__(self):
-        super(OriginControlCenterUI, self).__init__()
+    def __init__(self, parent=None):
+        super(OriginControlCenterUI, self).__init__(parent)
 
         self.setWindowTitle(self.WINDOW_TITLE)
 
@@ -240,6 +240,8 @@ class MainUI(QtWidgets.QMainWindow):
         self.setWindowTitle(f"ORIGIN")
 
         self.central_widget = OriginControlCenterUI()
+        self.current_context = self.central_widget.show_context()
+        print(self.current_context)
 
         self.setCentralWidget(self.central_widget)
 

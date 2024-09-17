@@ -6,7 +6,7 @@
             "display_name": "Maya",
             "versions": {
                 "2024": {
-                    "executable_path": "D:\\Program Files\\Autodesk\\Maya2024\\bin\\maya.exe",
+                    "executable_path": "C:\\Users\\arsithra\\Desktop\\Maya.bat",
                     "envar_data": "{}"
                 }
             }
@@ -27,9 +27,9 @@
             "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\dcc\\icons\\houdini.png",
             "display_name": "Houdini",
             "versions": {
-                "20": {
-                    "executable_path": "D:\\Program Files\\Houdini19\\Houdini20.0.506\\bin\\houdini.exe",
-                    "envar_data": {}
+                "20.5.332": {
+                    "executable_path": "D:\\Program Files\\Houdini19\\Houdini20.5.332\\bin\\houdini.exe",
+                    "envar_data": "{}"
                 }
             }
         },
@@ -39,7 +39,7 @@
             "display_name": "Blender",
             "versions": {
                 "4.2": {
-                    "executable_path": "D:\\Program Files\\Blender Foundation\\Blender 4.2\\blender-launcher.exe",
+                    "executable_path": "C:\\Users\\arsithra\\Desktop\\Blender.bat",
                     "envar_data": "{}"
                 }
             }
@@ -49,8 +49,8 @@
             "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\dcc\\icons\\gaffer.png",
             "display_name": "Gaffer",
             "versions": {
-                "1.4.8.0": {
-                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.4.8.0-windows\\bin\\gaffer.cmd",
+                "1.4.11.0": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.4.11.0-windows\\bin\\gaffer.cmd",
                     "envar_data": "{}"
                 }
             }
@@ -82,7 +82,7 @@
             "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\dcc\\icons\\pngwing.com.png",
             "display_name": "Davinciresolve",
             "versions": {
-                "18.6.6": {
+                "19": {
                     "executable_path": "D:\\Program Files\\Blackmagic Design\\DaVinci Resolve\\Resolve.exe",
                     "envar_data": "{}"
                 }
@@ -205,7 +205,7 @@
             "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/dcc/icons/default_icon.png",
             "display_name": "3dequilizer",
             "versions": {
-                "R4": {
+                "R5": {
                     "executable_path": "D:\\__REPOSITORIES\\Installs\\3DE\\eq_fwin\\3DE4_win64_r5\\bin\\3DE4.exe",
                     "envar_data": "{}"
                 }

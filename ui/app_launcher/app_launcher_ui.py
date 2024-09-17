@@ -1,5 +1,8 @@
+import asyncio
+import threading
 from PySide2 import QtWidgets, QtCore, QtGui
 from ui.app_launcher.app_launcher_settings_ui import AppLauncherSettings
+from envars.origin_envars import OriginEnvar
 
 
 class AppWidget(QtWidgets.QWidget):
@@ -150,11 +153,25 @@ class AppLauncher(QtWidgets.QWidget):
         else:
             self.clear_app_widget()
 
-    def launch_app(self):
+    def launch_async_app(self):
+        import os
         import subprocess
         exe_path = self.get_ver_exec_path()
         self.update_launch_btn()
-        subprocess.Popen(exe_path, shell=False)
+
+        current_session = OriginEnvar.snapshot_session()
+        print(current_session)
+
+        env = os.environ.copy()
+
+        filtered_dict = dict(filter(lambda item: item[1] is not None, current_session.items()))
+        print(f"Updating Env with cleaned envars: {filtered_dict}")
+        env.update(filtered_dict)
+
+        subprocess.Popen(exe_path, shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, env=env)
+
+    def launch_app(self):
+        threading.Thread(target=self.launch_async_app).start()
 
     def load_app_versions(self):
         versions = self.get_app_versions()
@@ -174,7 +191,6 @@ class AppLauncher(QtWidgets.QWidget):
             item_data = curr_sel.data(QtCore.Qt.UserRole)
             curr_sel_ver = self.app_version_select_cb.currentText()
             exe_path = item_data[curr_sel.text().lower()]["versions"][curr_sel_ver]["executable_path"]
-            print(exe_path)
             return exe_path
 
     def get_app_versions(self):

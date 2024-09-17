@@ -73,19 +73,17 @@ class ContextHandler:
             print(f"Session file {session_filename} deleted and environment variable cleared.")
 
     def load_session(self, session_data):
-        conform_lower_case = {k.lower(): v for k, v in session_data.items()}
-
-        self.show_name = conform_lower_case["show_name"]
-        self.project_publishes = conform_lower_case["project_publishes"]
-        self.project_work = conform_lower_case["project_work"]
-        self.project_control = conform_lower_case["project_control"]
-        self.project_publishes = conform_lower_case["project_publishes"]
-        self.origin_path_hierarchy = conform_lower_case["origin_path_hierarchy"]
-        self.entry_name = conform_lower_case["entry_name"]
-        self.entity_type = conform_lower_case["entity_type"]
-        self.entity_id = conform_lower_case["entity_id"]
-        self.task_name = conform_lower_case["task_name"]
-        self.task_type = conform_lower_case["task_type"]
+        self.show_name = session_data["show_name"]
+        self.project_publishes = session_data["project_publishes"]
+        self.project_work = session_data["project_work"]
+        self.project_control = session_data["project_control"]
+        self.project_publishes = session_data["project_publishes"]
+        self.origin_path_hierarchy = session_data["origin_path_hierarchy"]
+        self.entry_name = session_data["entry_name"]
+        self.entity_type = session_data["entity_type"]
+        self.entity_id = session_data["entity_id"]
+        self.task_name = session_data["task_name"]
+        self.task_type = session_data["task_type"]
 
     def save_session(self):
         root_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\context_manager"
@@ -295,7 +293,6 @@ if __name__ == "__main__":
     # print(OriginEnvar.task_name)
     #
     context_data_details = OriginEnvar.snapshot_session()
-    print(context_data_details)
     # print(context_data_details)
     # print(os.getenv("BASE_APP_CURRENT_SESSION"))
 
