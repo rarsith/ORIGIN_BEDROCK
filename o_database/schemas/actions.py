@@ -1,5 +1,4 @@
-from common_utils import json_utils
-from common_utils import odb_path_resolver
+from common_utils import odb_path_resolver, json_utils
 
 new_tasks_default_schemas = "new_tasks_default_schemas.json"
 pub_slot_basic_schemas = "pub_slot_basic_schemas.json"

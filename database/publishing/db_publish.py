@@ -1,4 +1,4 @@
-from envars.envars import Envars
+from origin.envars import Envars
 
 if __name__ == "__main__":
     Envars.show_name = "Test"

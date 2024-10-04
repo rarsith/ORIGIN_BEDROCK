@@ -1,12 +1,12 @@
 import o_database.mongo_connection
 from common_utils.date_time import DateTime
-from common_utils.output_paths import OutputPaths
+from common_utils.odb_output_paths import OutputPaths
 from common_utils.users import Users
 from database.db_defaults import DbDefaults
 from database.db_statuses import DbStatuses
 from database.utils.db_version_control import DBVersionControl
-from envars.envars import Envars
-from database import db_connection as mdbconn, db_templates
+from origin.envars.envars import Envars
+from database import db_templates
 from database.utils.db_q_entity import From, QEntity, DbRef, DbReferences
 from database.entities.db_structures import DbProjectBranch
 from database.entities.db_attributes import (DbAttrPaths,

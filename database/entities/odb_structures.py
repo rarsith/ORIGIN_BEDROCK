@@ -1,5 +1,5 @@
 from database import db_templates
-from envars.envars import Envars
+from origin.envars import Envars
 from database.utils.db_q_entity import From, QEntity
 from database.entities.db_attributes import DbProjectAttrPaths
 from database.db_ids import DbIds
@@ -105,7 +105,7 @@ class DbAssetCategories(object):
 
 
 if __name__ == '__main__':
-    from envars.envars import Envars
+    from origin.envars import Envars
 
     Envars.show_name = "Test"
     Envars.branch_name = "assets"

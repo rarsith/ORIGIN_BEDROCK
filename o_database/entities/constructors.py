@@ -3,8 +3,8 @@ from typing import Optional
 from common_utils.date_time import DateTime
 from common_utils.odb_output_paths import OutputPaths
 from common_utils.users import Users
-from envars.origin_envars import OriginEnvar
-from envars.origin_envars import ContextHandler
+from origin.envars.origin_envars import OriginEnvar
+from origin.envars.origin_envars import ContextHandler
 from o_database.entities.ids import DbIds
 from o_database.schemas.actions import EntityDefaultSchemas
 from o_database.collections.connections import ProjectCollections
@@ -161,6 +161,24 @@ class DbConstructors:
 
         return  project_default_constructor.__dict__
 
+    # @staticmethod
+    # def project_construct(name: str, entity_id: str, project_code: str, project_type="vfx"):
+    #
+    #     entity_constructor = ProjectConstructor(
+    #         _id=entity_id,
+    #         entry_name=name,
+    #         project_code=project_code,
+    #         project_type=project_type,
+    #         visual_parent="root",
+    #         type="project"
+    #     )
+    #
+    #     entity_constructor.origin_db_path = "root"
+    #     entity_constructor.parent = "root"
+    #
+    #     entity_attributes = entity_constructor.dict(by_alias=True)
+    #     return entity_id, entity_attributes
+
     @staticmethod
     def project_construct(name: str, entity_id: str, project_code: str, project_type="vfx"):
 
@@ -178,6 +196,7 @@ class DbConstructors:
 
         entity_attributes = entity_constructor.dict(by_alias=True)
         return entity_id, entity_attributes
+
 
     @staticmethod
     def asset_construct(name, entity_id, task_schema=None):

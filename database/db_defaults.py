@@ -1,7 +1,6 @@
 import o_database.mongo_connection
-from envars.envars import Envars
+from origin.envars.envars import Envars
 from database.db_ids import DbIds
-from database import db_connection as mdbconn
 
 
 class DbDefaults(object):

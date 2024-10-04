@@ -72,7 +72,8 @@ class ContextHandler:
                 self.session_context = SessionContext(**session_data)
 
     def save_session(self):
-        root_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\context_manager"
+        return
+        root_path = r"/origin/context_manager"
         save_path = os.path.join(root_path, "sessions", self.session_context.session_filename)
 
         with open(save_path, "w") as f:

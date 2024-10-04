@@ -1,4 +1,4 @@
-from envars.origin_envars import OriginEnvar
+from origin.envars.origin_envars import OriginEnvar
 # from envars.dc_origin_envars import OriginEnvar
 from database.utils import db_path_assembler
 

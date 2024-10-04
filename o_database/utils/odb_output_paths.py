@@ -1,4 +1,4 @@
-from envars.envars import OriginEnvar
+from origin.envars import OriginEnvar
 from common_utils.users import Users
 
 class OutputPaths(object):

@@ -1,5 +1,5 @@
 from database.utils import db_path_assembler
-from envars.envars import Envars
+from origin.envars.envars import Envars
 
 
 class DbIds:

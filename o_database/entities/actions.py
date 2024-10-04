@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from o_database.mongo_connection import MongoConnection
-from envars.origin_envars import OriginEnvar
-from envars.origin_envars import ContextHandler
+from origin.envars.origin_envars import OriginEnvar
+from origin.envars.Xorigin_envars import ContextHandler
 from o_database.entities.attributes_paths import DbEntityAttrPath
 from o_database.entities.constructors import DbConstructors
 from o_database.entities.ids import DbIds
-from o_database.schemas.actions import EntityDefaultSchemas
 
 from o_database.entities.operators import (Entity,
                                            CollectionOperators,
@@ -307,8 +306,6 @@ class Create:
 
 
 if __name__ == "__main__":
-    import random
-    import time
     from o_database.odb_statuses import DbVersionStatuses
 
     path_elem = ["assets", "chr"]
@@ -338,4 +335,4 @@ if __name__ == "__main__":
         # Create().publish(version=version_string)
         # time.sleep(1)\
 
-    Create().db_asset(parent_id="test_id", name="body_blocking")
+    # Create().db_asset(parent_id="test_id", name="body_blocking")

@@ -49,8 +49,8 @@
             "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\dcc\\icons\\gaffer.png",
             "display_name": "Gaffer",
             "versions": {
-                "1.4.11.0": {
-                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.4.11.0-windows\\bin\\gaffer.cmd",
+                "1.4.13.0": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.4.13.0-windows\\bin\\gaffer.cmd",
                     "envar_data": "{}"
                 }
             }
@@ -210,6 +210,23 @@
                     "envar_data": "{}"
                 }
             }
+        },
+        "xstudio": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\dcc\\icons\\xstudio_full.jpg",
+            "display_name": "Xstudio",
+            "versions": {
+                "1.00": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\XStudio_DNeg\\xstudio_install\\bin\\xstudio.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "task manager": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/dcc/icons/default_icon.png",
+            "display_name": "Task manager",
+            "versions": {}
         }
     }
 }

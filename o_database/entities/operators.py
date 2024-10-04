@@ -1,6 +1,4 @@
-from typing import Any
 from o_database.mongo_connection import MongoConnection
-from envars.origin_envars import OriginEnvar
 # from envars.dc_origin_envars import OriginEnvar
 from o_database.collections.connections import ProjectCollections
 from o_database.collections.pipelines import OriginDBPipelines
@@ -220,6 +218,7 @@ class CollectionOperators:
         db_document = self.db_collection.find_one({"_id": doc_id})
         if db_document:
             return db_document.get('visual_children', [])
+
 
     def entities_attr_value_starts_with(self, attr_field: str, val_starts_with: str, ids_only=False):
         pipe = OriginDBPipelines()

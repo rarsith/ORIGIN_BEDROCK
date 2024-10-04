@@ -1,4 +1,4 @@
-from envars.origin_envars import OriginEnvar
+from origin.envars.origin_envars import OriginEnvar
 
 
 

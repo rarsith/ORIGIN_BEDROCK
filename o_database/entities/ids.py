@@ -1,7 +1,7 @@
 from common_utils.users import Users
 from o_database.utils import attribute_path_utils
-from envars.origin_envars import OriginEnvar
-from envars.origin_envars import ContextHandler
+from origin.envars.origin_envars import OriginEnvar
+from origin.envars.Xorigin_envars import ContextHandler
 # from envars.dc_origin_envars import OriginEnvar
 
 

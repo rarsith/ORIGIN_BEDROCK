@@ -10,7 +10,7 @@ if pymongo_parent_dir not in sys.path:
 # Now try importing pymongo
 try:
     import pymongo
-    from dcc.maya.dcc_context_env import MAYA_SESSION
+
 except ImportError as e:
     print("Error importing pymongo:", e)
 

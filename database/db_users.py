@@ -1,6 +1,6 @@
 import o_database.mongo_connection
-from common_utils.date_time import DateTime
-from database import db_connection as mdbconn
+from common_utils import DateTime
+
 
 class DbUsers:
     '''this class is used to create users in the database'''

@@ -1,12 +1,12 @@
 from PySide2 import QtWidgets
-from ui.app_launcher import app_launcher_ui
+from origin.ui.app_launcher import app_launcher_ui
 
 if __name__ == "__main__":
     import sys
 
     APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\config\applications\config_applications.json"
 
-    qss_style_file = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\ui\style\stylesheets\dark_orange\dark_orange_style.qss"
+    qss_style_file = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\style\stylesheets\dark_orange\dark_orange_style.qss"
 
     app = QtWidgets.QApplication(sys.argv)
 

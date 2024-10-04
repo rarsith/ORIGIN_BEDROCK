@@ -1,5 +1,4 @@
-from common_utils import json_utils
-from common_utils import path_resolver
+from common_utils import path_resolver, json_utils
 
 
 def show_structure():

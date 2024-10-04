@@ -1,6 +1,3 @@
-from typing import Any, Dict
-
-
 class OriginDBPipelines:
 
     def __init__(self):
@@ -64,25 +61,37 @@ class OriginDBPipelines:
         return criteria
 
 if __name__ == "__main__":
-    import pprint
-    from o_database.collections.connections import ProjectCollections
+    from o_database.collections.Xconnections import ProjectCollections
     from o_database.mongo_connection import MongoConnection
-    from envars.origin_envars import OriginEnvar
 
-    OriginEnvar.show_name = "New_Era"
+    show_name = "New_State"
     db = MongoConnection().origin_production_database()
 
-    collection_db = ProjectCollections().project_publishes_collection()
+    collection_db = ProjectCollections(context=show_name).project_publishes_collection()
+    print(collection_db)
 
     orig_pipes = OriginDBPipelines()
-    orig_pipes.add_attr_value_startswith("origin_db_path", "New_Era")
-    orig_pipes.add_match_attribute("status", "IN PROGRESS")
+    orig_pipes.add_attr_value_startswith("_id", "New_State.assets.chr.red_hulk.red_hulk.modeling.main_pub")
+    orig_pipes.add_match_attribute("type", "publish")
     orig_pipes.add_match_attribute("owner", "arsithra")
-    orig_pipes.add_sort("status", -1)
-    orig_pipes.add_sort("date", -1)
-    orig_pipes.add_sort("time", -1)
-    orig_pipes.add_limit(20)
-    orig_pipes.ids_only(True)
+
+    # orig_pipes.add_limit(1)
+    orig_pipes.add_sort("version_cnt", -1)
+    # orig_pipes.ids_only(True)
+
+    pipe = orig_pipes.create_pipeline()
+
     print(orig_pipes.create_pipeline())
 
+    result_docs = db[collection_db].aggregate(pipe)
+    print([doc["version_cnt"] for doc in result_docs])
 
+"""
+    [{'$match': {
+        '$and': [{'_id': {'$regex': '^New_State.assets.chr.red_hulk.red_hulk.modeling.main_pub'}}, {'type': 'publish'},
+                 {'owner': 'arsithra'}]}}, {'$match': {
+        '$and': [{'_id': {'$regex': '^New_State.assets.chr.red_hulk.red_hulk.modeling.main_pub'}}, {'type': 'publish'},
+                 {'owner': 'arsithra'}]}}, {'$limit': 1}, {'$sort': {'version_cnt': -1}},
+     {'$sort': {'version_cnt': -1}}]
+
+"""

@@ -1,8 +1,5 @@
-from bson import BSON
-
 import o_database.mongo_connection
-from envars.envars import Envars
-from database import db_connection as mdbconn
+from origin.envars.envars import Envars
 from common_utils import json_utils
 from database.entities.db_attributes import (DbProjectAttrPaths,
                                              DbEntityAttrPaths,

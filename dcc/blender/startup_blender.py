@@ -6,8 +6,6 @@ pymongo_parent_dir = r'C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\venv\Lib
 if custom_path not in sys.path:
     sys.path.append(custom_path)
 
-print(sys.path)
-
 if pymongo_parent_dir not in sys.path:
     sys.path.append(pymongo_parent_dir)
 
