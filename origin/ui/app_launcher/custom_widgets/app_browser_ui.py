@@ -75,7 +75,7 @@ class AppBrowser(QtWidgets.QWidget):
                 self.app_tree_tw.addTopLevelItem(item)
 
     def get_config_data(self, app_config_file=None):
-        from common_utils import json_utils
+        from origin.common_utils import json_utils
         config_data = json_utils.open_json(app_config_file)
         return config_data["applications"]
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     # print(applications_config_file)
 
-    config_file_path = r"/origin/ui/origin_globals_ui/settings/applications004.json"
+    config_file_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\origin_globals_ui\settings\applications004.json"
 
     app = QtWidgets.QApplication(sys.argv)
 

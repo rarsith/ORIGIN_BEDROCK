@@ -2,23 +2,20 @@ import sys
 from PySide2 import QtWidgets, QtCore
 
 from origin.envars.Xorigin_envars import ContextHandler
-from o_database.entities.asset_class_dispacher import extract_asset_class
+from origin.o_database.entities.entity_class_dispatcher import extract_asset_class
 
-from o_database.entities.Xoperators import CollectionOperators
+from origin.o_database.entities.Xoperators import CollectionOperators
 
 
 class DeleteEmptyStreamsUI(QtWidgets.QDialog):
 
-    def __init__(self, context, parent=None):
+    def __init__(self, context: ContextHandler, parent=None):
         super(DeleteEmptyStreamsUI, self).__init__(parent)
 
         self.setWindowTitle("Delete Empty Stream")
 
-        self.context_handler = ContextHandler()
-        self.context_handler.load_session(context)
-
-        self.context = context
-        self.asset_class = extract_asset_class(context=context)
+        self.context_handler = context
+        self.asset_class = extract_asset_class(context=self.context_handler)
 
         self.create_widgets()
         self.create_layout()
@@ -26,7 +23,7 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
         self.populate_streams()
 
     def reload_asset_class(self):
-        self.asset_class = extract_asset_class(context=self.context)
+        self.asset_class = extract_asset_class(context=self.context_handler)
 
     def create_widgets(self):
         self.show_name_le = QtWidgets.QLabel()

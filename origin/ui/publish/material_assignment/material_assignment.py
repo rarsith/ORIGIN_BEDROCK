@@ -24,7 +24,7 @@ class MaterialSetsAssignments(QtWidgets.QDialog):
         pass
 
     def get_selected_options(self):
-        return {"all_sets_assigned": []}
+        return {"material_collections": {}}
 
 
 if __name__ == "__main__":

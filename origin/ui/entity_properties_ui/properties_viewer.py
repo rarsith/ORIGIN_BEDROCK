@@ -5,7 +5,7 @@ from origin.ui.entity_properties_ui.custom_widgets.odb_links_ui import ButtonsWi
 from origin.ui.entity_properties_ui.custom_widgets.odb_notes_ui import NotesWidget
 from origin.ui.entity_properties_ui.custom_widgets.component_viewer_core import SlotComponentsViewerCore
 from origin.ui.entity_properties_ui.custom_widgets.representation_viewer_wdg import RepresentationViewer
-from origin.ui.odb_main_publishes_view_core import MainPublishesViewCore
+from origin.ui.Xmain_publishes_view_core import MainPublishesViewCore
 
 icon_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\mvoie.png"
 
@@ -44,10 +44,10 @@ class PropertiesViewer(QtWidgets.QWidget):
             else:
                 self.tasks_view_lwd.task_viewer_wdg.clear()
 
-            if current_widget == self.versions_view_tvw:
-                self.populate_main_publishes()
+            if current_widget == self.versions_wdg:
+                self.versions_wdg.populate_widget()
             else:
-                self.versions_view_tvw.publish_view_tw.clear()
+                self.versions_wdg.publish_view_tw.clear()
 
     def main_publish_overrides(self):
         self.versions_wdg.publish_view_tw.setObjectName("PropertiesPublishesViewer")

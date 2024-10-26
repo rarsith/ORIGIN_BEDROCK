@@ -2,6 +2,7 @@ import threading
 from PySide2 import QtWidgets, QtCore, QtGui
 
 from origin.envars.Xorigin_envars import ContextHandler
+from origin.paths.output_paths import OriginOSPathHandler
 from origin.ui.app_launcher.app_launcher_settings_ui import AppLauncherSettings
 
 
@@ -31,7 +32,7 @@ class AppLauncher(QtWidgets.QWidget):
     def __init__(self, config_file_path=None, parent=None):
         super(AppLauncher, self).__init__(parent)
 
-        self.context_handler = ContextHandler()
+        self.context_handler = None
         self.config_file_path = config_file_path
         self.current_context = None
 
@@ -79,10 +80,8 @@ class AppLauncher(QtWidgets.QWidget):
         main_layout.addWidget(self.launch_app_btn)
         main_layout.addWidget(self.add_app_btn)
 
-    def context_receiver(self, context):
-        self.context_handler.load_session(context)
-        return self.context_handler
-
+    def context_receiver(self, context: ContextHandler):
+        self.context_handler = context
 
     def populate_widget(self):
         self.launcher_tw.clear()
@@ -139,7 +138,7 @@ class AppLauncher(QtWidgets.QWidget):
         self.launcher_tw.setItem(row, 2, custom_item)
 
     def get_config_data(self, app_config_file=None):
-        from common_utils import json_utils
+        from origin.common_utils import json_utils
         config_data = json_utils.open_json(app_config_file)
         return config_data["applications"]
 
@@ -168,10 +167,13 @@ class AppLauncher(QtWidgets.QWidget):
 
         current_session = self.context_handler.snapshot_session()
         sys_envar_upper = self.context_handler.convert_to_uppercases(current_session)
+
+        path_handler = OriginOSPathHandler(context=self.context_handler)
+        path_handler.create_work_folders()
+
         env = os.environ.copy()
 
         filtered_dict = dict(filter(lambda item: item[1] is not None, sys_envar_upper.items()))
-        print(f"Updating Env with cleaned envars: {filtered_dict}")
         env.update(filtered_dict)
 
         subprocess.Popen(exe_path, shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, env=env)
@@ -225,9 +227,9 @@ class AppLauncher(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    APP_CONFIG_FILE = r"/config/applications/config_applications.json"
+    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
 
-    qss_style_file = r"/origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"
+    qss_style_file = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\style\stylesheets\dark_orange\dark_orange_style.qss"
 
     app = QtWidgets.QApplication(sys.argv)
 

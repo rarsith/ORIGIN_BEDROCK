@@ -12,13 +12,13 @@ class FileTypes(QtWidgets.QWidget):
 
     def create_widgets(self):
         self.qc_lb = QtWidgets.QLabel("Select File Types to export")
-        self.alembic_rbtn = QtWidgets.QCheckBox("ABC")
+        self.alembic_rbtn = QtWidgets.QCheckBox("abc")
         self.alembic_rbtn.setChecked(True)
 
-        self.usd_rbtn = QtWidgets.QCheckBox("USD")
+        self.usd_rbtn = QtWidgets.QCheckBox("usd")
         self.usd_rbtn.setChecked(True)
 
-        self.obj_rbtn = QtWidgets.QCheckBox("OBJ")
+        self.obj_rbtn = QtWidgets.QCheckBox("obj")
         self.obj_rbtn.setChecked(True)
 
         self.bake_AO_rbtn = QtWidgets.QCheckBox("Bake Ambient Occlusion")
@@ -50,7 +50,7 @@ class FileTypes(QtWidgets.QWidget):
     def get_selected_options(self):
         checked_widgets = self.get_checked()
         wdg_names = [name.text() for name in checked_widgets]
-        return {"file_formats": wdg_names}
+        return {"user_file_formats": wdg_names, "persistent_file_formats": ["master"]}
 
 
 if __name__ == "__main__":

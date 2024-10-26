@@ -2,11 +2,13 @@ from PySide2 import QtWidgets, QtGui, QtCore
 
 from origin.envars.Xorigin_envars import ContextHandler
 from origin.ui.Xproject_tree_viewer_UI import ProjectTreeViewerUI
-from o_database.entities.Xoperators import get_entity_class, Group, Project, Projects
+from origin.o_database.entities.Xoperators import get_entity_class, Projects, Group, Project
 
-from origin.ui import odb_task_manager_core, Xcreate_asset_ui, Xcreate_show_ui, Xcreate_group_ui, \
-    assignment_manager_core
+from origin.ui.creators_ui import Xcreate_asset_ui, Xcreate_group_ui, Xcreate_show_ui
 
+
+# assignment_manager_core
+# odb_task_manager_core,
 
 class ProjectTreeViewerCore(ProjectTreeViewerUI):
     entity_selection = QtCore.Signal(object)
@@ -53,6 +55,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.project_tree_viewer_wdg.itemClicked.connect(self.get_selected_entry_name)
         self.project_tree_viewer_wdg.itemClicked.connect(self.resolve_context)
         self.project_tree_viewer_wdg.itemSelectionChanged.connect(self.resolve_context)
+        # self.project_tree_viewer_wdg.itemSelectionChanged.connect(self.curr_sel_entity)
         self.project_tree_viewer_wdg.itemExpanded.connect(self.on_item_expanded)
 
         # self.about_action.triggered.connect(self.about)
@@ -75,19 +78,31 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
     def refresh_shows(self):
         """Refreshes the combobox with the current shows in the database"""
-        store = []
         current_selected_show, current_data = self.curr_sel_show()
-        self.show_select_cb.clear()
-        self.populate_shows_cb()
-        self.show_select_cb.setCurrentText(current_selected_show)
+        if current_selected_show is not None:
+            self.show_select_cb.clear()
+            self.populate_shows_cb()
+            self.show_select_cb.setCurrentText(current_selected_show)
+            self.context_handler.show_name = current_selected_show
+            self.refresh_tree_widget()
+        else:
+            self.populate_shows_cb()
+            current_selected_show, current_data = self.curr_sel_show()
+            self.context_handler.show_name = current_selected_show
 
     def curr_sel_show(self):
         """Returns the current selected show in the combobox"""
         text = self.show_select_cb.currentText()
         data = self.get_current_index_data()
         self.context_handler.show_name = text
+        if len(text) != 0:
+            return text, data
+        else:
+            return None, None
 
-        return text, data
+    def curr_sel_entity(self):
+        current_sel = self.get_selected_item()
+        self.expand_parents(current_sel)
 
     def populate_shows_cb(self):
         get_shows = self.get_shows()
@@ -96,6 +111,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             self.show_select_cb.addItem(show.name)
             self.show_select_cb.setItemData(cnt, show, role=QtCore.Qt.UserRole)
             cnt += 1
+        self.context_handler.show_name = self.show_select_cb.currentText()
 
     def set_show_to(self):
         """Sets the show to the current show in the combobox"""
@@ -107,8 +123,15 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             user_data = self.show_select_cb.itemData(curr_index, role=QtCore.Qt.UserRole)
             return user_data
 
+    def expand_parents(self, item):
+        parent = item.parent()
+        while parent is not None:
+            parent.setExpanded(True)
+            parent = parent.parent()
+
     def refresh_tree_widget(self):
         """Refreshes the tree widget with the current show selected in the combobox"""
+
         self.project_tree_viewer_wdg.clear()
         curr_proj_data = self.get_current_index_data()
         if curr_proj_data:
@@ -125,7 +148,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
                     if len(doc_visual_children) != 0:
                         item.setChildIndicatorPolicy(QtWidgets.QTreeWidgetItem.ShowIndicator)
                     self.project_tree_viewer_wdg.addTopLevelItem(item)
-
+            
     def on_item_expanded(self, item):
         if item.childCount() == 0:
             parent_doc_data = item.data(0, QtCore.Qt.UserRole)
@@ -145,8 +168,11 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
     def get_selected_item(self):
         selected = self.project_tree_viewer_wdg.selectedItems()
-        if selected:
+        if len(selected) != 0:
             return selected[0]
+
+        else:
+            return
 
     def get_selected(self):
         selected = self.project_tree_viewer_wdg.selectedItems()
@@ -193,9 +219,8 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.context_handler.entity_name = sel_data.name
         self.context_handler.entity_type = sel_data.type
         self.context_handler.entity_id = sel_data.id
-        context_snapshot = self.context_handler.snapshot_session()
 
-        self.current_context.emit(context_snapshot)
+        self.current_context.emit(self.context_handler)
 
     def context_menu_build(self, point):
         """Shows the context menu for the project tree viewer"""
@@ -218,7 +243,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
     def resolve_parent_id(self):
         current_selection = self.get_selected_item()
-        if current_selection:
+        if current_selection is not None:
             sel_doc_data = current_selection.data(0, QtCore.Qt.UserRole)
             if sel_doc_data.type == "group":
                 doc_id = sel_doc_data.id
@@ -227,8 +252,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
                 doc_id = sel_doc_data.parent
                 return doc_id
         else:
-            doc_id = None
-            return doc_id
+            return self.context_handler.show_name
 
     def context_menu(self):
         """Creates the context menu for the project tree viewer"""
@@ -256,27 +280,27 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def create_show_menu(self):
         """Create show menu."""
         self.ui = Xcreate_show_ui.CreateShowUI()
-        self.ui.show()
         self.ui.create_btn.clicked.connect(self.refresh_shows)
+        self.ui.create_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.create_and_close_btn.clicked.connect(self.refresh_shows)
+        self.ui.create_and_close_btn.clicked.connect(self.refresh_tree_widget)
+        self.ui.show()
 
     def create_group_menu(self):
         """Create group menu."""
         doc_id = self.resolve_parent_id()
-        context = self.context_handler.snapshot_session()
-        self.ui = Xcreate_group_ui.CreateGroupUI(context=context, group_parent=doc_id)
-        self.ui.show()
+        self.ui = Xcreate_group_ui.CreateGroupUI(context=self.context_handler, group_parent=doc_id)
         self.ui.create_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.create_and_close_btn.clicked.connect(self.refresh_tree_widget)
+        self.ui.show()
 
     def create_asset_menu(self):
         """Create asset menu."""
         doc_id = self.resolve_parent_id()
-        context = self.context_handler.snapshot_session()
-        self.ui = Xcreate_asset_ui.CreateAssetUI(context=context, asset_parent=doc_id)
-        self.ui.show()
+        self.ui = Xcreate_asset_ui.CreateAssetUI(context=self.context_handler, asset_parent=doc_id)
         self.ui.create_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.create_and_close_btn.clicked.connect(self.refresh_tree_widget)
+        self.ui.show()
 
     def task_manager_menu(self):
         """Task manager menu."""

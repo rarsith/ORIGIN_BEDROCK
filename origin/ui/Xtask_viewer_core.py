@@ -1,11 +1,11 @@
 from PySide2 import QtWidgets, QtGui, QtCore
-from origin.envars.origin_envars import OriginEnvar
 from origin.envars.Xorigin_envars import ContextHandler
 from origin.ui.Xtask_viewer_UI import TaskViewerUI
-from origin.ui.odb_task_status_wdg import TaskStatusWidget
-from origin.ui.odb_task_priority_wdg import TaskPriorityWidget
-from o_database.entities.Xoperators import Task, CollectionOperators, Asset, Project
-from origin.ui.Xcreate_task_ui import CreateTaskUI
+from origin.ui.status_widgets.odb_task_status_wdg import TaskStatusWidget
+from origin.ui.status_widgets.odb_task_priority_wdg import TaskPriorityWidget
+from origin.o_database.entities.Xoperators import (CollectionOperators, Task)
+
+from origin.ui.creators_ui.Xcreate_task_ui import CreateTaskUI
 
 
 class TaskViewerCore(TaskViewerUI):
@@ -27,26 +27,21 @@ class TaskViewerCore(TaskViewerUI):
         self.save_changes_btn.clicked.connect(self.commit_changes)
         self.refresh_btn.clicked.connect(self.populate_widget)
 
-    def context_receiver(self, context):
-        self.context_handler = ContextHandler()
-        self.context_handler.load_session(context)
+    def context_receiver(self, context: ContextHandler):
+        self.context_handler = context
         self.resolve_project()
         self.resolve_entity()
         # return self.context_handler
 
     def resolve_entity(self):
         if self.context_handler.entity_type != "group":
-            db_ops = CollectionOperators(db_collection=self.context_handler.show_name)
-            entity_doc = db_ops.entity_document(self.context_handler.entity_id)
-            self.entity_received = Asset(**entity_doc)
+            self.entity_received = self.context_handler.database_handler().get_asset_document()
             return self.entity_received
         else:
             self.entity_received = None
 
     def resolve_project(self):
-        db_ops = CollectionOperators(db_collection=self.context_handler.show_name)
-        entity_doc = db_ops.entity_document(self.context_handler.show_name)
-        self.project_received = Project(**entity_doc)
+        self.project_received = self.context_handler.database_handler().get_project_document()
         return self.project_received
 
     def commit_changes(self):
@@ -132,6 +127,7 @@ class TaskViewerCore(TaskViewerUI):
         task_item.setData(11, 1, task_name)
         task_item.setData(11, 0, task_data)
 
+
         return task_item
 
     def updates_tasks_data(self, target_attr):
@@ -213,11 +209,13 @@ class TaskViewerCore(TaskViewerUI):
 
                 self.context_handler.task_name = get_task_data.name
                 self.context_handler.task_type = get_task_data.task_type
-
-                context_snapshot = self.context_handler.snapshot_session()
-                self.current_context.emit(context_snapshot)
+                self.context_handler.task_id = get_task_data.id
+                self.current_context.emit(self.context_handler)
 
                 return get_task_data
+        else:
+            self.context_handler.reset_to_entity()
+            self.current_context.emit(self.context_handler)
 
     def get_current_selected(self):
         get_selected_task = self.task_viewer_wdg.selectedItems()
@@ -240,9 +238,9 @@ class TaskViewerCore(TaskViewerUI):
 
     def create_task_menu(self):
         task_parent = self.resolve_parent_id()
+        print(task_parent)
         if task_parent is not None:
-            context = self.context_handler.snapshot_session()
-            self.ui = CreateTaskUI(context=context, task_parent=task_parent,)
+            self.ui = CreateTaskUI(context=self.context_handler, task_parent=task_parent,)
             self.ui.show()
             self.ui.create_btn.clicked.connect(self.populate_widget)
             self.ui.create_and_close_btn.clicked.connect(self.populate_widget)
@@ -252,13 +250,20 @@ class TaskViewerCore(TaskViewerUI):
 if __name__ == '__main__':
     import sys
 
-    path = ["assets", "characters"]
+    context_sample = {'show_name': 'New_State',
+                      'project_publishes': 'New_State__PUBLISHES',
+                      'project_work': 'New_State__WORK',
+                      'project_control': 'New_State__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr.red_hulk',
+                      'entity_name': 'red_hulk',
+                      'db_asset_id': 'New_State.assets.chr.red_hulk.red_hulk.modeling.helmet',
+                      'entity_type': 'asset',
+                      'entity_id': 'New_State.assets.chr.red_hulk',
+                      'task_name': "modeling",
+                      'task_type': "modeling"}
 
-    OriginEnvar.show_name = "New_Era"
-    OriginEnvar.origin_path_hierarchy = path
-    OriginEnvar.entry_name = "hulk"
-    print(OriginEnvar.snapshot_session())
-    print(OriginEnvar.entry_name)
+    context_obj = ContextHandler()
+    context_obj.load_session(session_data=context_sample)
 
     app = QtWidgets.QApplication(sys.argv)
     font = app.instance().setFont(QtGui.QFont())

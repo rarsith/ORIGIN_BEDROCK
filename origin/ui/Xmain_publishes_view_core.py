@@ -1,12 +1,13 @@
-from PySide2 import QtWidgets, QtGui, QtCore
-from origin.envars.Xorigin_envars import OriginEnvar
-from origin.envars.Xorigin_envars import ContextHandler
-from o_database.entities.Xoperators import CollectionOperators
-from origin.ui.odb_main_publishes_view_UI import MainPublishesViewUI
-from origin.ui.odb_publish_status_wdg import PublishStatusWidget
-from o_database.entities.actions import Set
+from typing import List
 
-img_path = "../../icons/play_icon_vsmall.png"
+from PyQt5.QtCore import Qt
+from PySide2 import QtWidgets, QtGui, QtCore
+from origin.o_database.entities.Xoperators import CollectionOperators
+from origin.ui.Xmain_publishes_view_UI import MainPublishesViewUI
+from origin.ui.status_widgets.Xpublish_status_wdg import PublishStatusWidget
+from origin.o_database.entities.Xactions import Set
+
+img_path = "../origin/icons/play_icon_vsmall.png"
 thumbnail_path = r"/dcc/icons/movie_pic.png"
 
 
@@ -32,13 +33,15 @@ class PublishThumbnailViewer(QtWidgets.QWidget):
 
 
 class MainPublishesViewCore(MainPublishesViewUI):
+    selected_version = QtCore.Signal(object)
     changes_to_database = []
     paginated_ids = []
+
 
     def __init__(self, parent=None):
         super(MainPublishesViewCore, self).__init__(parent)
 
-        self.context_handler = ContextHandler()
+        self.context_handler = None
         self.create_connections()
 
     def create_connections(self):
@@ -58,8 +61,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         self.save_changes_btn.clicked.connect(self.commit_changes)
 
     def context_receiver(self, context):
-        self.context_handler.load_session(context)
-        return self.context_handler
+        self.context_handler = context
 
     def get_limit_load(self):
         limit_val = self.load_limit_le.text()
@@ -72,7 +74,8 @@ class MainPublishesViewCore(MainPublishesViewUI):
         self.publish_view_tw.clearSelection()
 
     def commit_changes(self):
-        Set().publishes().multiple_ops(self.changes_to_database)
+        db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        db_ops.multiple_ops(self.changes_to_database)
         self.populate_widget()
         self.changes_to_database.clear()
         self.check_changes()
@@ -89,23 +92,22 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
     def publish_widget_construct(self, root_item, publish_data):
         publish_item = QtWidgets.QTreeWidgetItem(root_item)
-        # publish_item.setFlags(publish_item.flags() | QtCore.Qt.ItemIsEditable)
 
         self.publish_thumbnail_small = PublishThumbnailViewer()
         self.publish_thumbnail_small.set_thumbnail(icon_path=thumbnail_path,
                                                    thumbnail_width=30,
                                                    thumbnail_height=15)
 
-        self.publish_name_capture = publish_data["entry_name"]
+        self.publish_name_capture = publish_data["label"]
         self.get_version = publish_data["version"]
 
         self.get_status = publish_data["status"]
         self.status_cb = PublishStatusWidget()
         self.status_cb.setCurrentText(self.get_status)
 
-        self.pub_asset_type = publish_data["asset_type"]
+        self.pub_asset_type = publish_data["db_asset_type"]
 
-        self.asset_task_type = publish_data["task_type"]
+        self.asset_task_type = publish_data["type"]
 
         self.published_by = publish_data["owner"]
 
@@ -114,7 +116,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
         self.published_date = f"{pub_date} {pub_time}"
 
-        self.get_description = "This is the description"  # TODO: implement DESCRIPTION in the task attributes
+        self.get_description = publish_data["description"]  # TODO: implement DESCRIPTION in the task attributes
 
         self.published_id = publish_data["_id"]
         self.published_parent = publish_data["parent"]
@@ -168,9 +170,9 @@ class MainPublishesViewCore(MainPublishesViewUI):
         current_page = self.show_current_page_le.text()
 
         if len(self.paginated_ids) != 0:
-            current_ids = self.paginated_ids[int(current_page)-1]
+            current_ids = self.paginated_ids[int(current_page) - 1]
             self.publish_view_tw.clear()
-            published_doc_buff = self.try_buffer(current_ids)
+            published_doc_buff = self.stored_buffer(current_ids)
             self.publish_view_tw.setUpdatesEnabled(False)
             self.publish_view_tw.addTopLevelItems(published_doc_buff)
             self.publish_view_tw.setUpdatesEnabled(True)
@@ -199,7 +201,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         if len(self.paginated_ids) != 0:
             current_ids = self.paginated_ids[int(current_page) - 1]
             self.publish_view_tw.clear()
-            published_doc_buff = self.try_buffer(current_ids)
+            published_doc_buff = self.stored_buffer(current_ids)
             self.publish_view_tw.setUpdatesEnabled(False)
             self.publish_view_tw.addTopLevelItems(published_doc_buff)
             self.publish_view_tw.setUpdatesEnabled(True)
@@ -221,25 +223,35 @@ class MainPublishesViewCore(MainPublishesViewUI):
             self.show_total_pages_le.setEnabled(False)
             self.load_limit_le.setEnabled(False)
 
-    def try_buffer(self, doc_id_list):
+    def stored_buffer(self, doc_id_list):
         buffer = []
         for doc_id in doc_id_list:
-            # published_doc = Fetch().project_publish_entities().entity_document(doc_id["_id"])
+            fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
+            published_doc = fetch_ent.entity_document(doc_id["_id"])
             root_item = self.publish_view_tw.invisibleRootItem()
-            row_item = self.publish_widget_construct(root_item=root_item, publish_data=doc_id)
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=published_doc)
             buffer.append(row_item)
         return buffer
 
+    def resolve_extra_filters(self, default_filter: List[dict] = None, filters_input: List[dict] = None):
+        extra_filters = default_filter
+        if filters_input:
+            for extra_filter in filters_input:
+                extra_filters.append(extra_filter)
+        return extra_filters
+
     def get_publishes(self):
+        extra_filters = self.resolve_extra_filters(default_filter=[{"type": "publish"}])
+
         get_limit_value = self.get_limit_load()
-        context_resolve = self.context_handler.resolve_to_full_context()
-        fetch_ent = CollectionOperators(db_collection=self.context_handler.show_name)
+        fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
+                                                                   val_starts_with=self.context_handler.resolve_to_task_type_context(),
+                                                                   extra_filters=extra_filters,
+                                                                   ids_only=True
+                                                                   )
 
-        publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="origin_db_path",
-                                                                  val_starts_with=context_resolve,
-                                                                  ids_only=False)
-
-        self.paginate_publishes(publishes_docs, get_limit_value)
+        self.paginate_publishes(target_list=publishes_docs, page_size=get_limit_value)
         return self.paginated_ids
 
     def buffer_pub_items(self, doc_list):
@@ -316,24 +328,20 @@ class MainPublishesViewCore(MainPublishesViewUI):
         if get_selected_publish:
             for item in get_selected_publish:
                 get_publish_id = item.data(9, 1)
+                self.context_handler.db_asset_version_id = get_publish_id
+                self.selected_version.emit(self.context_handler)
                 return get_publish_id
 
     def get_current_selected(self):
-        get_selected_task = self.task_viewer_wdg.selectedItems()
-        return get_selected_task
-
-        # context Menu for the task viewer
-
-    def create_tasks_actions(self):
-        self.omit_task_action = QtWidgets.QAction("Omit and Hide...", self)
-        self.show_hide_omitted_action = QtWidgets.QAction("Show/Hide Omitted...", self)
+        selected = self.publish_view_tw.selectedItems()
+        return selected
 
 
 if __name__ == "__main__":
     import sys
     import random
 
-    from o_database.odb_statuses import DbVersionStatuses
+    from origin.o_database import DbVersionStatuses
 
 
     def randomize_pub_statuses(widget: MainPublishesViewCore):
@@ -365,7 +373,6 @@ if __name__ == "__main__":
 
     pub_statuses = DbVersionStatuses().list_all()
 
-
     app = QtWidgets.QApplication(sys.argv)
 
     test_dialog = MainPublishesViewCore()
@@ -376,6 +383,3 @@ if __name__ == "__main__":
 
     test_dialog.show()
     sys.exit(app.exec_())
-
-
-

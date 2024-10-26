@@ -2,19 +2,18 @@ import sys
 from PySide2 import QtWidgets
 
 from origin.envars.Xorigin_envars import ContextHandler
-from o_database.entities.Xactions import Create
-from o_database.entities.asset_class_dispacher import extract_asset_class
+from origin.o_database.entities.Xactions import Create
+from origin.o_database.entities.entity_class_dispatcher import extract_asset_class
 
 
 class CreateStreamUI(QtWidgets.QDialog):
 
-    def __init__(self, context=None, parent=None):
+    def __init__(self, context:ContextHandler, parent=None):
         super(CreateStreamUI, self).__init__(parent)
 
         self.setWindowTitle("Create Asset")
 
-        self.context_handler = ContextHandler()
-        self.context_handler.load_session(context)
+        self.context_handler = context
 
         self.create_widgets()
         self.create_layout()
@@ -26,7 +25,7 @@ class CreateStreamUI(QtWidgets.QDialog):
         item_path = ".".join([self.context_handler.show_name,
                               self.context_handler.origin_path_hierarchy,
                               self.context_handler.entity_name,
-                              self.context_handler.task_type]
+                              ]
                              )
 
         self.show_name_le.setText(item_path)
@@ -62,13 +61,12 @@ class CreateStreamUI(QtWidgets.QDialog):
         self.close()
 
     def db_commit(self):
-        context = self.context_handler.snapshot_session()
-        asset_class = extract_asset_class(context=context)
+        asset_class = extract_asset_class(context=self.context_handler)
         stream_name = self.stream_name_le.text()
-        db_asset_id = Create(context=context).db_asset(parent=self.context_handler.entity_id,
-                                                       name=stream_name)
+        db_asset_id = Create(context=self.context_handler).db_asset_stream(parent=self.context_handler.entity_id,
+                                                                           name=stream_name)
 
-        asset_class.add_stack_stream(data=db_asset_id.inserted_id)
+        asset_class.add_stack_stream(data=db_asset_id)
         self.stream_name_le.clear()
 
 
@@ -78,13 +76,17 @@ if __name__ == "__main__":
                       'project_work': 'New_State__WORK',
                       'project_control': 'New_State__CONTROL',
                       'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'red_hulk',
+                      'entity_name': 'yellow_hulk',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.red_hulk',
+                      'entity_id': 'New_State.assets.chr.yellow_hulk',
                       'task_name': "modeling",
-                      'task_type': "modeling"}
+                      'task_type': "modeling",
+                      'task_id': "New_State.assets.chr.yellow_hulk.modeling"}
+
+    context_handler = ContextHandler()
+    context_handler.load_session(context_sample)
 
     app = QtWidgets.QApplication(sys.argv)
-    create_asset = CreateStreamUI(context=context_sample)
+    create_asset = CreateStreamUI(context=context_handler)
     create_asset.show()
     sys.exit(app.exec_())

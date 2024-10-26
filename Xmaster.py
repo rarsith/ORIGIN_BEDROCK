@@ -7,8 +7,8 @@ from origin.ui.entity_properties_ui.properties_viewer import PropertiesViewer
 from origin.ui.app_launcher.app_launcher_ui import AppLauncher
 from origin.ui.odb_sanity_checker_wdg import SanityChecker
 
-APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\config\applications\config_applications.json"
-thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\movie_pic.png"
+APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
+thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\dcc\icons\movie_pic.png"
 
 
 class OriginControlCenterUI(QtWidgets.QWidget):
@@ -105,14 +105,18 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.show_view_twd.current_context.connect(self.entity_details_viewer_wdg.properties_wdg.context_receiver)
         self.show_view_twd.current_context.connect(self.tasks_view_lwd.context_receiver)
         self.show_view_twd.current_context.connect(self.versions_view_tvw.context_receiver)
+        self.versions_view_tvw.selected_version.connect(self.entity_details_viewer_wdg.components_wdg.context_receiver)
 
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_shows)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_tree_widget)
 
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.launcher_tw.populate_widget)
         self.tasks_view_lwd.current_context.connect(self.launcher_tw.context_receiver)
+        self.tasks_view_lwd.current_context.connect(self.entity_details_viewer_wdg.versions_wdg.context_receiver)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.clear_launch_app_wdg)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
+
+        self.versions_view_tvw.publish_view_tw.itemSelectionChanged.connect(self.populate_file_components)
 
         self.middle_tabmenu_tab.currentChanged.connect(self.on_middle_tab_change)
         self.entity_details_viewer_wdg.details_tabmenu_tab.currentChanged.connect(self.on_properties_tab_change)
@@ -148,10 +152,11 @@ class OriginControlCenterUI(QtWidgets.QWidget):
                 self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clear()
 
             if current_widget == self.entity_details_viewer_wdg.components_wdg:
-                pass
+                self.populate_file_components()
 
             else:
-                pass
+                self.entity_details_viewer_wdg.components_wdg.slot_component_viewer_tw.clearSelection()
+                self.entity_details_viewer_wdg.components_wdg.slot_component_viewer_tw.clear()
 
             if current_widget == self.entity_details_viewer_wdg.links_wdg:
                 pass
@@ -204,6 +209,8 @@ class OriginControlCenterUI(QtWidgets.QWidget):
             current_widget = self.entity_details_viewer_wdg.details_tabmenu_tab.widget(tab_idx)
             if current_widget:
                 if current_widget == self.entity_details_viewer_wdg.versions_wdg:
+                    self.tasks_view_lwd.current_context.connect(
+                        self.entity_details_viewer_wdg.versions_wdg.context_receiver)
                     self.entity_details_viewer_wdg.versions_wdg.populate_widget()
         else:
             self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clearSelection()
@@ -214,6 +221,20 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         if len(widget_selection) == 0:
             self.launcher_tw.clear_app_widget()
             self.tasks_view_lwd.task_viewer_wdg.clearSelection()
+
+    def populate_file_components(self):
+        widget_selection = self.versions_view_tvw.get_current_selected()
+        if len(widget_selection) != 0:
+            tab_idx = self.entity_details_viewer_wdg.details_tabmenu_tab.currentIndex()
+            current_widget = self.entity_details_viewer_wdg.details_tabmenu_tab.widget(tab_idx)
+            if current_widget:
+                if current_widget == self.entity_details_viewer_wdg.components_wdg:
+                    self.versions_view_tvw.selected_version.connect(
+                        self.entity_details_viewer_wdg.components_wdg.context_receiver)
+                    self.entity_details_viewer_wdg.components_wdg.populate_widget()
+        else:
+            self.entity_details_viewer_wdg.components_wdg.slot_component_viewer_tw.clearSelection()
+            self.entity_details_viewer_wdg.components_wdg.slot_component_viewer_tw.clear()
 
     def populate_entry_properties(self):
         widget_selection = self.show_view_twd.get_selected()

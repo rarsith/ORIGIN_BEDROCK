@@ -72,7 +72,7 @@ class AppLauncherSettings(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    APP_CONFIG_FILE = r"/origin/ui/origin_globals_ui/settings/applications004.json"
+    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\origin_globals_ui\settings\applications004.json"
 
     app = QtWidgets.QApplication(sys.argv)
 

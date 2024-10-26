@@ -1,18 +1,20 @@
 from PySide2 import QtWidgets, QtCore
 
 from origin.envars.Xorigin_envars import ContextHandler
-from o_database.entities.asset_class_dispacher import extract_asset_class
+from origin.o_database.entities.entity_class_dispatcher import extract_asset_class
 from origin.ui.Xproject_tree_viewer_UI import ProjectTreeViewerUI
 from origin.ui.publish.asset_stream_manager.widgets.create_asset_stream_ui import CreateStreamUI
 from origin.ui.publish.asset_stream_manager.widgets.delete_asset_stream_ui import DeleteEmptyStreamsUI
-from o_database.entities.Xoperators import CollectionOperators, Asset
+from origin.o_database.entities.Xoperators import CollectionOperators, Asset
 
 
 class ContextViewer(ProjectTreeViewerUI):
-    def __init__(self, context, parent=None):
+    def __init__(self, context: ContextHandler, parent=None):
         super(ContextViewer, self).__init__(parent)
 
-        self.asset_class = extract_asset_class(context=context)
+        self.context_handler = context
+
+        self.asset_class = extract_asset_class(context=self.context_handler)
 
         self.create_project_btn.setVisible(False)
         self.show_select_cb.setVisible(False)
@@ -29,12 +31,14 @@ class ContextViewer(ProjectTreeViewerUI):
             self.project_tree_viewer_wdg.addTopLevelItem(item)
             return item
 
+
 class EntryStackStream(QtWidgets.QWidget):
-    def __init__(self, context=None, current_stream=None, parent=None):
+    current_context = QtCore.Signal(object)
+
+    def __init__(self, context: ContextHandler, current_stream=None, parent=None):
         super(EntryStackStream, self).__init__(parent)
 
-        self.context_handler = ContextHandler()
-        self.context_handler.load_session(context)
+        self.context_handler = context
 
         self.current_stream = current_stream
 
@@ -43,10 +47,9 @@ class EntryStackStream(QtWidgets.QWidget):
         self.create_connections()
         self.context_display_control(state=0)
         self.init_return = self.get_selected_options()
-        print(self.init_return)
 
     def create_widgets(self):
-        self.project_tree = ContextViewer(context=self.context_handler.snapshot_session())
+        self.project_tree = ContextViewer(context=self.context_handler)
 
         self.stack_stream_lw = QtWidgets.QListWidget()
 
@@ -85,6 +88,7 @@ class EntryStackStream(QtWidgets.QWidget):
         self.current_stream_context.toggled.connect(self.populate_streams)
         self.all_streams.toggled.connect(self.populate_streams)
         self.stack_stream_lw.itemClicked.connect(self.get_selected_options)
+        self.stack_stream_lw.itemClicked.connect(self.update_context)
         self.create_new_stream_btn.clicked.connect(self.create_stack_stream)
         self.delete_empty_streams_btn.clicked.connect(self.delete_empty_streams)
 
@@ -98,7 +102,6 @@ class EntryStackStream(QtWidgets.QWidget):
 
     def populate_streams(self):
         stack_streams = self.get_stack_streams()
-        # get_streams_names = [stream.rsplit(".", 1)[1] for stream in stack_streams]
 
         self.all_streams.setChecked(True)
         is_current_stream_context = self.current_stream_context.isChecked()
@@ -142,25 +145,32 @@ class EntryStackStream(QtWidgets.QWidget):
             else:
                 return stack_steams
 
-    def get_selected_options(self):
-        message = "Please Select a Stream!"
+    def update_context(self):
         current_item = self.stack_stream_lw.currentItem()
         if current_item:
             item_data = current_item.data(QtCore.Qt.UserRole)
-            return {"db_asset_id": item_data}
+            self.context_handler.db_asset_id = item_data
+
+    def get_selected_options(self):
+        current_item = self.stack_stream_lw.currentItem()
+        if current_item:
+            item_data = current_item.data(QtCore.Qt.UserRole)
+            self.context_handler.db_asset_stream_id = item_data
+
+            return {"db_asset_stream_id": item_data,
+                    "db_asset_id": self.context_handler.compile_db_asset_id(),
+                    "context_object": self.context_handler}
         else:
             return None
 
     def create_stack_stream(self):
-        context = self.context_handler.snapshot_session()
-        self.ui = CreateStreamUI(context=context)
+        self.ui = CreateStreamUI(context=self.context_handler)
         self.ui.show()
         self.ui.create_btn.clicked.connect(self.populate_streams)
         self.ui.create_and_close_btn.clicked.connect(self.populate_streams)
 
     def delete_empty_streams(self):
-        context = self.context_handler.snapshot_session()
-        self.ui = DeleteEmptyStreamsUI(context=context)
+        self.ui = DeleteEmptyStreamsUI(context=self.context_handler)
         self.ui.show()
         self.ui.delete_btn.clicked.connect(self.populate_streams)
         self.ui.delete_and_close_btn.clicked.connect(self.populate_streams)
@@ -169,19 +179,24 @@ class EntryStackStream(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr.red_hulk',
-                      'entity_name': 'red_hulk',
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr',
+                      'entity_name': 'tafer',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.red_hulk',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'task_name': "modeling",
-                      'task_type': "modeling"}
+                      'task_type': "modeling",
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.main'}
+
+    context_obj = ContextHandler()
+    context_obj.load_session(session_data=context_sample)
 
     app = QtWidgets.QApplication(sys.argv)
-    test_dialog = EntryStackStream(context=context_sample)
+    test_dialog = EntryStackStream(context=context_obj)
 
     test_dialog.show()
     sys.exit(app.exec_())

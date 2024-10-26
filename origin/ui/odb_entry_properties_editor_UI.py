@@ -1,11 +1,10 @@
 import sys
 from PySide2 import QtWidgets
 
-from origin.envars.Xorigin_envars import ContextHandler
-from o_database.entities.Xoperators import CollectionOperators, Asset
+from origin.o_database.entities.Xoperators import (CollectionOperators, Asset)
 from origin.ui.style.icons import OriginIcons
 from origin.ui.style import buttons_styles as btns
-from common_utils import nice_names as nice_names
+from origin.common_utils import nice_names as nice_names
 
 
 class EntryPropertiesEditorUI(QtWidgets.QWidget):
@@ -21,8 +20,7 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
         self.create_connections()
 
     def context_receiver(self, context):
-        self.context_handler = ContextHandler()
-        self.context_handler.load_session(context)
+        self.context_handler = context
         self.resolve_entity()
         return self.context_handler
 

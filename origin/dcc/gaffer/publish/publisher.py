@@ -1,0 +1,11 @@
+from origin.envars.Xorigin_envars import ContextHandler
+
+
+class GafferPublisher:
+    def __init__(self, publish_options):
+        self.publishing_options = publish_options
+        self.context_handler: ContextHandler = self.publishing_options["context_object"]
+        self.publisher = None
+
+    def publish(self):
+        print(f"Publishing with options {self.publishing_options}")

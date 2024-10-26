@@ -9,26 +9,35 @@ from origin.ui.publish.inject_displacement.inject_displacement import InjectDisp
 from origin.ui.publish.asset_stream_manager.asset_stream_manager_ui import EntryStackStream
 
 
-def get_publish_type(context):
-    context_handler = ContextHandler()
-    context_handler.load_session(context)
+def get_publish_type(context: ContextHandler):
+    context_handler = context
 
-    task_types = {"modeling": [
-        EntryStackStream(context=context),
-        QcGhost(),
-        FileTypes(),
-        MaterialSetsAssignments(),
-        InjectDisplacement(),
-        BundleSelector(),
-        PreviewOptions(),
-        Publish(context=context)
-    ],
+    task_types = {
+        "modeling": [
+            EntryStackStream(context=context),
+            QcGhost(),
+            FileTypes(),
+            MaterialSetsAssignments(),
+            InjectDisplacement(),
+            BundleSelector(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
         "texturing": [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
             Publish(context=context)
-        ]
+        ],
+
+        "rigging": [
+            EntryStackStream(context=context),
+            QcGhost(),
+            FileTypes(),
+            BundleSelector(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
     }
 
     if context_handler.task_type in list(task_types.keys()):

@@ -14,10 +14,8 @@
   <component name="PyNamespacePackagesService">
     <option name="namespacePackageFolders">
       <list>
-        <option value="$MODULE_DIR$/config" />
-        <option value="$MODULE_DIR$/context_manager" />
-        <option value="$MODULE_DIR$/exchange" />
-        <option value="$MODULE_DIR$/origin/usd_dev" />
+        <option value="$MODULE_DIR$/origin/config" />
+        <option value="$MODULE_DIR$/origin/exchange" />
       </list>
     </option>
   </component>

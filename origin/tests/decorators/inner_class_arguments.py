@@ -1,6 +1,6 @@
-from o_database.mongo import DBFind, DBSet
-from o_database.collections.connections import ProjectCollections
-from o_database.entities.attributes_paths import DbEntityAttrPath
+from origin.o_database import DBFind, DBSet
+from origin.o_database import ProjectCollections
+from origin.o_database.entities import DbEntityAttrPath
 
 
 # Define a decorator function that accepts arguments

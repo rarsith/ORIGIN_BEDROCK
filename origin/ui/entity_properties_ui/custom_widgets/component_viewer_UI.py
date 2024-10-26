@@ -12,19 +12,16 @@ class SlotComponentsViewerBuild(QtWidgets.QTableWidget):
         self.widget_build()
 
     def widget_build(self):
-        self.setColumnCount(3)
-        self.setRowCount(1)
+        self.setColumnCount(2)
+        # self.setRowCount(0)
         self.setShowGrid(False)
 
-        # self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.setColumnWidth(0, 100)
-        self.setColumnWidth(1, 250)
-        self.setColumnWidth(2, 60)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.setColumnWidth(0, 380)
 
-        # self.setMinimumWidth(600)
         self.setSortingEnabled(True)
         for row in range(self.rowCount()):
-            self.setRowHeight(row, 20)
+            self.setRowHeight(row, 90)
 
         self.verticalScrollBar().setVisible(False)
         self.horizontalScrollBar().setVisible(False)

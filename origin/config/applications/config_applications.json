@@ -1,0 +1,232 @@
+{
+    "applications": {
+        "maya": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\maya.png",
+            "display_name": "Maya",
+            "versions": {
+                "2024": {
+                    "executable_path": "C:\\Users\\arsithra\\Desktop\\Maya.bat",
+                    "envar_data": "{\"DCC\":\"maya\"}"
+                }
+            }
+        },
+        "djvu": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\djv_logo.png",
+            "display_name": "DjVu",
+            "versions": {
+                "2.024": {
+                    "executable_path": "D:\\Program Files\\DJV2\\bin\\djv.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "houdini": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\houdini.png",
+            "display_name": "Houdini",
+            "versions": {
+                "20.5.332": {
+                    "executable_path": "D:\\Program Files\\Houdini19\\Houdini20.5.332\\bin\\houdini.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "blender": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\blender.png",
+            "display_name": "Blender",
+            "versions": {
+                "4.2": {
+                    "executable_path": "C:\\Users\\arsithra\\Desktop\\Blender.bat",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "gaffer": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\gaffer.png",
+            "display_name": "Gaffer",
+            "versions": {
+                "1.4.13.0": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.4.13.0-windows\\bin\\gaffer.cmd",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "natron": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\natron.png",
+            "display_name": "Natron",
+            "versions": {
+                "2.5": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\Natron\\bin\\Natron.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "zbrush": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\zbrush.png",
+            "display_name": "ZbrushXXZZ",
+            "versions": {
+                "2.5": {
+                    "executable_path": "D:\\Program Files\\Maxon ZBrush 2023\\ZBrush.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "davinciresolve": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\pngwing.com.png",
+            "display_name": "Davinciresolve",
+            "versions": {
+                "19": {
+                    "executable_path": "D:\\Program Files\\Blackmagic Design\\DaVinci Resolve\\Resolve.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "quiltix": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\quiltix.png",
+            "display_name": "Quiltix",
+            "versions": {
+                "0.4.0": {
+                    "executable_path": "\"D:\\__REPOSITORIES\\Installs\\QuiltiX_win_v0.4.0\\QuiltiX.bat\"",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "wrap3d": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\wrap3D.png",
+            "display_name": "Wrap3d",
+            "versions": {
+                "3.2.0": {
+                    "executable_path": "D:\\Program Files\\R3DS\\Wrap 3\\Wrap3.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "topogun": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\topogun.ico",
+            "display_name": "Topogun",
+            "versions": {
+                "3": {
+                    "executable_path": "D:\\Program Files\\TopoGun 3\\TopoGun.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "vue": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\VUE.ico",
+            "display_name": "Vue",
+            "versions": {
+                "9.00.83.54": {
+                    "executable_path": "D:\\Program Files\\e-on software\\VUE\\Application\\VUE.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "pureref": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\pureRef.ico",
+            "display_name": "Pureref",
+            "versions": {
+                "2.0": {
+                    "executable_path": "D:\\Program Files\\PureRef\\PureRef.exe",
+                    "envar_data": ""
+                }
+            }
+        },
+        "editorkden": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\kdenlive_small.ico",
+            "display_name": "Editorkden",
+            "versions": {
+                "24.02.2": {
+                    "executable_path": "D:\\Program Files\\kdenlive\\bin\\kdenlive.exe",
+                    "envar_data": ""
+                }
+            }
+        },
+        "asset bundle manager": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Asset bundle manager",
+            "versions": {}
+        },
+        "shot bundle manager": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Shot bundle manager",
+            "versions": {}
+        },
+        "shot bundle editor": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Shot bundle editor",
+            "versions": {}
+        },
+        "publisher": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Publisher",
+            "versions": {}
+        },
+        "mari": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\mari.png",
+            "display_name": "Mari",
+            "versions": {
+                "7": {
+                    "executable_path": "",
+                    "envar_data": ""
+                }
+            }
+        },
+        "nuke": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\nuke.png",
+            "display_name": "Nuke",
+            "versions": {
+                "15": {
+                    "executable_path": "",
+                    "envar_data": ""
+                }
+            }
+        },
+        "3dequilizer": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "3dequilizer",
+            "versions": {
+                "R5": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\3DE\\eq_fwin\\3DE4_win64_r5\\bin\\3DE4.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "xstudio": {
+            "enabled": true,
+            "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\xstudio_full.jpg",
+            "display_name": "Xstudio",
+            "versions": {
+                "1.00": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\XStudio_DNeg\\xstudio_install\\bin\\xstudio.exe",
+                    "envar_data": "{}"
+                }
+            }
+        },
+        "task manager": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Task manager",
+            "versions": {}
+        }
+    }
+}

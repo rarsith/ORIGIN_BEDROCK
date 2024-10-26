@@ -1,11 +1,11 @@
 from PySide2 import QtWidgets
 
 from origin.envars.Xorigin_envars import ContextHandler
-from o_database.entities.Xoperators import PublishOptions
+from origin.o_database.entities.Xoperators import PublishOptions
 from origin.ui.publish.utils.publishing_widgets_factory import get_publish_type
 
 
-class OriginPublisher(QtWidgets.QWidget):
+class OriginPublisher(QtWidgets.QDialog):
     def __init__(self, context, parent=None):
         super(OriginPublisher, self).__init__(parent)
 
@@ -14,8 +14,7 @@ class OriginPublisher(QtWidgets.QWidget):
         self.setMinimumWidth(400)
         self.setMinimumHeight(200)
 
-        self.context_handler = ContextHandler()
-        self.context_handler.load_session(context)
+        self.context_handler = context
 
         self.publish_options = PublishOptions()
 
@@ -81,7 +80,12 @@ class OriginPublisher(QtWidgets.QWidget):
             self.start_publishing()
 
     def load_previous_widget(self):
+        if self.current_step == 0:
+            self.back_btn.setDisabled(True)
+            return
+
         current_widget = ""
+
         if not self.current_step < 0:
             current_widget = self.widgets[self.current_step]
 
@@ -100,9 +104,6 @@ class OriginPublisher(QtWidgets.QWidget):
             else:
                 self.back_btn.setDisabled(False)
 
-        else:
-            self.start_publishing()
-
     def save_widget_options(self, widget):
         widget_selected_options = widget.get_selected_options()
         if widget_selected_options is not None:
@@ -112,32 +113,36 @@ class OriginPublisher(QtWidgets.QWidget):
             return widget_selected_options
 
     def start_publishing(self):
-        # Use the collected options to start the publishing procedure
         final_widget = self.widgets[-1]
         final_widget.publish(self.collected_options)
-
+        self.close()
         QtWidgets.QMessageBox.information(self, "Publishing",
                                           "Publishing process started with options: " + str(self.collected_options))
 
 
 if __name__ == "__main__":
     import sys
+    import os
+
+    os.environ["DCC"] = "nuke"
+
     context_sample = {'show_name': 'New_State',
-                          'project_publishes': 'New_State__PUBLISHES',
-                          'project_work': 'New_State__WORK',
-                          'project_control': 'New_State__CONTROL',
-                          'origin_path_hierarchy': 'assets.chr.red_hulk',
-                          'entity_name': 'red_hulk',
-                          'entity_type': 'asset',
-                          'entity_id': 'New_State.assets.chr.red_hulk',
-                          'task_name': "modeling",
-                          'task_type': "modeling"}
+                      'project_publishes': 'New_State__PUBLISHES',
+                      'project_work': 'New_State__WORK',
+                      'project_control': 'New_State__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr',
+                      'entity_name': 'yellow_hulk',
+                      'entity_type': 'asset',
+                      'entity_id': 'New_State.assets.chr.yellow_hulk',
+                      'task_name': "modeling",
+                      'task_type': "modeling",
+                      }
 
     context_class = ContextHandler()
     context_class.load_session(session_data=context_sample)
 
     app = QtWidgets.QApplication(sys.argv)
-    test_dialog = OriginPublisher(context=context_sample)
+    test_dialog = OriginPublisher(context=context_class)
 
     test_dialog.show()
     sys.exit(app.exec_())
