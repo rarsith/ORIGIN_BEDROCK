@@ -1,5 +1,5 @@
 import os
-from origin.envars.Xorigin_envars import ContextHandler
+from origin.envars.origin_envars import ContextHandler
 
 from origin.dcc.task_type_publishers.rotomation_publish import RotomationPublish
 from origin.dcc.task_type_publishers.animation_publish import AnimationPublish

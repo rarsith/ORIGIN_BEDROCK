@@ -4,9 +4,10 @@ import maya.cmds as cmds
 
 env_setup()
 
-from origin.o_database.entities.Xoperators import CollectionOperators, Asset
+from origin.database.entities.operators import Asset
+from origin.database.mongo import CollectionOperators
 
-        
+
 def get_entity_definition():
     entity_type = os.getenv('ENTITY_TYPE')
     show_name = os.getenv('SHOW_NAME')

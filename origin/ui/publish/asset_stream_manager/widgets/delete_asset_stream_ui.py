@@ -1,10 +1,10 @@
 import sys
 from PySide2 import QtWidgets, QtCore
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.entity_class_dispatcher import extract_asset_class
+from origin.envars.origin_envars import ContextHandler
+from origin.database.dispachers.entity_class_dispatcher import extract_asset_class
 
-from origin.o_database.entities.Xoperators import CollectionOperators
+from origin.database.mongo import CollectionOperators
 
 
 class DeleteEmptyStreamsUI(QtWidgets.QDialog):

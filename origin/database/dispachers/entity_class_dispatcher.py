@@ -1,9 +1,9 @@
-from origin.o_database.entities.Xoperators import CollectionOperators
-from origin.o_database.entities.Xoperators import Project
-from origin.o_database.entities.Xoperators import Asset
-from origin.o_database.entities.Xoperators import Group
-from origin.o_database.entities.Xoperators import Task
-from origin.envars.Xorigin_envars import ContextHandler
+from origin.database.mongo import CollectionOperators
+from origin.database.entities.operators import Project
+from origin.database.entities.operators import Asset
+from origin.database.entities.operators import Group
+from origin.database.entities.operators import Task
+from origin.envars.origin_envars import ContextHandler
 
 def __get_entity_class(item_type):
     if item_type == "group":

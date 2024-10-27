@@ -1,37 +1,38 @@
 import sys
 from PySide2 import QtWidgets
 
-from origin.o_database.entities.Xactions import Create
+from origin.database.entities.actions import Create
 
 
-class CreateAssetUI(QtWidgets.QDialog):
+class CreateGroupUI(QtWidgets.QDialog):
 
-    def __init__(self, context, asset_parent=None, parent=None):
-        super(CreateAssetUI, self).__init__(parent)
+    def __init__(self, context, group_parent=None, parent=None):
+        super(CreateGroupUI, self).__init__(parent)
 
-        self.setWindowTitle("Create Asset")
+        self.setWindowTitle("Create Group")
 
         self.user_data = None
+
         self.context_handler = context
 
-        self.asset_parent = asset_parent
+        self.group_parent = group_parent
 
         self.show_name_le = QtWidgets.QLabel()
 
-        if self.asset_parent is not None:
-            self.show_name_le.setText(self.asset_parent)
+        if self.group_parent is not None:
+            self.show_name_le.setText(self.group_parent)
         else:
             self.show_name_le.setText(self.context_handler.show_name)
 
-        self.asset_name_le = QtWidgets.QLineEdit()
+        self.group_name_le = QtWidgets.QLineEdit()
 
         self.create_btn = QtWidgets.QPushButton("Create")
         self.create_and_close_btn = QtWidgets.QPushButton("Create and Close")
         self.cancel_btn = QtWidgets.QPushButton("Close")
 
         self.form_layout = QtWidgets.QFormLayout()
-        self.form_layout.addRow("Asset Path: ", self.show_name_le)
-        self.form_layout.addRow("Asset Name:", self.asset_name_le)
+        self.form_layout.addRow("Group Path: ", self.show_name_le)
+        self.form_layout.addRow("Group Name:", self.group_name_le)
 
         self.buttons_layout = QtWidgets.QHBoxLayout()
         self.buttons_layout.addStretch()
@@ -52,11 +53,11 @@ class CreateAssetUI(QtWidgets.QDialog):
         self.close()
 
     def db_commit(self):
-        asset_name = self.asset_name_le.text()
-        Create(context=self.context_handler).asset(name=asset_name,
-                                      parent=self.asset_parent
-                                      )
-        self.asset_name_le.clear()
+        asset_name = self.group_name_le.text()
+        Create(context=self.context_handler).group(name=asset_name,
+                                                   parent=self.group_parent
+                                                   )
+        self.group_name_le.clear()
 
 
 if __name__ == "__main__":
@@ -66,6 +67,6 @@ if __name__ == "__main__":
         create_asset.deleteLater()
     except:
         pass
-    create_asset = CreateAssetUI()
+    create_asset = CreateGroupUI()
     create_asset.show()
     sys.exit(app.exec_())

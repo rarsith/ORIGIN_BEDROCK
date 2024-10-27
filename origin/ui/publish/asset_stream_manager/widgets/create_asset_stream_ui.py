@@ -1,9 +1,9 @@
 import sys
 from PySide2 import QtWidgets
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xactions import Create
-from origin.o_database.entities.entity_class_dispatcher import extract_asset_class
+from origin.envars.origin_envars import ContextHandler
+from origin.database.entities.actions import Create
+from origin.database.dispachers.entity_class_dispatcher import extract_asset_class
 
 
 class CreateStreamUI(QtWidgets.QDialog):

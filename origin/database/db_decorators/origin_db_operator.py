@@ -1,4 +1,4 @@
-from origin.o_database import ProjectCollections
+from origin.database import ProjectCollections
 
 
 def origin_db_operation(db_path):

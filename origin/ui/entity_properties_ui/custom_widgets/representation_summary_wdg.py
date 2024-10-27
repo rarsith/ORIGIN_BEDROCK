@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets
 
-from origin.o_database.odb_statuses import DbTaskStatuses
+from origin.database.statuses import DbTaskStatuses
 
 
 class EntitySummaryInfo(QtWidgets.QWidget):

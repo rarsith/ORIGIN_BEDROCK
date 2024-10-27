@@ -1,5 +1,5 @@
 from origin.common_utils.users import Users
-from origin.o_database.utils import attribute_path_utils
+from origin.database.utils import attribute_path_utils
 
 
 # from envars.dc_origin_envars import OriginEnvar
@@ -103,7 +103,7 @@ class DbIds:
 
 
 if __name__ == '__main__':
-    from origin.o_database.entities.Xoperators import WorkFile
+    from origin.database.entities.operators import WorkFile
 
     xx = WorkFile(_id="")
     zz = xx.dict(by_alias=True)

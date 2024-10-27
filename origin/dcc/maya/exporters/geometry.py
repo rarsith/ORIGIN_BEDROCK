@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import Literal
 
-from origin.envars.Xorigin_envars import ContextHandler
+from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
-from origin.o_database.entities.Xconstructors import DbConstructors
+from origin.database.entities.constructors import DbConstructors
 
 import maya.cmds as cmds
 from abc import ABC, abstractmethod

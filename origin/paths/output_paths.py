@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 from origin.common_utils.users import Users
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xoperators import get_file_component_class
+from origin.envars.origin_envars import ContextHandler
+from origin.database.entities.operators import get_file_component_class
 
 
 class OriginOSPathHandler:

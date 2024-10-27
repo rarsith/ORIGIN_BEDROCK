@@ -1,9 +1,9 @@
 from PySide2 import QtWidgets
 
 from origin.dcc.task_type_publisher import TaskTypePublisher
-from origin.o_database.odb_statuses import DbVersionStatuses
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xactions import Create
+from origin.database.statuses import DbVersionStatuses
+from origin.envars.origin_envars import ContextHandler
+from origin.database.entities.actions import Create
 
 
 class Publish(QtWidgets.QWidget):

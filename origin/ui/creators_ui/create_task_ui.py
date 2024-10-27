@@ -1,9 +1,9 @@
 import sys
 from PySide2 import QtWidgets
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xactions import Create
-from origin.o_database.entities.Xtypes import TaskTypes
+from origin.envars.origin_envars import ContextHandler
+from origin.database.entities.actions import Create
+from origin.database.entities.types import TaskTypes
 
 
 class CreateTaskUI(QtWidgets.QDialog):

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from origin.envars.Xorigin_envars import ContextHandler
+from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
 
 import maya.cmds as cmds

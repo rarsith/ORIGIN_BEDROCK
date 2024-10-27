@@ -1,19 +1,18 @@
 from abc import ABC, abstractmethod
-from origin.o_database.mongo_connection import MongoConnection
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xconstructors import DbConstructors
+from origin.database.mongo_connection import MongoConnection
+from origin.envars.origin_envars import ContextHandler
+from origin.database.entities.constructors import DbConstructors
 
-from origin.o_database.entities.Xoperators import (CollectionOperators,
-                                                   Projects,
-                                                   TaskPublish,
-                                                   Project,
-                                                   Asset,
-                                                   Task, DBAssetVersion
-                                                   )
+from origin.database.entities.operators import (Projects,
+                                                TaskPublish,
+                                                Project,
+                                                Asset,
+                                                Task, DBAssetVersion
+                                                )
 
-from origin.o_database.mongo import DBFind, DBAdd, DBSet, DBRemove
+from origin.database.mongo import DBFind, DBAdd, DBSet, DBRemove, CollectionOperators
 
-from origin.o_database.collections.Xconnections import ProjectCollections
+from origin.database.collections.connections import ProjectCollections
 
 
 class OriginDatabaseCreator(ABC):

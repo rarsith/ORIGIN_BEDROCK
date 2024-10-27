@@ -1,10 +1,12 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.ui.Xproject_tree_viewer_UI import ProjectTreeViewerUI
-from origin.o_database.entities.Xoperators import get_entity_class, Projects, Group, Project
+from origin.envars.origin_envars import ContextHandler
+from origin.ui.project_tree_viewer_UI import ProjectTreeViewerUI
+from origin.database.entities.operators import get_entity_class, Projects, Group, Project
 
-from origin.ui.creators_ui import Xcreate_asset_ui, Xcreate_group_ui, Xcreate_show_ui
+from origin.ui.creators_ui.create_asset_ui import CreateAssetUI
+from origin.ui.creators_ui.create_group_ui import CreateGroupUI
+from origin.ui.creators_ui.create_show_ui import CreateShowUI
 
 
 # assignment_manager_core
@@ -279,7 +281,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
     def create_show_menu(self):
         """Create show menu."""
-        self.ui = Xcreate_show_ui.CreateShowUI()
+        self.ui = CreateShowUI()
         self.ui.create_btn.clicked.connect(self.refresh_shows)
         self.ui.create_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.create_and_close_btn.clicked.connect(self.refresh_shows)
@@ -289,7 +291,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def create_group_menu(self):
         """Create group menu."""
         doc_id = self.resolve_parent_id()
-        self.ui = Xcreate_group_ui.CreateGroupUI(context=self.context_handler, group_parent=doc_id)
+        self.ui = CreateGroupUI(context=self.context_handler, group_parent=doc_id)
         self.ui.create_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.create_and_close_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.show()
@@ -297,7 +299,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def create_asset_menu(self):
         """Create asset menu."""
         doc_id = self.resolve_parent_id()
-        self.ui = Xcreate_asset_ui.CreateAssetUI(context=self.context_handler, asset_parent=doc_id)
+        self.ui = CreateAssetUI(context=self.context_handler, asset_parent=doc_id)
         self.ui.create_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.create_and_close_btn.clicked.connect(self.refresh_tree_widget)
         self.ui.show()

@@ -1,11 +1,12 @@
 from PySide2 import QtWidgets, QtCore
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.entity_class_dispatcher import extract_asset_class
-from origin.ui.Xproject_tree_viewer_UI import ProjectTreeViewerUI
+from origin.envars.origin_envars import ContextHandler
+from origin.database.dispachers.entity_class_dispatcher import extract_asset_class
+from origin.ui.project_tree_viewer_UI import ProjectTreeViewerUI
 from origin.ui.publish.asset_stream_manager.widgets.create_asset_stream_ui import CreateStreamUI
 from origin.ui.publish.asset_stream_manager.widgets.delete_asset_stream_ui import DeleteEmptyStreamsUI
-from origin.o_database.entities.Xoperators import CollectionOperators, Asset
+from origin.database.entities.operators import Asset
+from origin.database.mongo import CollectionOperators
 
 
 class ContextViewer(ProjectTreeViewerUI):

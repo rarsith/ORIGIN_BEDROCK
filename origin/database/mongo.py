@@ -1,4 +1,7 @@
-from origin.o_database.mongo_connection import MongoConnection
+from typing import List, Dict, Union, Any
+
+from origin.database.collections.pipelines import OriginDBPipelines
+from origin.database.mongo_connection import MongoConnection
 
 
 class DBFind:
@@ -180,3 +183,169 @@ class DBRemove:
 
     def value_from_array(self, value):
         self.db[self.collection].update_one({"_id": self.entry_id}, {"$pull": {self.attribute: value}})
+
+
+class CollectionOperators:
+
+    def __init__(self, db_collection=None):
+        self.db = MongoConnection().origin_production_database()
+
+        if db_collection is None or len(db_collection) == 0:
+            self.collection_name = "empty"
+        else:
+            self.collection_name = db_collection
+
+        self.db_collection = self.db[self.collection_name]
+
+    def get_multiple_documents(self, doc_attr=None, **kwargs):
+        db_documents = self.db_collection.find(kwargs)
+        if len(db_documents) != 0:
+            return [doc for doc in db_documents]
+        else:
+            return db_documents
+
+    def multiple_ops(self, ops: List[Dict[str, Union[str, Any]]]) -> None:
+        """
+            data format in detail:
+               {"entity_id":{"target_attribute":"target_attribute_value"}}
+
+        """
+
+        for operation in ops:
+            for entity_id, attribute_target in operation.items():
+                target_attribute = list(attribute_target.keys())[0]
+                target_attribute_value = list(attribute_target.values())[0]
+                DBSet(db_collection=self.collection_name,
+                      entry_id=entity_id,
+                      attribute=target_attribute).attribute_value(data=target_attribute_value)
+
+    def get_root_documents(self, attrib_field, attrib_value):
+        ppe = OriginDBPipelines()
+        ppe.add_match_attribute(attribute_field=attrib_field, value_field=attrib_value)
+
+        pipe = ppe.create_pipeline()
+
+        try:
+            if self.db_collection is not None:
+                result_docs = self.db_collection.aggregate(pipe)
+                results = ([x for x in result_docs])
+                return results
+        except Exception as e:
+            print(__file__, e)
+
+    def entity_document(self, doc_id):
+        db_document = self.db_collection.find_one({"_id": doc_id})
+        return db_document
+
+    def delete_entity_document(self, doc_id):
+        self.db_collection.delete_one({"_id": doc_id})
+
+    def remove_value_from_doc_attr(self, doc_id, attr, value):
+        self.db_collection.update_one({"_id": doc_id}, {"$pull": {attr: value}})
+
+    # def entity_children_ids(self, doc_id):
+    #     db_document = self.db_collection.find_one({"_id": doc_id})
+    #     if db_document:
+    #         return db_document.get(EntityBaseModel.CHILDREN, [])
+
+    def children_with_parent_id(self, parent_id):
+        db_documents = self.db_collection.find({"parent": parent_id})
+        return [doc for doc in db_documents]
+
+    def entities_attr_value_starts_with(self, attr_field: str, val_starts_with: str, extra_filters: List[dict] = None,
+                                        ids_only=False):
+
+        pipe = OriginDBPipelines()
+        pipe.add_attr_value_startswith(attribute_field=attr_field, value_field=val_starts_with)
+
+        pipe.add_sort(sort_by_attr="time", sort_value=-1)
+        pipe.add_sort(sort_by_attr="date", sort_value=-1)
+
+        if extra_filters:
+            for ex_filter in extra_filters:
+                pipe.add_match_attribute_dict(ex_filter)
+
+        if ids_only:
+            pipe.ids_only(only_id=ids_only)
+
+        pipeline = pipe.create_pipeline()
+
+        try:
+            if self.db_collection is not None:
+                results = list(self.db_collection.aggregate(pipeline))
+                return results
+
+        except Exception as e:
+            print(__file__, e)
+
+    def get_all_versions(self, db_asset, published_by: str = None):
+        pipe = OriginDBPipelines()
+        pipe.add_attr_value_startswith(db_asset.ID, db_asset.id)
+        pipe.add_match_attribute(db_asset.TYPE, "publish")
+
+        if published_by is not None:
+            pipe.add_match_attribute(db_asset.OWNER, published_by)
+
+        pipe.add_sort("version_cnt", -1)
+        pipeline = pipe.create_pipeline()
+
+        try:
+            if self.db_collection is not None:
+                results = list(self.db_collection.aggregate(pipeline))
+                return results
+
+        except Exception as e:
+            print(__file__, e)
+
+    #########################################################
+    #                   TO DO                               #
+    #########################################################
+
+    def entities_with_statuses(self, status: str, ids_only=False):
+        pass
+
+    def entities_with_owners(self, user_names: list):
+        pass
+
+    def entities_with_dates(self, input_dates: list):
+        pass
+
+    def entities_with_tasks(self, task_names: list):
+        pass
+
+    def entities_with_names(self, entity_names: list):
+        pass
+
+    def entities_with_ids(self, entity_ids: list):
+        pass
+
+    def tasks_with_start_date(self, entity_ids: list):
+        pass
+
+    def tasks_with_end_date(self, entity_ids: list):
+        pass
+
+
+class FindInCollection:
+    def __init__(self):
+        self.db = MongoConnection().origin_production_database()
+
+    def all_collections(self):
+        all_collections_in_database = self.db.list_collection_names()
+        return all_collections_in_database
+
+    def get_documents(self, db_collection: str, pipeline: OriginDBPipelines) -> list:
+        """
+        based on the sel_names param, returns a list MongoDB documents (full)
+        Example for sel_names param: ""
+        :return:
+
+        Args:
+            db_collection:
+            pipeline:
+            doc_field:
+
+        """
+        result = list(self.db[db_collection].aggregate(pipeline))
+
+        return result

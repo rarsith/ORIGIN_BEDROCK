@@ -1,11 +1,12 @@
 from PySide2 import QtWidgets, QtGui, QtCore
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.ui.Xtask_viewer_UI import TaskViewerUI
-from origin.ui.status_widgets.odb_task_status_wdg import TaskStatusWidget
-from origin.ui.status_widgets.odb_task_priority_wdg import TaskPriorityWidget
-from origin.o_database.entities.Xoperators import (CollectionOperators, Task)
+from origin.envars.origin_envars import ContextHandler
+from origin.ui.task_viewer_UI import TaskViewerUI
+from origin.ui.status_widgets.task_status_wdg import TaskStatusWidget
+from origin.ui.status_widgets.task_priority_wdg import TaskPriorityWidget
+from origin.database.entities.operators import (Task)
+from origin.database.mongo import CollectionOperators
 
-from origin.ui.creators_ui.Xcreate_task_ui import CreateTaskUI
+from origin.ui.creators_ui.create_task_ui import CreateTaskUI
 
 
 class TaskViewerCore(TaskViewerUI):

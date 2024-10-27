@@ -64,8 +64,8 @@ class OriginDBPipelines:
         return criteria
 
 if __name__ == "__main__":
-    from origin.o_database.collections.Xconnections import ProjectCollections
-    from origin.o_database.mongo_connection import MongoConnection
+    from origin.database.collections.connections import ProjectCollections
+    from origin.database.mongo_connection import MongoConnection
 
     show_name = "New_State"
     db = MongoConnection().origin_production_database()

@@ -1,7 +1,7 @@
 import threading
 from PySide2 import QtWidgets, QtCore, QtGui
 
-from origin.envars.Xorigin_envars import ContextHandler
+from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
 from origin.ui.app_launcher.app_launcher_settings_ui import AppLauncherSettings
 

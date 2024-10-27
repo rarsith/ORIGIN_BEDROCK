@@ -1,6 +1,6 @@
-from origin.o_database import DBFind, DBSet
-from origin.o_database import ProjectCollections
-from origin.o_database.entities import DbEntityAttrPath
+from origin.database import DBFind, DBSet
+from origin.database import ProjectCollections
+from origin.database.entities import DbEntityAttrPath
 
 
 # Define a decorator function that accepts arguments

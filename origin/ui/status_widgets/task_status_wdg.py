@@ -1,6 +1,6 @@
 
 from PySide2 import QtWidgets, QtCore, QtGui
-from origin.o_database.odb_statuses import DbTaskStatuses
+from origin.database.statuses import DbTaskStatuses
 
 
 class CustomDelegate(QtWidgets.QStyledItemDelegate):

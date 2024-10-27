@@ -19,7 +19,7 @@ def find_imports(start_script):
 
 if __name__ == '__main__':
     repo_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK"
-    main_script = os.path.join(repo_path, 'Xmaster.py')
+    main_script = os.path.join(repo_path, 'master.py')
 
     modules = find_imports(main_script)
     print("Used Modules:")

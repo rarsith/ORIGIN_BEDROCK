@@ -1,10 +1,11 @@
+import os
 import sys
 from pathlib import Path
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xoperators import CollectionOperators
+from origin.envars.origin_envars import ContextHandler
+from origin.database.mongo import CollectionOperators
 from origin.ui.entity_properties_ui.custom_widgets.component_viewer_UI import SlotComponentsViewerUI
 
 img_path = "/Users/arsithra/Documents/Learning_Python/PycharmProjects/Xchange/xcg_icons/play_icon_vsmall.png"
@@ -50,7 +51,8 @@ class ComponentViewerWidget(QtWidgets.QWidget):
         self.proc_progress_bar.setValue(100)
         self.proc_progress_bar.setFixedHeight(10)
 
-        self.pub_status_lb = QtWidgets.QLabel("---")
+        self.pub_status_lb = QtWidgets.QLabel("DONE")
+        self.pub_status_lb.setStyleSheet("background-color: #1F8918; color: black")
         self.pub_status_lb.setMinimumWidth(50)
         self.pub_status_lb.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -65,7 +67,7 @@ class ComponentViewerWidget(QtWidgets.QWidget):
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setSpacing(1)
         main_layout.addLayout(top_layout)
-        main_layout.addWidget(self.path_le)
+        # main_layout.addWidget(self.path_le)
         # main_layout.addWidget(self.proc_progress_bar)
 
     def create_connections(self):
@@ -129,7 +131,7 @@ class SlotComponentsViewerCore(SlotComponentsViewerUI):
     def compile_file_component_widget(self, label, file_path, row):
         components_widget = ComponentViewerWidget(label=label, file_path=file_path)
         self.slot_component_viewer_tw.setCellWidget(row, 0, components_widget)
-        self.slot_component_viewer_tw.setRowHeight(row, 80)
+        self.slot_component_viewer_tw.setRowHeight(row, 40)
 
 
 if __name__ == "__main__":

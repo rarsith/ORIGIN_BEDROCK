@@ -1,18 +1,19 @@
 from origin.common_utils.date_time import DateTime
 from origin.common_utils.users import Users
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.schemas.actions import EntityDefaultSchemas
+from origin.envars.origin_envars import ContextHandler
+from origin.database.schemas.actions import EntityDefaultSchemas
 from origin.common_utils import version_increment as vup
 
-from origin.o_database.entities.Xoperators import (DBAssetVersion,
-                                                   CollectionOperators,
-                                                   DBAsset,
-                                                   WorkFile,
-                                                   Project,
-                                                   Asset,
-                                                   Group,
-                                                   Task,
-                                                   DBAssetFileComponent)
+from origin.database.entities.operators import (DBAssetVersion,
+                                                DBAsset,
+                                                WorkFile,
+                                                Project,
+                                                Asset,
+                                                Group,
+                                                Task,
+                                                DBAssetFileComponent)
+from origin.database.mongo import CollectionOperators
+
 
 class DbConstructors:
 
@@ -238,6 +239,7 @@ class DbConstructors:
              f"_{version_string}"])
 
         entity_id = ".".join([parent_id, version_string])
+        resolve_type = "__".join([parent_doc.type, "publish"])
 
         # asset_version_class = get_asset_version_class(file_ext)
 
@@ -246,7 +248,7 @@ class DbConstructors:
             _id=entity_id,
             name=entity_id,
             active=True,
-            type="publish",
+            type=resolve_type,
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
@@ -276,7 +278,7 @@ class DbConstructors:
                                 file_path: str,
                                 ) -> dict:
         from origin.common_utils.generate_uuid import generate_uuid
-        from origin.o_database.entities.Xoperators import get_file_component_class
+        from origin.database.entities.operators import get_file_component_class
 
         gen_uuid = generate_uuid()
         entity_id = ".".join([parent_id, gen_uuid])

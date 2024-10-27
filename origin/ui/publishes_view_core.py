@@ -2,10 +2,10 @@ from typing import List
 
 from PyQt5.QtCore import Qt
 from PySide2 import QtWidgets, QtGui, QtCore
-from origin.o_database.entities.Xoperators import CollectionOperators
-from origin.ui.Xmain_publishes_view_UI import MainPublishesViewUI
-from origin.ui.status_widgets.Xpublish_status_wdg import PublishStatusWidget
-from origin.o_database.entities.Xactions import Set
+from origin.database.mongo import CollectionOperators
+from origin.ui.publishes_view_UI import MainPublishesViewUI
+from origin.ui.status_widgets.publish_status_wdg import PublishStatusWidget
+from origin.database.entities.actions import Set
 
 img_path = "../origin/icons/play_icon_vsmall.png"
 thumbnail_path = r"/dcc/icons/movie_pic.png"
@@ -341,7 +341,7 @@ if __name__ == "__main__":
     import sys
     import random
 
-    from origin.o_database import DbVersionStatuses
+    from origin.database import DbVersionStatuses
 
 
     def randomize_pub_statuses(widget: MainPublishesViewCore):

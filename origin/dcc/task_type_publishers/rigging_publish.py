@@ -1,7 +1,7 @@
 import os
 
 from origin.dcc.maya.exporters.anim_rig import MayaAnimRiggingExporter, AnimRiggingExporter
-from origin.envars.Xorigin_envars import ContextHandler
+from origin.envars.origin_envars import ContextHandler
 
 
 class RiggingPublish:

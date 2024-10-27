@@ -1,23 +1,13 @@
 import os
+from typing import Optional
 from pydantic import BaseModel
 
-from typing import Optional
+# from origin.database.entities.actions import Create
+from origin.database.entities.operators import Project, Asset, Task, DBAsset
+from origin.database.mongo import CollectionOperators
 
-# from origin.o_database.entities.Xactions import Create
-from origin.o_database.entities.Xoperators import CollectionOperators, Project, Asset, Task, DBAsset
+
 # from origin.paths.output_paths import OriginOSPathHandler
-
-
-class OriginEnvironmentManager:
-
-    def ensure_env_var(self, var_name, default_value):
-        # Check if the environment variable exists
-        if os.getenv(var_name) is None:
-            # If not, set it to the default value
-            os.environ[var_name] = default_value
-            print(f"Environment variable '{var_name}' set to '{default_value}'")
-        else:
-            print(f"Environment variable '{var_name}' already exists with value '{os.getenv(var_name)}'")
 
 
 class SessionContext(BaseModel):
@@ -281,6 +271,9 @@ class ContextHandler:
         self.session_context.task_name = None
         self.session_context.task_type = None
         self.session_context.task_id = None
+        self.session_context.db_asset_stream_id = None
+        self.session_context.db_asset_id = None
+        self.session_context.db_asset_version_id = None
 
     @staticmethod
     def convert_to_uppercases(input_data: dict) -> dict:

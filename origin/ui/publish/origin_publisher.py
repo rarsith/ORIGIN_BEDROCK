@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets
 
-from origin.envars.Xorigin_envars import ContextHandler
-from origin.o_database.entities.Xoperators import PublishOptions
+from origin.envars.origin_envars import ContextHandler
+from origin.database.entities.operators import PublishOptions
 from origin.ui.publish.utils.publishing_widgets_factory import get_publish_type
 
 

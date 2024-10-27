@@ -1,6 +1,6 @@
 from origin.common_utils import version_increment as vup
 from database.entities.db_attributes import DbAttrPaths
-from origin.o_database import DbCollection
+from origin.database import DbCollection
 from database.utils.db_q_entity import From
 
 

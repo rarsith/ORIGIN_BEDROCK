@@ -1,6 +1,6 @@
 
 from PySide2 import QtWidgets
-from origin.o_database.odb_priorities import DbPriorities
+from origin.database.priorities import DbPriorities
 
 class TaskPriorityWidget(QtWidgets.QComboBox):
     def __init__(self, parent=None):

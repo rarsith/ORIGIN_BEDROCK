@@ -1,7 +1,8 @@
 import sys
 from PySide2 import QtWidgets
 
-from origin.o_database.entities.Xoperators import (CollectionOperators, Asset)
+from origin.database.entities.operators import (Asset)
+from origin.database.mongo import CollectionOperators
 from origin.ui.style.icons import OriginIcons
 from origin.ui.style import buttons_styles as btns
 from origin.common_utils import nice_names as nice_names

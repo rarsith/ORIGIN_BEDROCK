@@ -1,8 +1,8 @@
 import sys
 from PySide2 import QtWidgets, QtCore
-from origin.ui.Xmain_publishes_view_core import MainPublishesViewCore
-from origin.ui.Xproject_tree_viewer_core import ProjectTreeViewerCore
-from origin.ui.Xtask_viewer_core import TaskViewerCore
+from origin.ui.publishes_view_core import MainPublishesViewCore
+from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
+from origin.ui.task_viewer_core import TaskViewerCore
 from origin.ui.entity_properties_ui.properties_viewer import PropertiesViewer
 from origin.ui.app_launcher.app_launcher_ui import AppLauncher
 from origin.ui.odb_sanity_checker_wdg import SanityChecker

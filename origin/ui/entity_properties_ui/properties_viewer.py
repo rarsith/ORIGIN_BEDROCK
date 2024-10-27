@@ -5,7 +5,7 @@ from origin.ui.entity_properties_ui.custom_widgets.odb_links_ui import ButtonsWi
 from origin.ui.entity_properties_ui.custom_widgets.odb_notes_ui import NotesWidget
 from origin.ui.entity_properties_ui.custom_widgets.component_viewer_core import SlotComponentsViewerCore
 from origin.ui.entity_properties_ui.custom_widgets.representation_viewer_wdg import RepresentationViewer
-from origin.ui.Xmain_publishes_view_core import MainPublishesViewCore
+from origin.ui.publishes_view_core import MainPublishesViewCore
 
 icon_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\mvoie.png"
 
