@@ -44,8 +44,8 @@ class RiggingPublish:
         return processed_reviews
 
     def publish(self):
-        data_coponents = self.export_file_types()
-        self.exported_results["data"] = data_coponents
+        data_components = self.export_file_types()
+        self.exported_results["data"] = data_components
 
         reviewable_components = self.process_review_media()
 

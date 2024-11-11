@@ -53,7 +53,7 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         # self.setHeaderLabels(self.widget_columns_names)
 
         self.setColumnWidth(0, round(width * 0.085))
-        self.setColumnWidth(1, round(width * 0.11))
+        self.setColumnWidth(1, round(width * 0.27))
         self.setColumnWidth(2, round(width * 0.07))
         self.setColumnWidth(3, round(width * 0.12))
         self.setColumnWidth(4, round(width * 0.1))
@@ -74,7 +74,7 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         self.setColumnHidden(8, True)
 
         self.setSortingEnabled(True)
-        self.sortItems(1, QtCore.Qt.AscendingOrder)
+        self.sortItems(7, QtCore.Qt.DescendingOrder)
 
 
 class MainPublishesViewUI(QtWidgets.QWidget):

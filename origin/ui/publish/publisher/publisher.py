@@ -36,6 +36,9 @@ class Publish(QtWidgets.QWidget):
     def create_connections(self):
         pass
 
+    def populate_existing_comments(self):
+        pass
+
     def get_selected_options(self):
         get_comment_text = self.comment_ptx.toPlainText()
         get_publishing_status = self.status_wdg.currentText()
@@ -43,12 +46,13 @@ class Publish(QtWidgets.QWidget):
 
     def create_task_db_asset(self, selected_options):
         create_entity = Create(context=self.context_handler)
-        db_asset_id = create_entity.db_asset(parent=selected_options["db_asset_stream_id"])
+        db_asset_id = create_entity.db_asset(parent=self.context_handler.db_asset_stream_id,
+                                             publish_type=selected_options["publish_type"])
         return db_asset_id
 
     def create_db_asset_version(self, selected_options):
         create_entity = Create(context=self.context_handler)
-        db_asset_version_id = create_entity.db_asset_version(parent_id=selected_options["db_asset_id"],
+        db_asset_version_id = create_entity.db_asset_version(parent_id=self.context_handler.db_asset_id,
                                                              status=selected_options["pub_status"],
                                                              comment=selected_options["pub_comment"])
         return db_asset_version_id
@@ -64,16 +68,13 @@ class Publish(QtWidgets.QWidget):
                                                           parent_id=db_asset_version_id)
 
     def publish(self, options):
-
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
+        db_asset_id = self.create_task_db_asset(selected_options=options)
+        self.context_handler.db_asset_id = db_asset_id
 
         task_publisher = TaskTypePublisher(publish_options=options)
         published_data = task_publisher.execute_publish()
-
-        self.create_task_db_asset(options)
-
-        print(options)
 
         db_asset_version_id = self.create_db_asset_version(selected_options=options)
         self.create_db_file_components(db_asset_version_id=db_asset_version_id,

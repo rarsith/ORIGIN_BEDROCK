@@ -16,9 +16,10 @@ def __get_context_env():
         entity_id=os.getenv('ENTITY_ID'),
         task_name=os.getenv('TASK_NAME'),
         task_type=os.getenv('TASK_TYPE'),
-        # db_asset_stream_id=os.getenv('DB_ASSET_STREAM_ID'),
-        # db_asset_id=os.getenv('DB_ASSET_ID'),
-        # db_asset_version_id=os.getenv('DB_ASSET_VERSION_ID')
+        task_id=os.getenv('TASK_ID'),
+        db_asset_stream_id=os.getenv('DB_ASSET_STREAM_ID'),
+        db_asset_id=os.getenv('DB_ASSET_ID'),
+        db_asset_version_id=os.getenv('DB_ASSET_VERSION_ID')
     )
     return context_env
 

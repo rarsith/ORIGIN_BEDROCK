@@ -156,6 +156,8 @@ class ContextHandler:
     @db_asset_stream_id.setter
     def db_asset_stream_id(self, value):
         self.session_context.db_asset_stream_id = value
+        # asset_id = self.compile_db_asset_id()
+        # self.db_asset_id = asset_id
 
     @property
     def db_asset_id(self):
@@ -190,10 +192,10 @@ class ContextHandler:
         self.project_work = "__".join([self.show_name, "WORK"])
         self.project_control = "__".join([self.show_name, "CONTROL"])
 
-    def compile_db_asset_id(self):
-        stream_name = self.db_asset_stream_id.rsplit(".", 1)[1]
-        db_asset_id = ".".join([self.entity_id, self.task_type, stream_name])
-        return db_asset_id
+    # def compile_db_asset_id(self):
+    #     stream_name = self.db_asset_stream_id.rsplit(".", 1)[1]
+    #     db_asset_id = ".".join([self.entity_id, self.task_type, stream_name])
+    #     return db_asset_id
 
     def resolve_origin_path_hierarchy(self):
         """
@@ -313,10 +315,19 @@ class OriginDatabaseHandler:
                                               doc_id=self.__context.task_id)
         return Task(**task_doc)
 
+    def get_db_asset_stream_document(self):
+        if self.__context.db_asset_stream_id:
+            db_asset_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
+                                                      doc_id=self.__context.db_asset_stream_id)
+
+            return DBAsset(**db_asset_doc)
+        else:
+            return None
 
 
     def get_db_asset_document(self):
         if self.__context.db_asset_id:
+            print("DB_ASSET_DOC_ID:  ", self.__context.db_asset_id)
             db_asset_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                       doc_id=self.__context.db_asset_id)
 

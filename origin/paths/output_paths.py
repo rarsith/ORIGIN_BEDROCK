@@ -144,17 +144,18 @@ class OriginOSPathHandler:
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
                       'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'yellow_hulk',
-                      'db_asset_id': 'New_State.assets.chr.yellow_hulk.modeling.collar',
+                      'entity_name': 'tafer',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.yellow_hulk',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'task_name': "modeling",
-                      'task_type': "modeling"}
+                      'task_type': "modeling",
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      'db_asset_id': 'The_Rock.assets.chr.tafer.modeling.LIDAR_reference'}
 
     context_obj = ContextHandler()
     context_obj.load_session(session_data=context_sample)

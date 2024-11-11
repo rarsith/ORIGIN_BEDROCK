@@ -43,7 +43,7 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        project_db_doc = document.dict(by_alias=True)
+        project_db_doc = document.model_dump(by_alias=True)
 
         return project_db_doc
 
@@ -75,7 +75,7 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        asset_db_doc = document.dict(by_alias=True)
+        asset_db_doc = document.model_dump(by_alias=True)
 
         return asset_db_doc
 
@@ -100,7 +100,7 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        group_db_doc = document.dict(by_alias=True)
+        group_db_doc = document.model_dump(by_alias=True)
 
         return group_db_doc
 
@@ -133,7 +133,7 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        task_db_doc = document.dict(by_alias=True)
+        task_db_doc = document.model_dump(by_alias=True)
 
         return task_db_doc
 
@@ -163,7 +163,7 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        work_file_doc = document.dict(by_alias=True)
+        work_file_doc = document.model_dump(by_alias=True)
 
         return work_file_doc
 
@@ -189,19 +189,26 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        db_asset_doc = document.dict(by_alias=True)
+        db_asset_doc = document.model_dump(by_alias=True)
 
         return db_asset_doc
 
-    def db_asset_construct(self, entity_id, parent_id, task_type):
-        name = parent_id.rsplit('.', 1)[1]
+    def db_asset_construct(self, parent_id, publish_type, task_type):
+        from origin.database.entities.operators import get_db_asset_class
 
-        document = DBAsset(
+        parent_doc = self.context_handler.database_handler().get_db_asset_stream_document()
 
-            _id=entity_id,
-            name=name,
+        parent_name = parent_doc.id.rsplit('.', 1)[1]
+        db_asset_class = get_db_asset_class(publish_type)
+        compiled_id = ".".join([self.context_handler.entity_id, publish_type, parent_name])
+
+        parent_doc.add_child(db_collection=self.context_handler.project_publishes, child_id=compiled_id)
+
+        document = db_asset_class(
+            _id=compiled_id,
+            name=parent_name,
             active=True,
-            type="db_asset",
+            # type="db_asset",
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
@@ -209,13 +216,14 @@ class DbConstructors:
 
             label="",
             master_task_type=task_type,
+            stack_slot=publish_type,
 
             date=DateTime().curr_date,
             time=DateTime().curr_time,
             owner=Users().curr_user(),
         )
 
-        db_asset_doc = document.dict(by_alias=True)
+        db_asset_doc = document.model_dump(by_alias=True)
 
         return db_asset_doc
 
@@ -239,23 +247,25 @@ class DbConstructors:
              f"_{version_string}"])
 
         entity_id = ".".join([parent_id, version_string])
-        resolve_type = "__".join([parent_doc.type, "publish"])
+        resolve_db_asset_type = "__".join([parent_doc.type, "asset_version"])
 
-        # asset_version_class = get_asset_version_class(file_ext)
+        parent_doc.add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
 
         document = DBAssetVersion(
 
             _id=entity_id,
             name=entity_id,
             active=True,
-            type=resolve_type,
+            type="publish",
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
             status=status,
 
             label=set_display_name,
-            db_asset_type="",
+            db_asset_type=resolve_db_asset_type,
+            parent_task_type=self.context_handler.task_type,
+            parent_task_id=self.context_handler.task_id,
             description="",
             comments=[comment],
             version=version_string,
@@ -267,7 +277,7 @@ class DbConstructors:
             owner=Users().curr_user(),
         )
 
-        db_asset_version_doc = document.dict(by_alias=True)
+        db_asset_version_doc = document.model_dump(by_alias=True)
 
         return db_asset_version_doc
 

@@ -6,7 +6,7 @@ from origin.ui.publish.utils.publishing_widgets_factory import get_publish_type
 
 
 class OriginPublisher(QtWidgets.QDialog):
-    def __init__(self, context, parent=None):
+    def __init__(self, context: ContextHandler, publish_type=None, parent=None):
         super(OriginPublisher, self).__init__(parent)
 
         self.setWindowTitle("Publish")
@@ -15,6 +15,7 @@ class OriginPublisher(QtWidgets.QDialog):
         self.setMinimumHeight(200)
 
         self.context_handler = context
+        self.publish_type = publish_type
 
         self.publish_options = PublishOptions()
 
@@ -23,7 +24,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.current_step = 0
 
-        self.collected_options = {}
+        self.collected_options = {"publish_type":self.publish_type}
 
         self.create_widgets()
         self.create_layout()

@@ -3,6 +3,7 @@ from typing import List
 from PyQt5.QtCore import Qt
 from PySide2 import QtWidgets, QtGui, QtCore
 from origin.database.mongo import CollectionOperators
+from origin.envars.origin_envars import ContextHandler
 from origin.ui.publishes_view_UI import MainPublishesViewUI
 from origin.ui.status_widgets.publish_status_wdg import PublishStatusWidget
 from origin.database.entities.actions import Set
@@ -105,9 +106,10 @@ class MainPublishesViewCore(MainPublishesViewUI):
         self.status_cb = PublishStatusWidget()
         self.status_cb.setCurrentText(self.get_status)
 
-        self.pub_asset_type = publish_data["db_asset_type"]
+        db_asset_version_type = (publish_data["db_asset_type"]).split("__")[0]
+        self.pub_asset_type = db_asset_version_type.capitalize()
 
-        self.asset_task_type = publish_data["type"]
+        self.asset_task_type = (publish_data["parent_task_type"]).capitalize()
 
         self.published_by = publish_data["owner"]
 
@@ -341,7 +343,20 @@ if __name__ == "__main__":
     import sys
     import random
 
-    from origin.database import DbVersionStatuses
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr',
+                      'entity_name': 'tafer',
+                      'entity_type': 'asset',
+                      'entity_id': 'The_Rock.assets.chr.tafer',}
+                      # 'task_name': "modeling",
+                      # 'task_type': "modeling",
+                      # 'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      # 'db_asset_id': 'The_Rock.assets.chr.tafer.modeling.main'}
+
+    # from origin.database import DbVersionStatuses
 
 
     def randomize_pub_statuses(widget: MainPublishesViewCore):
@@ -363,21 +378,20 @@ if __name__ == "__main__":
 
     db_path = ["assets", "characters"]
 
-    OriginEnvar.show_name = "New_Bubu"
-    OriginEnvar.origin_path_hierarchy = db_path
-    # print(OriginEnvar.origin_path_hierarchy)
-    # OriginEnvar.entry_name = "hulk"
-    # OriginEnvar.task_name = "texturing"
 
     # Set().publishes().multiple_ops(self.changes_to_database)
 
-    pub_statuses = DbVersionStatuses().list_all()
+    # pub_statuses = DbVersionStatuses().list_all()
 
     app = QtWidgets.QApplication(sys.argv)
 
-    test_dialog = MainPublishesViewCore()
+    context = ContextHandler()
+    context.load_session(session_data=context_sample)
 
-    randomize_pub_statuses(widget=test_dialog)
+    test_dialog = MainPublishesViewCore()
+    test_dialog.context_receiver(context)
+
+    # randomize_pub_statuses(widget=test_dialog)
 
     test_dialog.populate_widget()
 

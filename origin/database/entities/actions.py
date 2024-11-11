@@ -268,23 +268,22 @@ class Create:
         except Exception as e:
             print(f"Error {e}, Nothing Done!")
 
-    def db_asset(self, parent):
-        parent_name = parent.rsplit(".", 1)[1]
-        create_id = ".".join([self.context_handler.entity_id, self.context_handler.task_type, parent_name])
-
-        db_asset = DbConstructors().db_asset_construct(parent_id=parent,
-                                                       entity_id=create_id,
-                                                       task_type=self.context_handler.task_type
-                                                       )
+    def db_asset(self, parent, publish_type):
+        db_asset = DbConstructors(context=self.context_handler).db_asset_construct(parent_id=parent,
+                                                                                   publish_type=publish_type,
+                                                                                   task_type=self.context_handler.task_type
+                                                                                   )
 
 
         try:
-            doc_exists = self.db_publish_collection.find_one({"_id": create_id})
+            doc_exists = self.db_publish_collection.find_one({"_id": db_asset["_id"]})
 
             if not doc_exists:
                 inserted_data = self.db_publish_collection.insert_one(db_asset)
 
                 return inserted_data.inserted_id
+            else:
+                return db_asset["_id"]
 
         except Exception as e:
             print(f"Error {e}, Nothing Done!")

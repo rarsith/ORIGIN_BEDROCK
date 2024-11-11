@@ -150,7 +150,7 @@ class EntryStackStream(QtWidgets.QWidget):
         current_item = self.stack_stream_lw.currentItem()
         if current_item:
             item_data = current_item.data(QtCore.Qt.UserRole)
-            self.context_handler.db_asset_id = item_data
+            self.context_handler.db_asset_stream_id = item_data
 
     def get_selected_options(self):
         current_item = self.stack_stream_lw.currentItem()
@@ -159,7 +159,6 @@ class EntryStackStream(QtWidgets.QWidget):
             self.context_handler.db_asset_stream_id = item_data
 
             return {"db_asset_stream_id": item_data,
-                    "db_asset_id": self.context_handler.compile_db_asset_id(),
                     "context_object": self.context_handler}
         else:
             return None

@@ -49,8 +49,8 @@
             "icon": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\gaffer.png",
             "display_name": "Gaffer",
             "versions": {
-                "1.4.13.0": {
-                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.4.13.0-windows\\bin\\gaffer.cmd",
+                "1.5.0.1": {
+                    "executable_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.5.0.1-windows\\bin\\gaffer.cmd",
                     "envar_data": "{}"
                 }
             }
@@ -227,6 +227,17 @@
             "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
             "display_name": "Task manager",
             "versions": {}
+        },
+        "adk sketchbook": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Adk sketchbook",
+            "versions": {
+                " 8.7.1": {
+                    "executable_path": "C:\\Program Files\\Autodesk\\SketchBook\\SketchBook.exe",
+                    "envar_data": ""
+                }
+            }
         }
     }
 }

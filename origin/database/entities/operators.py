@@ -51,24 +51,26 @@ def get_db_asset_class(publish_type):
         "fx_cache": FxCache,
         "scene": SceneFile,
         "hda": HoudiniDigitalAsset,
-        "rig_component": RigModule,
-        "anim_rig": AnimationRig,
-        "cfx_setup": HoudiniDigitalAsset,
-        "cfx_cloth": FxCache,
-        "cfx_hair": FxCache,
-        "cfx_muscle": FxCache,
-        "fx_setup": HoudiniDigitalAsset,
-        "fx_bgeo": FxCache,
-        "fx_particles": FxCache,
-        "cam_tracking": Camera,
-        "positions": "" ,
-        "animation": QuicktimeComponent,
+        "editorial": EditorialMedia,
         "render": Render,
-        "compositing": QuicktimeComponent,
-        "editorial": RenderScriptComponent,
-        "reference": RenderScriptComponent,
-        "plate_io": USDComponent,
-
+        "groom": Groom,
+        "comp": EditorialMedia,
+        "look": Look,
+        "template": Template,
+        "geometry": Geometry,
+        "usd_assembly": USDAssembly,
+        "img_seq": ImageSequence,
+        "camera": Camera,
+        "rig_module": RigModule,
+        "animation_rig": AnimationRig,
+        "texture_set": TextureSet,
+        "texture": Texture,
+        "shot_stack": ShotStack,
+        "shot_breakdown": ShotBreakdown,
+        "animation": Animation,
+        "image": Image,
+        "reference": Reference,
+        
     }
     return pub_types.get(publish_type)
 
@@ -461,6 +463,7 @@ class DBAsset(EntityBaseModel):
         version_string, version = vup.version_up(self.version_cnt)
         return version_string, version
 
+
 class AssetStackBreakdown(DBAsset):
     type: Optional[str] = "asset_stack_breakdown"
 
@@ -506,7 +509,7 @@ class Template(DBAsset):
 
 
 class Geometry(DBAsset):
-    type: Optional[str] = "geo"
+    type: Optional[str] = "geometry"
 
 
 class USDAssembly(DBAsset):
@@ -563,6 +566,12 @@ class DBAssetVersion(EntityBaseModel):
 
     DB_ASSET_TYPE: ClassVar[str] = "db_asset_type"
     db_asset_type: Optional[str] = None
+
+    PARENT_TASK_TYPE: ClassVar[str] = "parent_task_type"
+    parent_task_type: Optional[str] = None
+
+    PARENT_TASK_ID: ClassVar[str] = "parent_task_id"
+    parent_task_id: Optional[str] = None
 
     DESCRIPTION: ClassVar[str] = "description"
     description: Optional[str] = None

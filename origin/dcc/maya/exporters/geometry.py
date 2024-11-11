@@ -90,7 +90,6 @@ class MayaGeometryExporter(GeometryExporter):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)
         full_path = Path(self.path_handler.publish_path(branch_dir_name=self.path_handler.branch_pub_data,
                                                         create_dir=True)) / self.path_handler.output_file_name
-
         return full_path
 
     def save_master_file(self):

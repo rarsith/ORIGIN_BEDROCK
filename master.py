@@ -252,8 +252,11 @@ class MainUI(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         super(MainUI, self).__init__(parent)
-        self.setWindowTitle(f"ORIGIN")
+
         self.central_widget = OriginControlCenterUI()
+
+        self.setWindowTitle(f"ORIGIN")
+
         self.setCentralWidget(self.central_widget)
         self.show()
 

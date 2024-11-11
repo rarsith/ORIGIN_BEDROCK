@@ -26,7 +26,7 @@ def get_publish_type(context: ContextHandler):
         "texturing": [
             EntryStackStream(context=context),
             QcGhost(),
-            FileTypes(),
+            BundleSelector(),
             Publish(context=context)
         ],
 
@@ -34,6 +34,14 @@ def get_publish_type(context: ContextHandler):
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
+            BundleSelector(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
+
+        "shading": [
+            EntryStackStream(context=context),
+            QcGhost(),
             BundleSelector(),
             PreviewOptions(),
             Publish(context=context)

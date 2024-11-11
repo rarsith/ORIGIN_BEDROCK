@@ -14,7 +14,7 @@ class MoneyCounterApp(QWidget):
         self.init_ui()
 
         # Variables
-        self.amount_per_hour = 0
+        self.amount_per_hour = 60
         self.inactivity_timeout = 300000  # Default to 5 minutes (in milliseconds)
         self.inactivity_timer = QTimer(self)
         self.inactivity_timer.timeout.connect(self.check_inactivity)
@@ -119,6 +119,7 @@ class MoneyCounterApp(QWidget):
     def event(self, event: QEvent):
         # Detect user activity and reset inactivity timer
         if event.type() in (QEvent.MouseMove, QEvent.KeyPress):
+            print("ACTIVITY RECORDED")
             self.last_active_time = time.time()
         return super().event(event)
 
