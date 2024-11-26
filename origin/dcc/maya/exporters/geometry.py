@@ -1,77 +1,11 @@
 from pathlib import Path
 from typing import Literal
 
+from origin.dcc.abc.geometry_exporter import GeometryExporter
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
-from origin.database.entities.constructors import DbConstructors
 
 import maya.cmds as cmds
-from abc import ABC, abstractmethod
-
-
-class GeometryExporter(ABC):
-
-    @abstractmethod
-    def save_master_file(self):
-        """
-        - implementation for saving the current DCC scene from where all the other exports will be derived from
-
-        """
-        pass
-
-    @abstractmethod
-    def export_alembic(self,
-                       frame_range=(1, 1),
-                       uv_write=True,
-                       world_space=True,
-                       write_uv_sets=True,
-                       data_format="ogawa"):
-        """
-        implementation for exporting Alembic file format DCC specific
-
-        Args:
-            frame_range: in case of shot export, this could be used to specify the framerange
-            uv_write:
-            world_space:
-            write_uv_sets:
-            data_format:
-
-        Returns:
-
-        """
-
-        pass
-
-    @abstractmethod
-    def export_obj(self):
-        """
-        implementation for exporting OBJ file format DCC specific
-        Returns:
-
-        """
-        pass
-
-    @abstractmethod
-    def export_usd(self):
-        """
-        implementation for exporting USD file format DCC specific
-        Returns:
-
-        """
-        pass
-
-    @abstractmethod
-    def export_geometry(self, file_format):
-        """
-        Implementation of automatic method to be used based on the inputted options
-
-        Args:
-            file_format:
-
-        Returns:
-
-        """
-        pass
 
 
 class MayaGeometryExporter(GeometryExporter):
@@ -120,7 +54,11 @@ class MayaGeometryExporter(GeometryExporter):
 
         export_command += f" -dataFormat {data_format}"
         for obj in self.objects_names:
-            export_command += f" -root {obj}"
+            if "|" in obj:
+                get_root = obj.split("|", 1)[-1]
+            else:
+                get_root = obj
+            export_command += f" -root {get_root}"
 
         export_command += f" -file {alembic_file_path}"
         cmds.AbcExport(j=export_command)

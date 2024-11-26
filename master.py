@@ -5,7 +5,7 @@ from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
 from origin.ui.task_viewer_core import TaskViewerCore
 from origin.ui.entity_properties_ui.properties_viewer import PropertiesViewer
 from origin.ui.app_launcher.app_launcher_ui import AppLauncher
-from origin.ui.odb_sanity_checker_wdg import SanityChecker
+from origin.ui.sanity_checker_wdg import SanityChecker
 
 APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
 thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\dcc\icons\movie_pic.png"
@@ -264,13 +264,19 @@ class MainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     qss_style_file = "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"
 
-    app = QtWidgets.QApplication(sys.argv)
+    # app = QtWidgets.QApplication(sys.argv)
+
+    app = QtWidgets.QApplication.instance()  # Check if QApplication already exists
+    if app is None:  # Create only if it doesn't exist
+        app = QtWidgets.QApplication(sys.argv)
 
     with open(qss_style_file, "r") as f:
         _style = f.read()
         app.setStyleSheet(_style)
 
+
     test_dialog = MainUI()
+    app.exec_()
 
     # test_dialog.show()
     sys.exit(app.exec_())

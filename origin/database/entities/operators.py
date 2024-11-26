@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, ClassVar
 from origin.database.mongo import DBSet, DBAdd, CollectionOperators, FindInCollection
 from origin.common_utils import version_increment as vup
+from origin.tests.New_refactoring.test_refac import Entity
 
 
 def get_entity_class(item_type):
@@ -199,6 +200,63 @@ class EntityBaseModel(BaseModel):
             children.append(child)
         return children
 
+    def operations(self):
+        return EntityOperations(entity=self)
+
+
+class EntityOperations:
+    def __init__(self, entity: EntityBaseModel):
+        self.entity = entity
+
+    def parent_show(self):
+        delimiter = "."
+
+        if delimiter not in self.entity.id:
+            return self.entity.id
+
+        parent_show = self.entity.id.split(delimiter, 1)[0]
+        return parent_show
+
+    def project_control_collection(self):
+        parent_show = self.parent_show()
+        proj_control = "__".join([parent_show, "CONTROL"])
+        return proj_control
+
+    def project_publishes_collection(self):
+        parent_show = self.parent_show()
+        proj_publishes = "__".join([parent_show, "PUBLISHES"])
+        return proj_publishes
+
+    def project_work_collection(self):
+        parent_show = self.parent_show()
+        proj_work = "__".join([parent_show, "WORK"])
+        return proj_work
+
+    def get_parent(self):
+        parent_id = self.entity.id.rsplit(".", 1)[0]
+        doc_data = CollectionOperators(db_collection=self.parent_show())
+        db_doc = doc_data.entity_document(doc_id=parent_id)
+        return EntityBaseModel(**db_doc)
+
+    def set_parent(self, parent):
+        DBSet(db_collection=self.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.PARENT).attribute_value(data=parent)
+
+    def add_child(self, db_collection, child_id):
+        DBAdd(db_collection=db_collection,
+              entry_id=self.entity.id,
+              attribute=self.entity.CHILDREN).value_to_field(data=child_id)
+
+    def get_children(self):
+        children = []
+        doc_data = CollectionOperators(db_collection=self.parent_show())
+        children_docs = doc_data.children_with_parent_id(parent_id=self.entity.id)
+        for child in children_docs:
+            children.append(child)
+        return children
+
+
 
 class Asset(EntityBaseModel):
     DEFINITION: ClassVar[dict] = "definition"
@@ -266,6 +324,64 @@ class Asset(EntityBaseModel):
                 stream_documents.append(streams_doc)
         return stream_documents
 
+    def operations(self):
+        return AssetOperations(entity=self)
+
+
+class AssetOperations:
+    def __init__(self, entity: Asset):
+        self.entity = entity
+
+    def set_definition(self, data):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.DEFINITION).attribute_value(data=data)
+
+    def set_tasks(self, data):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.TASKS).attribute_value(data=data)
+
+    def set_assignees(self, data):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.ASSIGNEES).attribute_value(data=data)
+
+    def set_assigned_to(self, data):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.ASSIGNED_TO).attribute_value(data=data)
+
+    def add_stack_stream(self, data):
+        DBAdd(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.STACK_STREAMS).value_to_field(data=data)
+
+    def remove_stack_stream(self, stream_id):
+        db_ops = CollectionOperators(db_collection=self.entity.parent_show())
+        db_ops.remove_value_from_doc_attr(doc_id=self.entity.id,
+                                          attr=self.entity.STACK_STREAMS,
+                                          value=stream_id)
+
+    def find_empty_stack_streams(self):
+        empty_stacks_ids = []
+        get_asset_streams = self.get_stack_streams_documents()
+
+        for stream in get_asset_streams:
+            if len(stream["children"]) == 0:
+                empty_stacks_ids.append(stream["_id"])
+        return empty_stacks_ids
+
+    def get_stack_streams_documents(self):
+        stream_documents = []
+        db_ops = CollectionOperators(db_collection=self.entity.project_publishes_collection())
+
+        for stream in self.entity.stack_streams:
+            streams_doc = db_ops.entity_document(doc_id=stream)
+            if streams_doc is not None:
+                stream_documents.append(streams_doc)
+        return stream_documents
+
 
 class Group(EntityBaseModel):
     DATA: ClassVar[dict] = "data"
@@ -296,6 +412,29 @@ class Project(EntityBaseModel):
         DBSet(db_collection=self.parent_show(),
               entry_id=self.id,
               attribute=self.SHOW_SETTING).attribute_value(data=data)
+
+    def operations(self):
+        return ProjectOperations(entity=self)
+
+
+class ProjectOperations:
+    def __init__(self, entity:Project):
+        self.entity = entity
+
+    def set_show_type(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.TYPE).attribute_value(data=data)
+
+    def set_show_code(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.SHOW_CODE).attribute_value(data=data)
+
+    def set_show_settings(self, data: dict):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.SHOW_SETTING).attribute_value(data=data)
 
 
 class Task(EntityBaseModel):
@@ -373,6 +512,51 @@ class Task(EntityBaseModel):
               attribute=self.PREVIOUS_ARTISTS).value_to_field(data=data)
 
 
+class TaskOperations:
+    def __init__(self, entity:Task):
+        self.entity = entity
+
+    def set_artist(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.ARTIST).attribute_value(data=data)
+
+    def add_imports_from(self, data: dict):
+        DBAdd(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.IMPORTS_FROM).value_to_field(data=data)
+
+    def set_bid_days(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.BID_DAYS).attribute_value(data=data)
+
+    def set_end_date(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.END_DATE).attribute_value(data=data)
+
+    def add_milestones(self, data: dict):
+        DBAdd(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.MILESTONES).value_to_field(data=data)
+
+    def set_start_date(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.START_DATE).attribute_value(data=data)
+
+    def set_worked_days(self, data: str):
+        DBSet(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.WORKED_DAYS).attribute_value(data=data)
+
+    def add_previous_artists(self, data: str):
+        DBAdd(db_collection=self.entity.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.PREVIOUS_ARTISTS).value_to_field(data=data)
+
+
 class WorkFile(EntityBaseModel):
     DESCRIPTION: ClassVar[str] = "description"
     description: Optional[str] = None
@@ -388,6 +572,14 @@ class WorkFile(EntityBaseModel):
 
     REPRESENTATION: ClassVar[dict] = "representation"
     representation: Optional[dict] = None
+
+    def operations(self):
+        return WorkFileOperators(entity=self)
+
+
+class WorkFileOperators:
+    def __init__(self, entity:WorkFile):
+        self.entity = entity
 
     def all(self):
         print("These are all Work Files")
@@ -422,6 +614,11 @@ class Projects:
                 projects_list.append(get_root_doc[0])
 
         return projects_list
+
+
+class StackBaseModel(EntityBaseModel):
+    SLOTS: ClassVar[dict] = "slots"
+    slots: Optional[dict] = None
 
 
 class DBAsset(EntityBaseModel):
@@ -461,6 +658,40 @@ class DBAsset(EntityBaseModel):
 
     def get_next_version(self):
         version_string, version = vup.version_up(self.version_cnt)
+        return version_string, version
+
+    def operations(self):
+        return DBAssetOperations(entity=self)
+
+
+class DBAssetOperations:
+    def __init__(self, entity:DBAsset):
+        self.entity = entity
+
+    def update_version_count(self, increment: int):
+        next_version = self.entity.version_cnt + increment
+        DBSet(db_collection=self.entity.project_publishes_collection(),
+              entry_id=self.entity.id,
+              attribute=self.entity.VERSION_CNT).attribute_value(data=next_version)
+
+    def get_all_versions(self) -> List[dict]:
+        data_ops = CollectionOperators(db_collection=self.entity.project_publishes_collection())
+        all_versions = data_ops.entities_attr_value_starts_with(attr_field="_id",
+                                                                val_starts_with=self.entity.id,
+                                                                extra_filters=[{self.entity.TYPE: "publish"}])
+        return all_versions
+
+    def get_latest_version(self):
+        data_ops = CollectionOperators(db_collection=self.entity.project_publishes_collection())
+        versions = data_ops.get_all_versions(db_asset=self)
+        all_versions = []
+        for version in versions:
+            all_versions.append(version[self.entity.VERSION_CNT])
+
+        return all_versions
+
+    def get_next_version(self):
+        version_string, version = vup.version_up(self.entity.version_cnt)
         return version_string, version
 
 

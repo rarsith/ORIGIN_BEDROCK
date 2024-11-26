@@ -1,12 +1,16 @@
 import os
 
 from origin.envars.origin_envars import ContextHandler
-from origin.dcc.maya.exporters.geometry import MayaGeometryExporter, GeometryExporter
+from origin.dcc.maya.exporters.geometry import (MayaGeometryExporter)
+from origin.dcc.blender.exporters.camera import BlenderCameraExporter
+from origin.dcc.maya.exporters.camera import MayaCameraExporter
+from origin.dcc.blender.exporters.geometry import BlenderGeometryExporter
+from origin.dcc.abc.camera_exporter import CameraExporter
+from origin.dcc.abc.geometry_exporter import GeometryExporter
 
 
 class ModelingPublish:
     def __init__(self, publish_options):
-
         self.exported_results = {"data": {}, "images": {}, "quicktime": {}}
         self.publishing_options = publish_options
         self.context_handler: ContextHandler = self.publishing_options["context_object"]
@@ -16,7 +20,8 @@ class ModelingPublish:
 
     def get_geometry_publisher_class(self, dcc):
         geometry_classes = {
-            "maya": MayaGeometryExporter(objects_names=["main"], context=self.context_handler),
+            "maya": MayaGeometryExporter(objects_names=["main|geo"], context=self.context_handler),
+            "blender": BlenderGeometryExporter(objects_names=["main|geo"], context=self.context_handler),
 
         }
         if dcc in list(geometry_classes.keys()):
@@ -50,6 +55,28 @@ class ModelingPublish:
         reviewable_components = self.process_review_media()
 
         return self.exported_results
+
+
+class CameraPublish:
+    def __init__(self, publish_options):
+        self.exported_results = {"data": {}, "images": {}, "quicktime": {}}
+        self.publishing_options = publish_options
+        self.context_handler: ContextHandler = self.publishing_options["context_object"]
+        self.dcc = os.getenv("DCC")
+
+        self.geometry_publisher: CameraExporter = self.get_camera_publisher_class(dcc=self.dcc)
+
+    def get_camera_publisher_class(self, dcc):
+        geometry_classes = {
+            "maya": MayaCameraExporter(camera_name=""),
+            "blender": BlenderCameraExporter(camera_name=""),
+
+        }
+        if dcc in list(geometry_classes.keys()):
+            return geometry_classes[dcc]
+
+
+
 
 
 

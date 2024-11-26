@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets
 
-from origin.ui.odb_entry_properties_editor_UI import EntryPropertiesEditorUI
+from origin.ui.entity_properties_ui.custom_widgets.entity_properties_editor_UI import EntryPropertiesEditorUI
 from origin.ui.entity_properties_ui.custom_widgets.odb_links_ui import ButtonsWidget
 from origin.ui.entity_properties_ui.custom_widgets.odb_notes_ui import NotesWidget
 from origin.ui.entity_properties_ui.custom_widgets.component_viewer_core import SlotComponentsViewerCore

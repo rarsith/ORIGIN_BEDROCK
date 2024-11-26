@@ -6,7 +6,7 @@
             "display_name": "Maya",
             "versions": {
                 "2024": {
-                    "executable_path": "C:\\Users\\arsithra\\Desktop\\Maya.bat",
+                    "executable_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\maya\\Maya.bat",
                     "envar_data": "{\"DCC\":\"maya\"}"
                 }
             }
@@ -39,7 +39,7 @@
             "display_name": "Blender",
             "versions": {
                 "4.2": {
-                    "executable_path": "C:\\Users\\arsithra\\Desktop\\Blender.bat",
+                    "executable_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\blender\\Blender.bat",
                     "envar_data": "{}"
                 }
             }

@@ -31,12 +31,6 @@ class RiggingPublish:
 
                 exported_data.update(collected_data)
 
-        # if self.publishing_options["user_file_formats"]:
-        #     for file_format in self.publishing_options["user_file_formats"]:
-        #         collected_data = self.rigging_publisher.export_rigging(file_format)
-        #
-        #         exported_data.update(collected_data)
-
         return exported_data
 
     def process_review_media(self):
