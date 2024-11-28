@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 from typing import Optional, ClassVar
 from origin.database.mongo import DBSet, DBAdd, CollectionOperators, FindInCollection
 from origin.common_utils import version_increment as vup
-from origin.tests.New_refactoring.test_refac import Entity
 
 
 def get_entity_class(item_type):
@@ -71,7 +70,7 @@ def get_db_asset_class(publish_type):
         "animation": Animation,
         "image": Image,
         "reference": Reference,
-        
+
     }
     return pub_types.get(publish_type)
 
@@ -257,7 +256,6 @@ class EntityOperations:
         return children
 
 
-
 class Asset(EntityBaseModel):
     DEFINITION: ClassVar[dict] = "definition"
     definition: Optional[dict] = None
@@ -328,8 +326,9 @@ class Asset(EntityBaseModel):
         return AssetOperations(entity=self)
 
 
-class AssetOperations:
+class AssetOperations(EntityOperations):
     def __init__(self, entity: Asset):
+        super(AssetOperations, self).__init__(entity=entity)
         self.entity = entity
 
     def set_definition(self, data):
@@ -417,8 +416,9 @@ class Project(EntityBaseModel):
         return ProjectOperations(entity=self)
 
 
-class ProjectOperations:
-    def __init__(self, entity:Project):
+class ProjectOperations(EntityOperations):
+    def __init__(self, entity: Project):
+        super(ProjectOperations, self).__init__(entity=entity)
         self.entity = entity
 
     def set_show_type(self, data: str):
@@ -511,9 +511,13 @@ class Task(EntityBaseModel):
               entry_id=self.id,
               attribute=self.PREVIOUS_ARTISTS).value_to_field(data=data)
 
+    def operations(self):
+        return TaskOperations(entity=self)
 
-class TaskOperations:
-    def __init__(self, entity:Task):
+
+class TaskOperations(EntityOperations):
+    def __init__(self, entity: Task):
+        super(TaskOperations, self).__init__(entity=entity)
         self.entity = entity
 
     def set_artist(self, data: str):
@@ -577,8 +581,9 @@ class WorkFile(EntityBaseModel):
         return WorkFileOperators(entity=self)
 
 
-class WorkFileOperators:
-    def __init__(self, entity:WorkFile):
+class WorkFileOperators(EntityOperations):
+    def __init__(self, entity: WorkFile):
+        super(WorkFileOperators, self).__init__(entity=entity)
         self.entity = entity
 
     def all(self):
@@ -634,6 +639,9 @@ class DBAsset(EntityBaseModel):
     VERSION_CNT: ClassVar[int] = "version_cnt"
     version_cnt: Optional[int] = 0
 
+    DB_ASSET_TYPE: ClassVar[str] = "db_asset_type"
+    db_asset_type: Optional[str] = None
+
     def update_version_count(self, increment: int):
         next_version = self.version_cnt + increment
         DBSet(db_collection=self.project_publishes_collection(),
@@ -664,8 +672,9 @@ class DBAsset(EntityBaseModel):
         return DBAssetOperations(entity=self)
 
 
-class DBAssetOperations:
-    def __init__(self, entity:DBAsset):
+class DBAssetOperations(EntityOperations):
+    def __init__(self, entity: DBAsset):
+        super(DBAssetOperations, self).__init__(entity=entity)
         self.entity = entity
 
     def update_version_count(self, increment: int):
@@ -833,6 +842,9 @@ class DBAssetFileComponent(EntityBaseModel):
     VISIBLE: ClassVar[bool] = "visible"
     visible: Optional[bool] = None
 
+    DB_ASSET_TYPE: ClassVar[str] = "db_asset_type"
+    db_asset_type: Optional[str] = None
+
 
 class AlembicArchiveComponent(DBAssetFileComponent):
     type: Optional[str] = "alembic_component"
@@ -987,4 +999,4 @@ class TaskPublish:
 if __name__ == "__main__":
     projs = Projects()
     xx = projs.names()
-    print(xx)
+    # print(xx)

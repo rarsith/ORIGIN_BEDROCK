@@ -24,7 +24,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.current_step = 0
 
-        self.collected_options = {"publish_type":self.publish_type}
+        self.collected_options = {"publish_type": self.publish_type}
 
         self.create_widgets()
         self.create_layout()

@@ -1,4 +1,5 @@
 import sys
+
 from PySide2 import QtWidgets, QtCore
 from origin.ui.publishes_view_core import MainPublishesViewCore
 from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
@@ -6,6 +7,8 @@ from origin.ui.task_viewer_core import TaskViewerCore
 from origin.ui.entity_properties_ui.properties_viewer import PropertiesViewer
 from origin.ui.app_launcher.app_launcher_ui import AppLauncher
 from origin.ui.sanity_checker_wdg import SanityChecker
+
+
 
 APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
 thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\dcc\icons\movie_pic.png"
@@ -274,9 +277,8 @@ if __name__ == "__main__":
         _style = f.read()
         app.setStyleSheet(_style)
 
-
     test_dialog = MainUI()
-    app.exec_()
+    # app.exec_()
 
     # test_dialog.show()
     sys.exit(app.exec_())

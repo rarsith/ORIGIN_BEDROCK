@@ -1,6 +1,5 @@
 from typing import List
 
-from PyQt5.QtCore import Qt
 from PySide2 import QtWidgets, QtGui, QtCore
 from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
@@ -10,7 +9,6 @@ from origin.database.entities.actions import Set
 
 img_path = "../origin/icons/play_icon_vsmall.png"
 thumbnail_path = r"/dcc/icons/movie_pic.png"
-
 
 class PublishThumbnailViewer(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -245,10 +243,14 @@ class MainPublishesViewCore(MainPublishesViewUI):
     def get_publishes(self):
         extra_filters = self.resolve_extra_filters(default_filter=[{"type": "publish"}])
 
+        if self.context_handler.task_id is not None:
+            extra_filters = self.resolve_extra_filters(default_filter=[{"type": "publish",
+                                                                        "parent_task_id": self.context_handler.task_id}])
+
         get_limit_value = self.get_limit_load()
         fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
         publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
-                                                                   val_starts_with=self.context_handler.resolve_to_task_type_context(),
+                                                                   val_starts_with=self.context_handler.resolve_to_base_context(),
                                                                    extra_filters=extra_filters,
                                                                    ids_only=True
                                                                    )

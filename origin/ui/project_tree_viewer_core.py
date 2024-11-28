@@ -115,9 +115,9 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             cnt += 1
         self.context_handler.show_name = self.show_select_cb.currentText()
 
-    def set_show_to(self):
+    def set_show_to(self, show_name):
         """Sets the show to the current show in the combobox"""
-        self.show_select_cb.setCurrentText(self.show_name)
+        self.show_select_cb.setCurrentText(show_name)
 
     def get_current_index_data(self):
         curr_index = self.show_select_cb.currentIndex()
@@ -137,7 +137,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.project_tree_viewer_wdg.clear()
         curr_proj_data = self.get_current_index_data()
         if curr_proj_data:
-            get_branches = curr_proj_data.get_children()
+            get_branches = curr_proj_data.operations().get_children()
 
             if get_branches:
                 for branch in get_branches:
@@ -322,6 +322,7 @@ if __name__ == '__main__':
     font = app.instance().setFont(QtGui.QFont())
 
     test_dialog = ProjectTreeViewerCore()
+    test_dialog.set_show_to("The_Rock")
     # test_dialog.isolate_to_context(asset_id)
     test_dialog.show()
     sys.exit(app.exec_())

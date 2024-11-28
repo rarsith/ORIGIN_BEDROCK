@@ -243,11 +243,6 @@ class CollectionOperators:
     def remove_value_from_doc_attr(self, doc_id, attr, value):
         self.db_collection.update_one({"_id": doc_id}, {"$pull": {attr: value}})
 
-    # def entity_children_ids(self, doc_id):
-    #     db_document = self.db_collection.find_one({"_id": doc_id})
-    #     if db_document:
-    #         return db_document.get(EntityBaseModel.CHILDREN, [])
-
     def children_with_parent_id(self, parent_id):
         db_documents = self.db_collection.find({"parent": parent_id})
         return [doc for doc in db_documents]

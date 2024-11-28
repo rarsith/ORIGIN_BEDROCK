@@ -1,13 +1,8 @@
 import os
 from typing import Optional
 from pydantic import BaseModel
-
-# from origin.database.entities.actions import Create
 from origin.database.entities.operators import Project, Asset, Task, DBAsset
 from origin.database.mongo import CollectionOperators
-
-
-# from origin.paths.output_paths import OriginOSPathHandler
 
 
 class SessionContext(BaseModel):

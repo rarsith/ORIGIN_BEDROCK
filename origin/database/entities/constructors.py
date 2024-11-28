@@ -183,6 +183,7 @@ class DbConstructors:
 
             label=set_display_name,
             master_task_type='',
+            db_asset_type="db_asset__stream",
 
             date=DateTime().curr_date,
             time=DateTime().curr_time,
@@ -217,6 +218,7 @@ class DbConstructors:
             label="",
             master_task_type=task_type,
             stack_slot=publish_type,
+            db_asset_type="db_asset",
 
             date=DateTime().curr_date,
             time=DateTime().curr_time,
@@ -263,7 +265,7 @@ class DbConstructors:
             status=status,
 
             label=set_display_name,
-            db_asset_type=resolve_db_asset_type,
+            db_asset_type="db_asset__version",
             parent_task_type=self.context_handler.task_type,
             parent_task_id=self.context_handler.task_id,
             description="",
@@ -317,6 +319,7 @@ class DbConstructors:
             file_path=file_path,
             visible=visibility,
             master_task_type=self.context_handler.task_type,
+            db_asset_type="db_asset__file_component",
 
             date=DateTime().curr_date,
             time=DateTime().curr_time,

@@ -13,12 +13,17 @@ class TaskViewerCore(TaskViewerUI):
     changes_to_database = []
     current_context = QtCore.Signal(object)
 
-    def __init__(self, parent=None):
+    def __init__(self, context: ContextHandler = None, parent=None):
         super(TaskViewerCore, self).__init__(parent)
 
-        self.context_handler = None
         self.entity_received = None
         self.project_received = None
+
+        self.context_handler = context
+        if self.context_handler is not None:
+            self.resolve_entity()
+            self.resolve_project()
+
         self.create_tasks_actions()
         self.create_connections()
 
@@ -248,18 +253,20 @@ class TaskViewerCore(TaskViewerUI):
         else:
             print("Please select an ASSET!")
 
+
 if __name__ == '__main__':
     import sys
 
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr.red_hulk',
-                      'entity_name': 'red_hulk',
-                      'db_asset_id': 'New_State.assets.chr.red_hulk.red_hulk.modeling.helmet',
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr.tafer',
+                      'entity_name': 'tafer',
+                      'db_asset_id': 'The_Rock.assets.chr.tafer.modeling.main',
+                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.red_hulk',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'task_name': "modeling",
                       'task_type': "modeling"}
 
@@ -269,7 +276,7 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     font = app.instance().setFont(QtGui.QFont())
 
-    test_dialog = TaskViewerCore()
+    test_dialog = TaskViewerCore(context=context_obj)
     test_dialog.populate_widget()
     test_dialog.show()
     sys.exit(app.exec_())
