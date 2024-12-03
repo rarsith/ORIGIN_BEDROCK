@@ -6,12 +6,12 @@ from origin.database.entities.actions import Create
 from origin.database.dispachers.entity_class_dispatcher import extract_asset_class
 
 
-class CreateStreamUI(QtWidgets.QDialog):
+class CreateStackUI(QtWidgets.QDialog):
 
     def __init__(self, context:ContextHandler, parent=None):
-        super(CreateStreamUI, self).__init__(parent)
+        super(CreateStackUI, self).__init__(parent)
 
-        self.setWindowTitle("Create Asset")
+        self.setWindowTitle("Create Stack")
 
         self.context_handler = context
 
@@ -39,7 +39,7 @@ class CreateStreamUI(QtWidgets.QDialog):
     def create_layout(self):
         form_layout = QtWidgets.QFormLayout()
         form_layout.addRow("Entry Path: ", self.show_name_le)
-        form_layout.addRow("Stream Name:", self.stream_name_le)
+        form_layout.addRow("Stack Name:", self.stream_name_le)
 
         buttons_layout = QtWidgets.QHBoxLayout()
         buttons_layout.addStretch()
@@ -71,22 +71,26 @@ class CreateStreamUI(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
                       'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'yellow_hulk',
+                      'entity_name': 'tafer',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.yellow_hulk',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "New_State.assets.chr.yellow_hulk.modeling"}
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer',
+                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer',
+                      }
 
     context_handler = ContextHandler()
     context_handler.load_session(context_sample)
 
     app = QtWidgets.QApplication(sys.argv)
-    create_asset = CreateStreamUI(context=context_handler)
+    create_asset = CreateStackUI(context=context_handler)
     create_asset.show()
     sys.exit(app.exec_())
+

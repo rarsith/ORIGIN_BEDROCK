@@ -127,7 +127,7 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
             self.stream_name_lw.takeItem(idx)
 
         for checked_item_id in checked_items_ids:
-            self.asset_class.remove_stack_stream(stream_id=checked_item_id)
+            self.asset_class.operations().remove_stack_stream(stream_id=checked_item_id)
             db_ops.delete_entity_document(doc_id=checked_item_id)
 
 

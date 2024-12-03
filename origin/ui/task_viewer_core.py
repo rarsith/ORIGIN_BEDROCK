@@ -37,7 +37,6 @@ class TaskViewerCore(TaskViewerUI):
         self.context_handler = context
         self.resolve_project()
         self.resolve_entity()
-        # return self.context_handler
 
     def resolve_entity(self):
         if self.context_handler.entity_type != "group":
@@ -192,7 +191,7 @@ class TaskViewerCore(TaskViewerUI):
 
     def get_tasks(self):
         if self.entity_received is not None and self.entity_received.type != "group":
-            item_tasks = self.entity_received.get_children()
+            item_tasks = self.entity_received.operations().get_children()
 
             if item_tasks is None:
                 return {}

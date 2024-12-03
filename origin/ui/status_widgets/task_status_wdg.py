@@ -1,6 +1,6 @@
-
 from PySide2 import QtWidgets, QtCore, QtGui
 from origin.database.statuses import DbTaskStatuses
+from origin.ui.status_widgets.color_settings import match_color_scheme
 
 
 class CustomDelegate(QtWidgets.QStyledItemDelegate):
@@ -30,24 +30,8 @@ class TaskStatusWidget(QtWidgets.QComboBox):
 
     def updateStyle(self, index):
         current_text = self.itemText(index)
-        if current_text == "WIP":
-            self.setStyleSheet("background-color: #BBCB0F; color: black")
-        elif current_text == "READY TO START":
-            self.setStyleSheet("background-color: #6C89BF;")
-        elif current_text == "IN PROGRESS":
-            self.setStyleSheet("background-color: #5EBEA6; color: black")
-        elif current_text == "COMPLETED":
-            self.setStyleSheet("background-color: #1F8918; color: black")
-        elif current_text == "OMITTED":
-            self.setStyleSheet("background-color: #936E94; color: black")
-        elif current_text == "ON HOLD":
-            self.setStyleSheet("background-color: #A41A1A; color: black")
-        elif current_text == "NOT STARTED":
-            self.setStyleSheet("background-color: #636363; color: #A8A8A8")
-
-        else:
-            self.setStyleSheet("background-color: lightgrey;")
-
+        get_color_schema = match_color_scheme(current_text)
+        self.setStyleSheet(get_color_schema)
 
 
 if __name__ == "__main__":

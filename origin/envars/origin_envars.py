@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 from origin.database.entities.operators import Project, Asset, Task, DBAsset
 from origin.database.mongo import CollectionOperators
+from origin.database.mongo_connection import MongoConnection
 
 
 class SessionContext(BaseModel):
@@ -187,11 +188,6 @@ class ContextHandler:
         self.project_work = "__".join([self.show_name, "WORK"])
         self.project_control = "__".join([self.show_name, "CONTROL"])
 
-    # def compile_db_asset_id(self):
-    #     stream_name = self.db_asset_stream_id.rsplit(".", 1)[1]
-    #     db_asset_id = ".".join([self.entity_id, self.task_type, stream_name])
-    #     return db_asset_id
-
     def resolve_origin_path_hierarchy(self):
         """
         Returns: self.origin_path_hierarchy content split by delimiter
@@ -289,6 +285,12 @@ class ContextHandler:
 class OriginDatabaseHandler:
     def __init__(self, context: ContextHandler):
         self.__context = context
+
+        self.__db = MongoConnection().origin_production_database()
+        self.__project_structure_collection = self.__db[self.__context.show_name]
+        self.__project_publishes_collection = self.__db[self.__context.project_publishes]
+        self.__project_control_collection = self.__db[self.__context.project_control]
+        self.__project_work_collection = self.__db[self.__context.project_work]
 
     def get_db_document_by_id(self, db_collection, doc_id):
         db_ops = CollectionOperators(db_collection=db_collection)

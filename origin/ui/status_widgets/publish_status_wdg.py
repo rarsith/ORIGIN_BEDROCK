@@ -1,6 +1,7 @@
 
 from PySide2 import QtWidgets, QtCore, QtGui
 from origin.database.statuses import DbVersionStatuses
+from origin.ui.status_widgets.color_settings import match_color_scheme
 
 
 class CustomDelegate(QtWidgets.QStyledItemDelegate):
@@ -30,39 +31,8 @@ class PublishStatusWidget(QtWidgets.QComboBox):
 
     def updateStyle(self, index):
         current_text = self.itemText(index)
-        if current_text == "WIP":
-            self.setStyleSheet("background-color: #BBCB0F; color: black")
-
-        elif current_text == "IN PROGRESS":
-            self.setStyleSheet("background-color: #80ccff; color: black")
-
-        elif current_text == "PENDING REVIEW":
-            self.setStyleSheet("background-color: #ffc266; color: black")
-
-        elif current_text == "TWEAK":
-            self.setStyleSheet("background-color: #db70b8; color: black")
-
-        elif current_text == "IGNORE":
-            self.setStyleSheet("background-color: #bfbfbf; color: #595959")
-
-        elif current_text == "REJECTED":
-            self.setStyleSheet("background-color: #c86851; color: #d9d9d9")
-
-        elif current_text == "INTERNAL APPROVED":
-            self.setStyleSheet("background-color: #99cc00; color: #404040")
-
-        elif current_text == "CLIENT APPROVED":
-            self.setStyleSheet("background-color: #00802b; color: #333333")
-
-        elif current_text == "READY TO DELIVER":
-            self.setStyleSheet("background-color: #00802b; color: #333333")
-
-        elif current_text == "TEMP APPROVED":
-            self.setStyleSheet("background-color: #e6e600; color: #0d0d0d")
-
-        else:
-            self.setStyleSheet("background-color: lightgrey;")
-
+        get_color_schema = match_color_scheme(current_text)
+        self.setStyleSheet(get_color_schema)
 
 
 if __name__ == "__main__":

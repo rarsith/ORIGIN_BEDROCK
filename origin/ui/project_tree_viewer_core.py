@@ -154,7 +154,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def on_item_expanded(self, item):
         if item.childCount() == 0:
             parent_doc_data = item.data(0, QtCore.Qt.UserRole)
-            children_docs = parent_doc_data.get_children()
+            children_docs = parent_doc_data.operations().get_children()
 
             for child_doc in children_docs:
                 if child_doc["type"] != "task":

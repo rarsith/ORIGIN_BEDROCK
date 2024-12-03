@@ -35,7 +35,7 @@ class OriginOSPathHandler:
 
     def __compile_next_version(self):
         if self.__db_asset_doc:
-            self.__version_string, version = self.__db_asset_doc.get_next_version()
+            self.__version_string, version = self.__db_asset_doc.operations().get_next_version()
             return self.__version_string
 
     def __compile_server_db_asset_version_dir_name(self):

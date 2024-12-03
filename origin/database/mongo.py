@@ -16,7 +16,10 @@ class DBFind:
 
     def _db_results(self):
         results = self.db[self.collection].find({"_id": self.entry_id}, {"_id": 0, self.attribute: 1})
-        return results
+        if results:
+            return results
+        else:
+            return None
 
     def _find_key_value(self, dictionary, target_key):
         for key, value in dictionary.items():
@@ -30,12 +33,16 @@ class DBFind:
 
     def attr_values(self):
         delimiter = "."
-        for result in self.result:
-            if delimiter in self.attribute:
-                get_key = self.attribute.split(delimiter)[-1]
-                get_value = self._find_key_value(result, get_key)
-                return get_value
-            return result[self.attribute]
+        if self.result is not None:
+            for result in self.result:
+                if delimiter in self.attribute:
+                    get_key = self.attribute.split(delimiter)[-1]
+                    get_value = self._find_key_value(result, get_key)
+                    return get_value
+                else:
+                    return result[self.attribute]
+        else:
+            return None
 
     def attr_names(self):
         delimiter = "."
@@ -69,6 +76,7 @@ class DBAdd:
 
         if check_if_exists is None:
             DBSet(self.collection, self.entry_id, self.attribute).attribute_value(data=[data])
+            check_if_exists = DBFind(self.collection, self.entry_id, self.attribute).attr_values()
 
         if not isinstance(data, list):
             if data not in check_if_exists:
@@ -280,6 +288,25 @@ class CollectionOperators:
 
         if published_by is not None:
             pipe.add_match_attribute(db_asset.OWNER, published_by)
+
+        pipe.add_sort("version_cnt", -1)
+        pipeline = pipe.create_pipeline()
+
+        try:
+            if self.db_collection is not None:
+                results = list(self.db_collection.aggregate(pipeline))
+                return results
+
+        except Exception as e:
+            print(__file__, e)
+
+    def get_all_file_components(self, db_asset_version, published_by: str = None):
+        pipe = OriginDBPipelines()
+        pipe.add_attr_value_startswith(db_asset_version.ID, db_asset_version.id)
+        pipe.add_match_attribute(db_asset_version.TYPE, "publish")
+
+        if published_by is not None:
+            pipe.add_match_attribute(db_asset_version.OWNER, published_by)
 
         pipe.add_sort("version_cnt", -1)
         pipeline = pipe.create_pipeline()
