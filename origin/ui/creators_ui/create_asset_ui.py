@@ -53,9 +53,11 @@ class CreateAssetUI(QtWidgets.QDialog):
 
     def db_commit(self):
         asset_name = self.asset_name_le.text()
-        Create(context=self.context_handler).asset(name=asset_name,
-                                                   parent=self.asset_parent
-                                                   )
+        created_asset_id = Create(context=self.context_handler).asset(name=asset_name,
+                                                                      parent=self.asset_parent
+                                                                      )
+        Create(context=self.context_handler).asset_breakdown(parent_id=created_asset_id)
+
         self.asset_name_le.clear()
 
 

@@ -8,7 +8,7 @@ from origin.database.dispachers.entity_class_dispatcher import extract_asset_cla
 
 class CreateStreamUI(QtWidgets.QDialog):
 
-    def __init__(self, context:ContextHandler, parent=None):
+    def __init__(self, context: ContextHandler, parent=None):
         super(CreateStreamUI, self).__init__(parent)
 
         self.setWindowTitle("Create Asset")

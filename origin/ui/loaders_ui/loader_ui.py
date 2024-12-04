@@ -196,7 +196,7 @@ class AssetTypesButtonsSelectors(QtWidgets.QWidget):
         self.create_connections()
 
     def create_widgets(self):
-        exceptions = ["asset_stack_breakdown", "asset_stack", "shot_stack", "shot_stack_breakdown"]
+        exceptions = ["asset_stack_breakdown", "asset_stack", "shot_stack", "shot_stack_breakdown", "db_asset_breakdown"]
         for db_type in self.db_asset_type:
             if db_type not in exceptions:
                 select_db_asset_type = QtWidgets.QPushButton(db_type.capitalize())

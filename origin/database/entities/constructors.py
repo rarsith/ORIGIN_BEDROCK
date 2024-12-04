@@ -11,7 +11,7 @@ from origin.database.entities.operators import (DBAssetVersion,
                                                 Asset,
                                                 Group,
                                                 Task,
-                                                DBAssetFileComponent)
+                                                DBAssetFileComponent, AssetBreakdown, AssetBreakdownVersion)
 from origin.database.mongo import CollectionOperators
 
 
@@ -283,42 +283,77 @@ class DbConstructors:
 
         return db_asset_version_doc
 
-    def db_stack_version_construct(self, parent_id, stack_type):
-        from origin.database.entities.operators import get_db_asset_class
+    def asset_breakdown_construct(self, parent_id):
+        parent_name = parent_id.rsplit(".", 1)[1]
+        compiled_id = ".".join([parent_id, "breakdown"])
+        compiled_name = "__".join([parent_name, "breakdown"])
 
-        parent_doc = self.context_handler.database_handler().get_db_asset_stream_document()
+        parent_doc_data = self.context_handler.database_handler().get_db_document_by_id(db_collection=self.context_handler.show_name, doc_id=parent_id)
+        parent_doc = Asset(**parent_doc_data)
 
-        parent_name = parent_doc.id.rsplit('.', 1)[1]
-        db_asset_class = get_db_asset_class(stack_type)
-        compiled_id = ".".join([self.context_handler.entity_id, publish_type, parent_name])
-
-
-
-        document = db_asset_class(
+        document = AssetBreakdown(
             _id=compiled_id,
-            name=parent_name,
+            name=compiled_name,
             active=True,
-            # type="db_asset",
+            type="breakdown",
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
-            status="",
 
-            label="",
-            master_task_type=task_type,
-            stack_slot=publish_type,
-            db_asset_type="db_asset",
+            db_asset_type="db_asset__breakdown",
 
             date=DateTime().curr_date,
             time=DateTime().curr_time,
             owner=Users().curr_user(),
         )
 
-        db_asset_doc = document.model_dump(by_alias=True)
+        db_asset_breakdown_doc = document.model_dump(by_alias=True)
 
-        parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=compiled_id)
+        parent_doc.operations().set_asset_breakdown(breakdown_id=compiled_id)
 
-        return db_asset_doc
+        return db_asset_breakdown_doc
+
+    def asset_breakdown_version_construct(self, input_data: dict):
+        compiled_parent_id = ".".join([self.context_handler.entity_id, "breakdown"])
+        data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        parent_data = data_ops.entity_document(doc_id=compiled_parent_id)
+        parent_doc = DBAsset(**parent_data)
+
+        version_string, version = vup.version_up(parent_doc.version_cnt)
+        parent_doc.operations().update_version_count(1)
+
+        set_display_name = "_".join(
+            [self.context_handler.entity_name,
+             "_breakdown",
+             f"_{version_string}"])
+
+        entity_id = ".".join([compiled_parent_id, version_string])
+        parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
+
+        document = AssetBreakdownVersion(
+
+            _id=entity_id,
+            name=entity_id,
+            active=True,
+            type="breakdown__version",
+            parent=compiled_parent_id,
+            children=[],
+            origin_db_path=compiled_parent_id,
+
+            label=set_display_name,
+            db_asset_type="breakdown__version",
+            version=version_string,
+            version_cnt=version,
+            data=input_data,
+
+            date=DateTime().curr_date,
+            time=DateTime().curr_time,
+            owner=Users().curr_user(),
+        )
+
+        asset_breakdown_version_doc = document.model_dump(by_alias=True)
+
+        return asset_breakdown_version_doc
 
     def db_asset_file_component(self,
                                 visibility: bool,

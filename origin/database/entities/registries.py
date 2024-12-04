@@ -23,3 +23,7 @@ registry = ModelRegistry()
 for _, obj in inspect.getmembers(ops, inspect.isclass):
     if issubclass(obj, DBAsset) and obj != DBAsset:
         registry.register(obj)
+
+
+if __name__ == "__main__":
+    print(registry.get_all_types())

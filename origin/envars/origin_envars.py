@@ -1,7 +1,8 @@
 import os
 from typing import Optional
 from pydantic import BaseModel
-from origin.database.entities.operators import Project, Asset, Task, DBAsset
+from origin.database.entities.operators import Project, Asset, Task, DBAsset, Group, AssetBreakdown, \
+    AssetBreakdownVersion
 from origin.database.mongo import CollectionOperators
 from origin.database.mongo_connection import MongoConnection
 
@@ -23,7 +24,9 @@ class SessionContext(BaseModel):
     publish_id: Optional[str] = None
     db_asset_stream_id: Optional[str] = None
     db_asset_id: Optional[str] = None
+    db_asset_type: Optional[str] = None
     db_asset_version_id: Optional[str] = None
+    asset_breakdown_id: Optional[str] = None
     stack_id: Optional[str] = None
 
 
@@ -122,6 +125,14 @@ class ContextHandler:
         self.session_context.entity_id = value
 
     @property
+    def asset_breakdown_id(self):
+        return self.session_context.asset_breakdown_id
+
+    @asset_breakdown_id.setter
+    def asset_breakdown_id(self, value):
+        self.session_context.asset_breakdown_id = value
+
+    @property
     def task_name(self):
         return self.session_context.task_name
 
@@ -162,6 +173,15 @@ class ContextHandler:
     @db_asset_id.setter
     def db_asset_id(self, value):
         self.session_context.db_asset_id = value
+
+    @property
+    def db_asset_type(self):
+        return self.session_context.db_asset_type
+
+    @db_asset_type.setter
+    def db_asset_type(self, value):
+        self.session_context.db_asset_type = value
+
 
     @property
     def db_asset_version_id(self):
@@ -305,7 +325,11 @@ class OriginDatabaseHandler:
     def get_asset_document(self) -> Asset:
         entity_doc = self.get_db_document_by_id(db_collection=self.__context.show_name,
                                                 doc_id=self.__context.entity_id)
-        return Asset(**entity_doc)
+
+        if self.__context.entity_type == "group":
+            return Group(**entity_doc)
+        else:
+            return Asset(**entity_doc)
 
     def get_task_document(self) -> Task:
         task_doc = self.get_db_document_by_id(db_collection=self.__context.show_name,
@@ -321,14 +345,32 @@ class OriginDatabaseHandler:
         else:
             return None
 
-
     def get_db_asset_document(self):
         if self.__context.db_asset_id:
-            print("DB_ASSET_DOC_ID:  ", self.__context.db_asset_id)
             db_asset_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                       doc_id=self.__context.db_asset_id)
 
             return DBAsset(**db_asset_doc)
+        else:
+            return None
+
+    def get_asset_breakdown(self):
+        if self.__context.asset_breakdown_id:
+            breakdown_doc_data = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
+                                                            doc_id=self.__context.asset_breakdown_id)
+
+            return AssetBreakdown(**breakdown_doc_data)
+        else:
+            return None
+
+    def get_asset_breakdown_latest_version(self):
+        breakdown_doc = self.get_asset_breakdown()
+        if breakdown_doc is not None:
+            latest_version_doc_data = breakdown_doc.operations().get_latest_version()
+            if latest_version_doc_data is not None:
+                return AssetBreakdownVersion(**latest_version_doc_data)
+            else:
+                return None
         else:
             return None
 

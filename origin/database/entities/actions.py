@@ -234,6 +234,39 @@ class Create:
         except Exception as e:
             print("{} Error! Nothing Created!".format(e))
 
+    def asset_breakdown(self, parent_id):
+        save_data = DbConstructors(context=self.context_handler).asset_breakdown_construct(parent_id=parent_id)
+
+
+        try:
+            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+
+            if not doc_exists:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                return inserted_data.inserted_id
+            else:
+                return save_data["_id"]
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
+    def asset_breakdown_version(self, data):
+        save_data = DbConstructors(context=self.context_handler).asset_breakdown_version_construct(input_data=data)
+
+        try:
+            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+
+            if not doc_exists:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                return inserted_data.inserted_id
+            else:
+                return save_data["_id"]
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
     def task(self, name, parent, task_type):
         if parent is not None:
             create_id = ".".join([parent, name])
@@ -360,19 +393,18 @@ class Create:
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr.red_hulk',
-                      'entity_name': 'red_hulk',
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr.tafer',
+                      'entity_name': 'tafer',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.red_hulk',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'task_name': "modeling",
                       'task_type': "modeling"}
 
     context_class = ContextHandler()
     context_class.load_session(session_data=context_sample)
 
-    for i in range(1, 23):
-        Create(context=context_class).publish(version=str(i))
+    Create(context=context_class).asset_breakdown()

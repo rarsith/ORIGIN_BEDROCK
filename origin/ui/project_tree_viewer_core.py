@@ -221,6 +221,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.context_handler.entity_name = sel_data.name
         self.context_handler.entity_type = sel_data.type
         self.context_handler.entity_id = sel_data.id
+        self.context_handler.asset_breakdown_id = sel_data.breakdown
 
         self.current_context.emit(self.context_handler)
 

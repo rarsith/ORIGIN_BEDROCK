@@ -67,6 +67,49 @@ class Publish(QtWidgets.QWidget):
                                                           file_path=file_path,
                                                           parent_id=db_asset_version_id)
 
+
+    def is_subset_dict(self, subset, main):
+        if not isinstance(subset, dict) or not isinstance(main, dict):
+            return subset != main
+
+        for key, value in subset.items():
+            print(key, value)
+            if key not in main:
+                return True
+            if self.is_subset_dict(value, main[key]):
+                return True
+        return False
+
+    def merge_dicts(self, dictA, dictB):
+        for key, value in dictB.items():
+            if key in dictA and isinstance(dictA[key], dict) and isinstance(value, dict):
+                # If both values are dictionaries, merge them recursively
+                self.merge_dicts(dictA[key], value)
+            else:
+                # Otherwise, overwrite dictA's value with dictB's value
+                dictA[key] = value
+        return dictA
+
+    def create_asset_breakdown_version(self, options):
+        curr_breakdown_ver_doc = self.context_handler.database_handler().get_asset_breakdown_latest_version()
+
+        asset_stream = self.context_handler.db_asset_stream_id
+        stream_name = asset_stream.rsplit(".", 1)[1]
+
+        asset_breakdown = {stream_name: {"db_assets": {options["publish_type"]: self.context_handler.db_asset_id}}}
+
+        needs_update = False
+        if curr_breakdown_ver_doc is not None:
+            current_breakdown = curr_breakdown_ver_doc.data
+            if current_breakdown is not None:
+                needs_update = self.is_subset_dict(asset_breakdown, curr_breakdown_ver_doc.data)
+
+                if needs_update:
+                    merged_config = self.merge_dicts(asset_breakdown, curr_breakdown_ver_doc.data)
+                    Create(context=self.context_handler).asset_breakdown_version(data=merged_config)
+        else:
+            Create(context=self.context_handler).asset_breakdown_version(data=asset_breakdown)
+
     def publish(self, options):
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
@@ -79,6 +122,8 @@ class Publish(QtWidgets.QWidget):
         db_asset_version_id = self.create_db_asset_version(selected_options=options)
         self.create_db_file_components(db_asset_version_id=db_asset_version_id,
                                        published_data=published_data)
+
+        self.create_asset_breakdown_version(options)
 
 
 if __name__ == "__main__":
@@ -97,33 +142,35 @@ if __name__ == "__main__":
                       'task_id': "New_State.assets.chr.yellow_hulk.modeling",
                       'db_asset_id': 'New_State.assets.chr.yellow_hulk.modeling.foo'}
 
-    context_class = ContextHandler()
-    context_class.load_session(session_data=context_sample)
+    # context_class = ContextHandler()
+    # context_class.load_session(session_data=context_sample)
+    #
+    # publishing_options = {'db_asset_id': 'New_State.assets.chr.yellow_hulk.modeling.gloves_metalic',
+    #                       'db_asset_qc': 'OK',
+    #                       'file_formats': ['ABC', 'USD', 'OBJ'],
+    #                       'all_sets_assigned': [],
+    #                       'inject_textures_path': None,
+    #                       'bundle_stream_id': '',
+    #                       'review_options': ['Playblast'],
+    #                       'pub_comment': 'asdfasdfzdf',
+    #                       'pub_status': 'IN PROGRESS',
+    #                       'context_object': context_class}
 
-    publishing_options = {'db_asset_id': 'New_State.assets.chr.yellow_hulk.modeling.gloves_metalic',
-                          'db_asset_qc': 'OK',
-                          'file_formats': ['ABC', 'USD', 'OBJ'],
-                          'all_sets_assigned': [],
-                          'inject_textures_path': None,
-                          'bundle_stream_id': '',
-                          'review_options': ['Playblast'],
-                          'pub_comment': 'asdfasdfzdf',
-                          'pub_status': 'IN PROGRESS',
-                          'context_object': context_class}
-
-    DATA = {'data': {
-        'master': 'X:/projects/New_State/assets/chr/yellow_hulk/modeling/publishes/data/db_asset__yellow_hulk__foo/chr__yellow_hulk__foo__v0001/origin_scene/chr__yellow_hulk__foo__v0001.mb',
-        'abc': 'X:/projects/New_State/assets/chr/yellow_hulk/modeling/publishes/data/db_asset__yellow_hulk__foo/chr__yellow_hulk__foo__v0001/alembic/chr__yellow_hulk__foo__v0001.abc',
-        'usd': 'X:/projects/New_State/assets/chr/yellow_hulk/modeling/publishes/data/db_asset__yellow_hulk__foo/chr__yellow_hulk__foo__v0001/USD/chr__yellow_hulk__foo__v0001.usd',
-        'obj': 'X:/projects/New_State/assets/chr/yellow_hulk/modeling/publishes/data/db_asset__yellow_hulk__foo/chr__yellow_hulk__foo__v0001/obj/chr__yellow_hulk__foo__v0001.obj'},
-
+    DATA = {'data':
+        {
+            'master': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/origin_scene/chr__tafer__tafarMain__v0003.mb',
+            'abc': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/alembic/chr__tafer__tafarMain__v0003.abc',
+            'usd': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/USD/chr__tafer__tafarMain__v0003.usd',
+            'obj': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/obj/chr__tafer__tafarMain__v0003.obj'},
         'images': {},
         'quicktime': {}
     }
 
-    app = QtWidgets.QApplication(sys.argv)
-    test_dialog = Publish(context=context_class)
-    test_dialog.publish(options=DATA)
+    print(DATA.keys())
 
-    test_dialog.show()
-    sys.exit(app.exec_())
+    # app = QtWidgets.QApplication(sys.argv)
+    # test_dialog = Publish(context=context_class)
+    # test_dialog.publish(options=DATA)
+    #
+    # test_dialog.show()
+    # sys.exit(app.exec_())

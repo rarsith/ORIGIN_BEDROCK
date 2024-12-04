@@ -4,7 +4,7 @@ from origin.database.collections.connections import ProjectCollections
 
 from pydantic import BaseModel, Field
 from typing import Optional, ClassVar
-from origin.database.mongo import DBSet, DBAdd, CollectionOperators, FindInCollection
+from origin.database.mongo import DBSet, DBAdd, CollectionOperators, FindInCollection, DBRemove
 from origin.common_utils import version_increment as vup
 
 
@@ -129,6 +129,9 @@ class EntityBaseModel(BaseModel):
     PARENT: ClassVar[str] = "parent"
     parent: Optional[str] = None
 
+    BREAKDOWN: ClassVar[str] = "breakdown"
+    breakdown: Optional[str] = None
+
     CHILDREN: ClassVar[list] = "children"
     children: Optional[list] = None
 
@@ -146,6 +149,8 @@ class EntityBaseModel(BaseModel):
 
     STATUS: ClassVar[str] = "status"
     status: Optional[str] = None
+
+
 
     model_config = {
         "from_attributes": True,
@@ -218,9 +223,6 @@ class Asset(EntityBaseModel):
     STACK_STREAMS: ClassVar[list] = "stack_streams"
     stack_streams: Optional[list] = None
 
-    BREAKDOWN: ClassVar[str] = "breakdown"
-    breakdown: Optional[str] = None
-
     ASSIGNEES: ClassVar[dict] = "assignees"
     assignees: Optional[dict] = None
 
@@ -285,6 +287,21 @@ class AssetOperations(EntityOperations):
             if streams_doc is not None:
                 stream_documents.append(streams_doc)
         return stream_documents
+
+    def set_asset_breakdown(self, breakdown_id):
+        DBSet(db_collection=self.entity.operations().parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.BREAKDOWN).attribute_value(data=breakdown_id)
+
+    def get_asset_breakdown(self):
+        db_ops = CollectionOperators(db_collection=self.entity.operations().project_publishes_collection())
+
+        if self.entity.breakdown is not None:
+            breakdown_doc_data = db_ops.entity_document(doc_id=self.entity.breakdown)
+            breakdown_doc = AssetBreakdown(**breakdown_doc_data)
+            latest_version_doc_data = breakdown_doc.operations().get_latest_version()
+
+            return AssetBreakdownVersion(**latest_version_doc_data)
 
 
 class Group(EntityBaseModel):
@@ -510,47 +527,23 @@ class DBAssetOperations(EntityOperations):
         return all_versions
 
     def get_latest_version(self):
-        data_ops = CollectionOperators(db_collection=self.entity.operations().project_publishes_collection())
-        versions = data_ops.get_all_versions(db_asset=self)
-        all_versions = []
-        for version in versions:
-            all_versions.append(version[self.entity.VERSION_CNT])
-
-        return all_versions
+        if self.entity.version_cnt != 0:
+            resolve_db_asset_version = f'v{self.entity.version_cnt:04}'
+            db_asset_version_id = ".".join([self.entity.id, resolve_db_asset_version])
+            data_ops = CollectionOperators(db_collection=self.entity.operations().project_publishes_collection())
+            latest_version_doc_data = data_ops.entity_document(doc_id=db_asset_version_id)
+            return latest_version_doc_data
+        else:
+            return None
 
     def get_next_version(self):
         version_string, version = vup.version_up(self.entity.version_cnt)
         return version_string, version
 
 
-class AssetBreakdown(EntityBaseModel):
-    DATA: ClassVar[dict] = "data"
-    data: Optional[dict] = None
-
-    def operations(self):
-        return AssetBreakdownOperations(entity=self)
-
-
-class AssetBreakdownOperations(EntityOperations):
-    def __init__(self, entity: AssetBreakdown):
-        super(AssetBreakdownOperations, self).__init__(entity=entity)
-        self.entity = entity
-
-    def add_data(self, db_asset_stream_id, db_asset_id, data):
-        """
-
-        Args:
-            db_asset_id:
-            db_asset_stream_id:
-            data: must contain the DbAssetStream ID -> slotName -> DbAssetID.
-                    {"DbAssetStreamID":{"slot":"DBAssetID"}}
-                    example - {"hulkMain":{"geo":"hulkGeo"}}
-                    there can be only one type ("geometry") per stream
-
-        Returns: added data
-
-        """
-
+class AssetBreakdown(DBAsset):
+    type: Optional[str] = "db_asset_breakdown"
+    db_asset_type: Optional[str] = "db_asset_breakdown"
 
 
 class StackSlot(EntityBaseModel):
@@ -561,7 +554,6 @@ class StackSlot(EntityBaseModel):
 class StackBaseModel(EntityBaseModel):
     SLOTS: ClassVar[dict] = "slots"
     slots: Optional[dict] = None
-
 
     def operations(self):
         return StackOperations(entity=self)
@@ -701,6 +693,56 @@ class DBAssetVersion(EntityBaseModel):
 
     COMPONENTS: ClassVar[list] = "components"
     components: Optional[list] = None
+
+
+class AssetBreakdownVersion(DBAssetVersion):
+    db_asset_type: Optional[str] = "db_asset_breakdown_version"
+
+    DATA: ClassVar[dict] = "data"
+    data: Optional[dict] = None
+
+    def operations(self):
+        return AssetBreakdownVersionOperations(entity=self)
+
+
+class AssetBreakdownVersionOperations(DBAssetOperations):
+    def __init__(self, entity: AssetBreakdown):
+        super(AssetBreakdownVersionOperations, self).__init__(entity=entity)
+        self.entity = entity
+
+    def add_data(self, db_asset_stream_doc: DBAsset, db_asset_doc: DBAsset):
+        """
+
+        Args:
+            db_asset_stream_doc: instance of the DBAsset
+            db_asset_doc: instance of DBAsset
+            data: instance of DBAsset
+
+        Returns:
+
+        """
+        data_path = ".".join([self.entity.DATA, db_asset_stream_doc.id, db_asset_doc.stack_slot])
+
+        DBSet(db_collection=self.entity.operations().project_publishes_collection(),
+              entry_id=self.entity.id,
+              attribute=data_path).attribute_value(data=db_asset_doc.id)
+
+    def remove_data(self, db_asset_stream_doc: DBAsset, db_asset_doc: DBAsset):
+        """
+
+                Args:
+                    db_asset_stream_doc: instance of the DBAsset
+                    db_asset_doc: instance of DBAsset
+                    data: instance of DBAsset
+
+                Returns:
+
+                """
+        data_path = ".".join([self.entity.DATA, db_asset_stream_doc.id, db_asset_doc.stack_slot])
+
+        DBRemove(db_collection=self.entity.operations().project_publishes_collection(),
+                 entry_id=self.entity.id,
+                 attribute=data_path).attribute_value(data=db_asset_doc.id)
 
 
 class DBAssetFileComponent(EntityBaseModel):
