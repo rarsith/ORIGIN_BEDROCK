@@ -6,7 +6,11 @@
             "display_name": "Maya",
             "versions": {
                 "2024": {
-                    "executable_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\maya\\Maya.bat",
+                    "executable_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\maya\\Maya_2024.bat",
+                    "envar_data": "{\"DCC\":\"maya\"}"
+                },
+                "2025.3": {
+                    "executable_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\maya\\Maya_2025.bat",
                     "envar_data": "{\"DCC\":\"maya\"}"
                 }
             }
@@ -236,6 +240,17 @@
                 " 8.7.1": {
                     "executable_path": "C:\\Program Files\\Autodesk\\SketchBook\\SketchBook.exe",
                     "envar_data": ""
+                }
+            }
+        },
+        "mudbox": {
+            "enabled": true,
+            "icon": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+            "display_name": "Mudbox",
+            "versions": {
+                "2025": {
+                    "executable_path": "D:\\Program Files\\Autodesk\\Mudbox 2025\\mudbox.exe",
+                    "envar_data": "{\"DCC\":\"mudbox\"}"
                 }
             }
         }

@@ -9,6 +9,9 @@ class MaterialSetsAssignments(QtWidgets.QDialog):
         self.create_layout()
         self.create_connections()
 
+    def reinitialize(self, pub_options=None):
+        pass
+
     def create_widgets(self):
         self.sets_lw = QtWidgets.QLabel("Material and Sets Assignments")
         self.list_sets = QtWidgets.QListWidget()

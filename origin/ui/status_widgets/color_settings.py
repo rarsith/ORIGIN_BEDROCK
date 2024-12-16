@@ -24,3 +24,7 @@ def match_color_scheme(status_input):
         "CRITICAL": "background-color: #880000; color: #FFFFFF;"
     }
     return states.get(status_input)
+
+if __name__=="__main__":
+    color_sch = match_color_scheme("PENDING REVIEW")
+    print(color_sch)

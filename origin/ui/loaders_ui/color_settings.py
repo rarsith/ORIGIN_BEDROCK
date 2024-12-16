@@ -2,7 +2,7 @@ def match_color_scheme(status_input):
     states = {
         'WIP': '''
             QPushButton {
-                background-color: #BBCB0F;
+                background-color: #ffff00;
                 color: black;
             }
             QPushButton:checked {
@@ -11,7 +11,7 @@ def match_color_scheme(status_input):
         ''',
         'IN PROGRESS': '''
             QPushButton {
-                background-color: #80ccff;
+                background-color: #94c4ff;
                 color: black;
             }
             QPushButton:checked {
@@ -20,7 +20,7 @@ def match_color_scheme(status_input):
         ''',
         'PENDING REVIEW': '''
             QPushButton {
-                background-color: #ffc266;
+                background-color: #98eeff;
                 color: black;
             }
             QPushButton:checked {
@@ -29,7 +29,7 @@ def match_color_scheme(status_input):
         ''',
         'TWEAK': '''
             QPushButton {
-                background-color: #db70b8;
+                background-color: #c898ff;
                 color: black;
             }
             QPushButton:checked {
@@ -38,7 +38,7 @@ def match_color_scheme(status_input):
         ''',
         'IGNORE': '''
             QPushButton {
-                background-color: #bfbfbf;
+                background-color: #d1d1d1;
                 color: #595959;
             }
             QPushButton:checked {
@@ -47,8 +47,8 @@ def match_color_scheme(status_input):
         ''',
         'REJECTED': '''
             QPushButton {
-                background-color: #c86851;
-                color: #d9d9d9;
+                background-color: #ff2020;
+                color: #ffffff;
             }
             QPushButton:checked {
                 border: 3px solid #a6fff8;
@@ -56,7 +56,7 @@ def match_color_scheme(status_input):
         ''',
         'INTERNAL APPROVED': '''
             QPushButton {
-                background-color: #99cc00;
+                background-color: #00ff46;
                 color: #404040;
             }
             QPushButton:checked {
@@ -65,8 +65,8 @@ def match_color_scheme(status_input):
         ''',
         'CLIENT APPROVED': '''
             QPushButton {
-                background-color: #00802b;
-                color: #333333;
+                background-color: #009c2b;
+                color: #ffffff;
             }
             QPushButton:checked {
                 border: 3px solid #a6fff8;
@@ -83,7 +83,7 @@ def match_color_scheme(status_input):
         ''',
         'TEMP APPROVED': '''
             QPushButton {
-                background-color: #e6e600;
+                background-color: #b0ffb2;
                 color: #0d0d0d;
             }
             QPushButton:checked {

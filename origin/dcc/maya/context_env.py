@@ -1,8 +1,10 @@
 import os
+import pprint
+
 from origin.envars.origin_envars import ContextHandler
 
 
-def __get_context_env():
+def get_context_env():
     context_env = dict(
         session_filename=os.getenv('SESSION_FILENAME'),
         session_id=os.getenv('SESSION_ID'),
@@ -27,6 +29,8 @@ def __get_context_env():
     return context_env
 
 
-__SESSION = __get_context_env()
+__SESSION = get_context_env()
 CURRENT_SESSION = ContextHandler()
 CURRENT_SESSION.load_session(__SESSION)
+
+# pprint.pprint(CURRENT_SESSION.snapshot_session())

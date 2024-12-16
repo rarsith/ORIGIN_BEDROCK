@@ -31,6 +31,7 @@ class CreateStreamUI(QtWidgets.QDialog):
         self.show_name_le.setText(item_path)
 
         self.stream_name_le = QtWidgets.QLineEdit()
+        self.stream_name_le.setText(self.context_handler.entity_name)
 
         self.create_btn = QtWidgets.QPushButton("Create")
         self.create_and_close_btn = QtWidgets.QPushButton("Create and Close")
@@ -66,22 +67,26 @@ class CreateStreamUI(QtWidgets.QDialog):
         db_asset_id = Create(context=self.context_handler).db_asset_stream(parent=self.context_handler.entity_id,
                                                                            name=stream_name)
 
+        stream_stack_db_asset = Create(context=self.context_handler).asset_stack(parent_id=db_asset_id)
+
         asset_class.operations().add_stack_stream(data=db_asset_id)
+
         self.stream_name_le.clear()
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
                       'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'yellow_hulk',
+                      'entity_name': 'tafer',
                       'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.yellow_hulk',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "New_State.assets.chr.yellow_hulk.modeling"}
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.main'}
 
     context_handler = ContextHandler()
     context_handler.load_session(context_sample)

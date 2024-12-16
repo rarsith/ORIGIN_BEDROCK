@@ -1,3 +1,4 @@
+import os.path
 from typing import List
 
 from PySide2 import QtWidgets, QtGui, QtCore
@@ -8,6 +9,7 @@ from origin.ui.loaders_ui.color_settings import match_color_scheme
 from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
 from origin.ui.task_viewer_core import TaskViewerCore
 from origin.database.entities.registries import registry
+from origin.dcc.dispachers.loaders import get_loader_class
 
 
 class VersionThumbnail(QtWidgets.QLabel):
@@ -63,6 +65,7 @@ class VersionLoaderContextMenuWidget(QtWidgets.QWidget):
         super(VersionLoaderContextMenuWidget, self).__init__(parent)
 
         self.main_widget = main_widget
+        self.init_loader = None
 
         self.context_menu()
         self.main_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -77,18 +80,29 @@ class VersionLoaderContextMenuWidget(QtWidgets.QWidget):
 
             for file_component in sender_widget.data:
                 for file_component_name, file_path in file_component.items():
-                    context_action = QtWidgets.QAction(f"Import {file_component_name} ...", self)
-                    context_action.setData(file_path)
-                    context_action.triggered.connect(self.get_action_data)
-                    context_menu.addAction(context_action)
+                    if os.path.exists(file_path):
+                        loader = get_loader_class("maya")
+                        init_loader = loader(file_path=file_path)
+                        file_extension, file_ops = init_loader.get_file_types_ops()
+
+                        if file_ops:
+                            for file_op in file_ops:
+                                file_op_nice_name = file_op.capitalize()
+                                context_import_action = QtWidgets.QAction(f"{file_op_nice_name} {file_component_name} ...", self)
+                                context_import_action.setData([file_op, file_path])
+                                context_import_action.triggered.connect(self.get_action_data)
+                                context_menu.addAction(context_import_action)
+                context_menu.addSeparator()
 
             context_menu.exec_(self.main_widget.mapToGlobal(point))
 
     def get_action_data(self):
         action = self.sender()
         if action:
-            file_path = action.data()
-            print(file_path)  # to plug the actual functionality per DCC
+            file_data = action.data()
+            loader = get_loader_class("maya")
+            init_loader = loader(file_path=file_data[1])
+            init_loader.execute_file_ops(operation=file_data[0])
 
 
 class VersionLoaderWidget(QtWidgets.QWidget):
@@ -163,7 +177,8 @@ class VersionLoaderWidget(QtWidgets.QWidget):
             version_cnt = db_asset_version.rsplit(".", 1)[1]
             self.ver_sel_btn = VersionButton(version_cnt, data=db_file_components["versions_components"])
             self.ver_sel_btn.setFixedSize(40, 20)
-            self.ver_sel_btn.setStyleSheet(match_color_scheme(db_file_components["status"]))
+            ver_btn_color = match_color_scheme(db_file_components["status"])
+            self.ver_sel_btn.setStyleSheet(ver_btn_color)
             self.ver_sel_btn.clicked.connect(self.get_button_data)
             self.ver_sel_btn.clicked.connect(lambda checked=False, data=db_file_components["versions_components"]: self.set_thumbnail_data(data))
 
@@ -196,7 +211,12 @@ class AssetTypesButtonsSelectors(QtWidgets.QWidget):
         self.create_connections()
 
     def create_widgets(self):
-        exceptions = ["asset_stack_breakdown", "asset_stack", "shot_stack", "shot_stack_breakdown", "db_asset_breakdown"]
+        exceptions = ["asset_stack_breakdown",
+                      "asset_stack",
+                      "shot_stack",
+                      "shot_stack_breakdown",
+                      "db_asset_breakdown"]
+
         for db_type in self.db_asset_type:
             if db_type not in exceptions:
                 select_db_asset_type = QtWidgets.QPushButton(db_type.capitalize())
@@ -271,6 +291,10 @@ class VersionLoader(QtWidgets.QWidget):
                                                                        )
 
         return publishes_docs
+
+    def get_asset_breakdown_data(self):
+        pass
+
 
     def get_db_data(self):
         if not self.context_handler.entity_type == "group":

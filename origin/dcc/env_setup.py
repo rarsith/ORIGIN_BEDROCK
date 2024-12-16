@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 
+
 def env_setup():
     origin_root = os.getenv("ORIGIN_ROOT")
     origin_pipe_root = Path(origin_root)

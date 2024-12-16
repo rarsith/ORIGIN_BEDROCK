@@ -96,7 +96,7 @@ class Publish(QtWidgets.QWidget):
         asset_stream = self.context_handler.db_asset_stream_id
         stream_name = asset_stream.rsplit(".", 1)[1]
 
-        asset_breakdown = {stream_name: {"db_assets": {options["publish_type"]: self.context_handler.db_asset_id}}}
+        asset_breakdown = {asset_stream: {"db_assets": {options["publish_type"]: self.context_handler.db_asset_id}}}
 
         needs_update = False
         if curr_breakdown_ver_doc is not None:

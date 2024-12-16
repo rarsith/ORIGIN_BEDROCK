@@ -9,6 +9,9 @@ class PreviewOptions(QtWidgets.QDialog):
         self.create_layout()
         self.create_connections()
 
+    def reinitialize(self, pub_options=None):
+        pass
+
     def create_widgets(self):
         self.preview_options_lb = QtWidgets.QLabel("Preview Options")
         self.playblast_chk = QtWidgets.QRadioButton("Playblast")

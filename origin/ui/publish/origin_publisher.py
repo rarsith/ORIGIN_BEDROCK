@@ -1,3 +1,4 @@
+import inspect
 from PySide2 import QtWidgets
 
 from origin.envars.origin_envars import ContextHandler
@@ -52,8 +53,9 @@ class OriginPublisher(QtWidgets.QDialog):
 
     def load_widgets(self):
         for widget in self.widgets:
+            if hasattr(widget, "reinitialize"):
+                widget.reinitialize(pub_options=self.collected_options)
             self.widget_container.addWidget(widget)
-
         self.widget_container.setCurrentIndex(0)
 
     def load_next_widget(self):
@@ -70,6 +72,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.current_step += 1
         if self.current_step < len(self.widgets):
+            self.load_widgets()
             self.widget_container.setCurrentIndex(self.current_step)
 
             if self.current_step == len(self.widgets) - 1:
@@ -77,6 +80,7 @@ class OriginPublisher(QtWidgets.QDialog):
                 self.current_step = len(self.widgets) - 1
             else:
                 self.next_btn.setText("Next")
+
         else:
             self.start_publishing()
 
@@ -91,7 +95,6 @@ class OriginPublisher(QtWidgets.QDialog):
             current_widget = self.widgets[self.current_step]
 
         self.current_step -= 1
-
         final_widget = self.widgets[-1]
 
         if current_widget != final_widget:
@@ -109,6 +112,7 @@ class OriginPublisher(QtWidgets.QDialog):
         widget_selected_options = widget.get_selected_options()
         if widget_selected_options is not None:
             self.collected_options.update(widget.get_selected_options())
+            print(self.collected_options)
             return widget_selected_options
         else:
             return widget_selected_options

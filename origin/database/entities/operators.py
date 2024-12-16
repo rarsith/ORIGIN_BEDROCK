@@ -492,8 +492,8 @@ class DBAsset(EntityBaseModel):
     LABEL: ClassVar[str] = "label"
     label: Optional[str] = None
 
-    STACK_SLOT: ClassVar[str] = "stack_slot"
-    stack_slot: Optional[str] = None
+    STACKS: ClassVar[list] = "stacks"
+    stacks: Optional[list] = None
 
     MASTER_TASK_TYPE: ClassVar[str] = "task_type"
     master_task_type: Optional[str] = None
@@ -540,6 +540,11 @@ class DBAssetOperations(EntityOperations):
         version_string, version = vup.version_up(self.entity.version_cnt)
         return version_string, version
 
+    def add_stack(self, db_collection, stack_id):
+        DBAdd(db_collection=db_collection,
+              entry_id=self.entity.id,
+              attribute=self.entity.STACKS).value_to_field(data=stack_id)
+
 
 class AssetBreakdown(DBAsset):
     type: Optional[str] = "db_asset_breakdown"
@@ -551,9 +556,15 @@ class StackSlot(EntityBaseModel):
     slot: Optional[dict] = None
 
 
-class StackBaseModel(EntityBaseModel):
+class StackBaseModel(DBAsset):
     SLOTS: ClassVar[dict] = "slots"
     slots: Optional[dict] = None
+
+    OPTIONS: ClassVar[dict] = "options"
+    options: Optional[dict] = None
+
+    ORIGIN_DATA: ClassVar[dict] = "origin_data"
+    origin_data: Optional[dict] = None
 
     def operations(self):
         return StackOperations(entity=self)
@@ -694,6 +705,9 @@ class DBAssetVersion(EntityBaseModel):
     COMPONENTS: ClassVar[list] = "components"
     components: Optional[list] = None
 
+    ORIGIN_DATA: ClassVar[dict] = "origin_data"
+    origin_data: Optional[dict] = None
+
 
 class AssetBreakdownVersion(DBAssetVersion):
     db_asset_type: Optional[str] = "db_asset_breakdown_version"
@@ -743,6 +757,22 @@ class AssetBreakdownVersionOperations(DBAssetOperations):
         DBRemove(db_collection=self.entity.operations().project_publishes_collection(),
                  entry_id=self.entity.id,
                  attribute=data_path).attribute_value(data=db_asset_doc.id)
+
+
+class AssetStackVersion(DBAssetVersion):
+    db_asset_type: Optional[str] = "db_asset__stack_version"
+
+    DATA: ClassVar[dict] = "data"
+    data: Optional[dict] = None
+
+    def operations(self):
+        return AssetStackVersionOperations(entity=self)
+
+
+class AssetStackVersionOperations(DBAssetOperations):
+    def __init__(self, entity: AssetBreakdown):
+        super(AssetStackVersionOperations, self).__init__(entity=entity)
+        self.entity = entity
 
 
 class DBAssetFileComponent(EntityBaseModel):

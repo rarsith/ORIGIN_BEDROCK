@@ -30,6 +30,7 @@ class TaskViewerCore(TaskViewerUI):
     def create_connections(self):
         self.add_btn.clicked.connect(self.create_task_menu)
         self.task_viewer_wdg.itemSelectionChanged.connect(self.get_task_list_current_selected)
+        self.task_viewer_wdg.itemClicked.connect(self.get_task_list_current_selected)
         self.save_changes_btn.clicked.connect(self.commit_changes)
         self.refresh_btn.clicked.connect(self.populate_widget)
 
@@ -216,6 +217,7 @@ class TaskViewerCore(TaskViewerUI):
                 self.context_handler.task_type = get_task_data.task_type
                 self.context_handler.task_id = get_task_data.id
                 self.current_context.emit(self.context_handler)
+                # print("TASKS: ", self.context_handler.snapshot_session())
 
                 return get_task_data
         else:

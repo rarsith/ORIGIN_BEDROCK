@@ -11,7 +11,8 @@ from origin.database.entities.operators import (DBAssetVersion,
                                                 Asset,
                                                 Group,
                                                 Task,
-                                                DBAssetFileComponent, AssetBreakdown, AssetBreakdownVersion)
+                                                DBAssetFileComponent, AssetBreakdown, AssetBreakdownVersion, AssetStack,
+                                                AssetStackVersion)
 from origin.database.mongo import CollectionOperators
 
 
@@ -342,6 +343,79 @@ class DbConstructors:
 
             label=set_display_name,
             db_asset_type="breakdown__version",
+            version=version_string,
+            version_cnt=version,
+            data=input_data,
+
+            date=DateTime().curr_date,
+            time=DateTime().curr_time,
+            owner=Users().curr_user(),
+        )
+
+        asset_breakdown_version_doc = document.model_dump(by_alias=True)
+
+        return asset_breakdown_version_doc
+
+    def asset_stack_construct(self, parent_id):
+        parent_name = parent_id.rsplit(".", 1)[1]
+        compiled_id = ".".join([parent_id, "asset_stack"])
+        compiled_name = "__".join([parent_name, "asset_stack"])
+
+        parent_doc_data = self.context_handler.database_handler().get_db_document_by_id(
+            db_collection=self.context_handler.project_publishes, doc_id=parent_id)
+        parent_doc = DBAsset(**parent_doc_data)
+
+        document = AssetStack(
+            _id=compiled_id,
+            name=compiled_name,
+            active=True,
+            type="db_asset__stack",
+            parent=parent_id,
+            children=[],
+            origin_db_path=parent_id,
+
+            db_asset_type="db_asset__stack",
+
+            date=DateTime().curr_date,
+            time=DateTime().curr_time,
+            owner=Users().curr_user(),
+        )
+
+        db_asset_stack_doc = document.model_dump(by_alias=True)
+
+        parent_doc.operations().add_stack(db_collection=self.context_handler.project_publishes, stack_id=compiled_id)
+
+        return db_asset_stack_doc
+
+    def asset_stack_version_construct(self, input_data: dict):
+        compiled_parent_id = ".".join([self.context_handler.db_asset_stream_id, "asset_stack"])
+        data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        parent_data = data_ops.entity_document(doc_id=compiled_parent_id)
+        parent_doc = DBAsset(**parent_data)
+
+        version_string, version = vup.version_up(parent_doc.version_cnt)
+        parent_doc.operations().update_version_count(1)
+
+        set_display_name = "_".join(
+            [self.context_handler.entity_name,
+             "asset_stack",
+             f"_{version_string}"])
+
+        entity_id = ".".join([compiled_parent_id, version_string])
+        parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
+
+        document = AssetStackVersion(
+
+            _id=entity_id,
+            name=entity_id,
+            active=True,
+            type="db_asset__stack_version",
+            parent=compiled_parent_id,
+            children=[],
+            origin_db_path=compiled_parent_id,
+
+            label=set_display_name,
+            db_asset_type="db_asset__stack_version",
             version=version_string,
             version_cnt=version,
             data=input_data,

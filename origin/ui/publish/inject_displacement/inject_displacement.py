@@ -12,6 +12,9 @@ class InjectDisplacement(QtWidgets.QWidget):
         self.create_layout()
         self.create_connections()
 
+    def reinitialize(self, pub_options=None):
+        pass
+
     def create_widgets(self):
         self.inject_displacement_lb = QtWidgets.QLabel("Add Displacement Map Set")
         self.displ_le = QtWidgets.QLineEdit()

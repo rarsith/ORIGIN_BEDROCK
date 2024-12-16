@@ -10,6 +10,9 @@ class FileTypes(QtWidgets.QWidget):
         self.create_layout()
         self.create_connections()
 
+    def reinitialize(self, pub_options=None):
+        pass
+
     def create_widgets(self):
         self.qc_lb = QtWidgets.QLabel("Select File Types to export")
         self.alembic_rbtn = QtWidgets.QCheckBox("abc")

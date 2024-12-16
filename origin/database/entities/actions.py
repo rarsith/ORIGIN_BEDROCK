@@ -301,6 +301,38 @@ class Create:
         except Exception as e:
             print(f"Error {e}, Nothing Done!")
 
+    def asset_stack(self, parent_id):
+        save_data = DbConstructors(context=self.context_handler).asset_stack_construct(parent_id=parent_id)
+
+        try:
+            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+
+            if not doc_exists:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                return inserted_data.inserted_id
+            else:
+                return save_data["_id"]
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
+    def asset_stack_version(self, data):
+        save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(input_data=data)
+
+        try:
+            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+
+            if not doc_exists:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                return inserted_data.inserted_id
+            else:
+                return save_data["_id"]
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
     def db_asset(self, parent, publish_type):
         db_asset = DbConstructors(context=self.context_handler).db_asset_construct(parent_id=parent,
                                                                                    publish_type=publish_type,
@@ -377,19 +409,6 @@ class Create:
 
         except Exception as e:
             print(f"{e} Error! Nothing Done!")
-
-
-
-    def publish(self, version):
-        created_id, save_data, publish_name = DbConstructors(context=self.context_handler).task_publish_construct(
-            version=version)
-
-        try:
-            self.db_publish_collection.insert_one(save_data)
-
-            print("{} Origin Task Published created!".format(publish_name))
-        except Exception as e:
-            print(f"{e} Error! Nothing Created!")
 
 
 if __name__ == "__main__":

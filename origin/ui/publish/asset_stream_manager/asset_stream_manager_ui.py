@@ -53,6 +53,7 @@ class EntryStackStream(QtWidgets.QWidget):
         self.project_tree = ContextViewer(context=self.context_handler)
 
         self.stack_stream_lw = QtWidgets.QListWidget()
+        self.stack_stream_lw.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.create_new_stream_btn = QtWidgets.QPushButton("Create New Stream")
         self.delete_empty_streams_btn = QtWidgets.QPushButton("Delete Empty Stream")

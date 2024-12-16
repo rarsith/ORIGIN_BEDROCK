@@ -13,7 +13,8 @@ class ModelRegistry:
     def get_all_types(self):
         all_types = []
         for k, v, in self._registry.items():
-            all_types.append(v.type)
+            if v.type is not None:
+                all_types.append(v.type)
         return all_types
 
 

@@ -7,6 +7,8 @@ from origin.ui.publish.output_reviewable_options.preview_render_options import P
 from origin.ui.publish.material_assignment.material_assignment import MaterialSetsAssignments
 from origin.ui.publish.inject_displacement.inject_displacement import InjectDisplacement
 from origin.ui.publish.asset_stream_manager.asset_stream_manager_ui import EntryStackStream
+from origin.ui.stack_management.asset_stack_manager_ui import LoaderMainUI
+from origin.ui.stack_management.asset_stack_manager_ui import AssetStackManager
 
 
 def get_publish_type(context: ContextHandler):
@@ -19,14 +21,14 @@ def get_publish_type(context: ContextHandler):
             FileTypes(),
             MaterialSetsAssignments(),
             InjectDisplacement(),
-            BundleSelector(),
+            AssetStackManager(),
             PreviewOptions(),
             Publish(context=context)
         ],
         "texturing": [
             EntryStackStream(context=context),
             QcGhost(),
-            BundleSelector(),
+            AssetStackManager(),
             Publish(context=context)
         ],
 
@@ -34,7 +36,7 @@ def get_publish_type(context: ContextHandler):
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
-            BundleSelector(),
+            AssetStackManager(),
             PreviewOptions(),
             Publish(context=context)
         ],
@@ -42,7 +44,8 @@ def get_publish_type(context: ContextHandler):
         "shading": [
             EntryStackStream(context=context),
             QcGhost(),
-            BundleSelector(),
+            FileTypes(),
+            AssetStackManager(),
             PreviewOptions(),
             Publish(context=context)
         ],

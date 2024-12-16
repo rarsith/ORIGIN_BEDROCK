@@ -9,6 +9,9 @@ class QcGhost(QtWidgets.QDialog):
         self.create_layout()
         self.create_connections()
 
+    def reinitialize(self, pub_options=None):
+        pass
+
     def create_widgets(self):
         self.qc_lb = QtWidgets.QLabel("Publish OC")
         self.recheck_btn = QtWidgets.QPushButton("Recheck")
