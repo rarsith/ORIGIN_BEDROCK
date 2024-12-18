@@ -154,15 +154,18 @@ class Fetch:
 
 
 class Create:
-    def __init__(self, context: ContextHandler):
+    def __init__(self, context: ContextHandler = None):
         self.db = MongoConnection().origin_production_database()
+        self.applications__db = MongoConnection().origin_setup_database()
 
         self.context_handler = context
+        if self.context_handler is not None:
+            self.db_structure_collection = self.db[self.context_handler.show_name]
+            self.db_publish_collection = self.db[self.context_handler.project_publishes]
+            self.db_work_collection = self.db[self.context_handler.project_work]
+            self.db_ops_collection = self.db[self.context_handler.project_control]
 
-        self.db_structure_collection = self.db[self.context_handler.show_name]
-        self.db_publish_collection = self.db[self.context_handler.project_publishes]
-        self.db_work_collection = self.db[self.context_handler.project_work]
-        self.db_ops_collection = self.db[self.context_handler.project_control]
+        self.db_applications_collection = self.applications__db["Applications"]
 
     def create_entity_id(self):
         entity_id = ".".join([self.parent, self.entity_name])
@@ -236,7 +239,6 @@ class Create:
 
     def asset_breakdown(self, parent_id):
         save_data = DbConstructors(context=self.context_handler).asset_breakdown_construct(parent_id=parent_id)
-
 
         try:
             doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
@@ -339,7 +341,6 @@ class Create:
                                                                                    task_type=self.context_handler.task_type
                                                                                    )
 
-
         try:
             doc_exists = self.db_publish_collection.find_one({"_id": db_asset["_id"]})
 
@@ -409,6 +410,32 @@ class Create:
 
         except Exception as e:
             print(f"{e} Error! Nothing Done!")
+
+    def application_entry(self, app_name: str, app_icon: str):
+        app_name_display = app_name.capitalize()
+        app_db_asset = DbConstructors().db_asset_application(name=app_name_display, app_icon=app_icon)
+
+        try:
+            inserted_data = self.db_applications_collection.insert_one(app_db_asset)
+
+            print(f"Created App Entry with ID: {inserted_data.inserted_id}")
+            return inserted_data.inserted_id
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
+    def application_version_entry(self, parent_id=None,
+                                  version_id=None,
+                                  exec_path=None,
+                                  envars=None,
+                                  active=True,
+                                  exec_python=None):
+        DbConstructors().db_asset_version_application(parent_id=parent_id,
+                                                      version_id=version_id,
+                                                      active=active,
+                                                      exec_path=exec_path,
+                                                      exec_python=exec_python,
+                                                      envars=envars)
 
 
 if __name__ == "__main__":

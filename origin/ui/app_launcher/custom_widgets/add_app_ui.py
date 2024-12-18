@@ -2,15 +2,15 @@ import sys
 import json
 from PySide2 import QtWidgets
 
+from origin.database.entities.actions import Create
+
 
 class AddAppUI(QtWidgets.QDialog):
 
-    def __init__(self, config_file_path=None, parent=None):
+    def __init__(self, parent=None):
         super(AddAppUI, self).__init__(parent)
 
         self.setWindowTitle("Add Application")
-
-        self.config_file_path = config_file_path
 
         self.create_widgets()
         self.create_layout()
@@ -53,18 +53,7 @@ class AddAppUI(QtWidgets.QDialog):
         get_name = self.app_name_le.text()
         get_icon_path = self.icon_path_le.text()
 
-        base_entry_schema = {f"{get_name.lower()}": {"enabled": True,
-                                                     "icon": f"{get_icon_path}",
-                                                     "display_name": get_name.capitalize(),
-                                                     "versions": {}}}
-
-        with open(self.config_file_path, 'r') as file:
-            existing_data = json.load(file)
-
-        existing_data["applications"].update(base_entry_schema)
-
-        with open(self.config_file_path, 'w') as file:
-            json.dump(existing_data, file, indent=4)
+        Create().application_entry(app_name=get_name, app_icon=get_icon_path)
 
         self.app_name_le.clear()
         self.icon_path_le.clear()

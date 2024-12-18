@@ -37,6 +37,7 @@ class MongoConnection:
         self.client = MongoClient(self.host, self.port)[self.setup_database]
         return self.client
 
+
 if __name__ == "__main__":
     prod_database_conn = MongoConnection().origin_production_database()
     users_database_conn = MongoConnection().origin_users_database()

@@ -1,5 +1,6 @@
 from origin.common_utils.date_time import DateTime
 from origin.common_utils.users import Users
+from origin.database.mongo_connection import MongoConnection
 from origin.envars.origin_envars import ContextHandler
 from origin.database.schemas.actions import EntityDefaultSchemas
 from origin.common_utils import version_increment as vup
@@ -12,8 +13,8 @@ from origin.database.entities.operators import (DBAssetVersion,
                                                 Group,
                                                 Task,
                                                 DBAssetFileComponent, AssetBreakdown, AssetBreakdownVersion, AssetStack,
-                                                AssetStackVersion)
-from origin.database.mongo import CollectionOperators
+                                                AssetStackVersion, DCCBaseModel, DCCVersion)
+from origin.database.mongo import CollectionOperators, DBSet
 
 
 class DbConstructors:
@@ -475,6 +476,44 @@ class DbConstructors:
         db_asset_file_doc = document.dict(by_alias=True)
 
         return db_asset_file_doc
+
+    def db_asset_application(self, name, app_icon):
+        compiled_id = ".".join([name, "application"])
+
+        document = DCCBaseModel(
+            _id=compiled_id,
+            name=name,
+            active=True,
+            type="application",
+            versions={},
+            icon_path=app_icon,
+
+            date=DateTime().curr_date,
+            time=DateTime().curr_time,
+            owner=Users().curr_user(),
+        )
+
+        application_doc = document.model_dump(by_alias=True)
+
+        return application_doc
+
+    def db_asset_version_application(self, parent_id=None, active=None, version_id=None, exec_path=None, exec_python=None, envars=None):
+        applications__db = MongoConnection().origin_setup_database()
+
+        document = DCCVersion(
+            active=active,
+            version=version_id,
+            exec_path=exec_path,
+            exec_python=exec_python,
+            envars=envars,
+        )
+
+        application_version_doc = document.model_dump(by_alias=True)
+
+        DBSet(database=applications__db,
+              db_collection="Applications",
+              entry_id=parent_id,
+              attribute=fr"versions.{str(version_id)}").attribute_value(application_version_doc)
 
 
 if __name__ == "__main__":

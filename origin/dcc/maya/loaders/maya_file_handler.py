@@ -66,9 +66,21 @@ class MayaFileHandler:
         """
         if self.extension in {".ma", ".mb"}:
             cmds.file(f=True, new=True)
-            cmds.file(self.file_path, open=True, force=True)
+            cmds.file(self.file_path,
+                      open=True,
+                      force=True,
+                      loadReferenceDepth="none",
+                      ignoreVersion=True,
+                      preserveReferences=True)
+
         elif self.extension == ".usd":
-            cmds.file(self.file_path, open=True, type="USD Import", force=True)
+            cmds.file(self.file_path,
+                      open=True,
+                      type="USD Import",
+                      loadReferenceDepth="none",
+                      force=True,
+                      ignoreVersion=True,
+                      preserveReferences=True)
         else:
             raise ValueError(f"Opening not supported for: {self.extension}")
 

@@ -5,8 +5,11 @@ from origin.database.mongo_connection import MongoConnection
 
 
 class DBFind:
-    def __init__(self, db_collection=None, entry_id=None, attribute=None):
+    def __init__(self, database=None, db_collection=None, entry_id=None, attribute=None):
         self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
 
         self.collection = db_collection
         self.entry_id = entry_id
@@ -55,8 +58,11 @@ class DBFind:
 
 
 class DBAdd:
-    def __init__(self, db_collection, entry_id, attribute=None):
+    def __init__(self, database=None, db_collection=None, entry_id=None, attribute=None):
         self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
 
         self.collection = db_collection
         self.entry_id = entry_id
@@ -103,8 +109,11 @@ class DBAdd:
 
 
 class DBSet:
-    def __init__(self, db_collection, entry_id, attribute=None):
+    def __init__(self, database=None, db_collection=None, entry_id=None, attribute=None):
         self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
 
         self.collection = db_collection
         self.entry_id = entry_id
@@ -123,8 +132,11 @@ class DBSet:
 
 
 class DBClear:
-    def __init__(self, db_collection, entry_id, attribute=None):
+    def __init__(self, database=None, db_collection=None, entry_id=None, attribute=None):
         self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
 
         self.collection = db_collection
         self.entry_id = entry_id
@@ -160,8 +172,11 @@ class DBClear:
 
 
 class DBRemove:
-    def __init__(self, db_collection, entry_id, attribute=None):
+    def __init__(self, database=None, db_collection=None, entry_id=None, attribute=None):
         self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
 
         self.collection = db_collection
         self.entry_id = entry_id
@@ -193,10 +208,27 @@ class DBRemove:
         self.db[self.collection].update_one({"_id": self.entry_id}, {"$pull": {self.attribute: value}})
 
 
+class DBDelete:
+    def __init__(self, database=None, db_collection=None, entry_id=None):
+        self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
+
+        self.collection = db_collection
+        self.entry_id = entry_id
+
+    def document(self):
+        self.db[self.collection].delete_one({"_id": self.entry_id})
+
+
 class CollectionOperators:
 
-    def __init__(self, db_collection=None):
+    def __init__(self, db_collection=None, database=None):
         self.db = MongoConnection().origin_production_database()
+
+        if database is not None:
+            self.db = database
 
         if db_collection is None or len(db_collection) == 0:
             self.collection_name = "empty"

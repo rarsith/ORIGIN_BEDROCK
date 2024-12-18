@@ -118,7 +118,7 @@ class EntryPropertiesEditorUI(QtWidgets.QWidget):
 
     def save_properties_to_db(self):
         data_to_insert = self.extract_properties()
-        self.entity_received.set_definition(data_to_insert)
+        self.entity_received.operations().set_definition(data_to_insert)
         self.changes_to_database.clear()
         self.check_changes()
 

@@ -1,6 +1,4 @@
-import os
 import maya.cmds as cmds
-import alembic.Abc
 
 
 def create_modeling_template():
@@ -9,7 +7,3 @@ def create_modeling_template():
     render_group = cmds.group(em=True, parent=slot_name, name="C_render_0001_GRP")
     proxy_group = cmds.group(em=True, parent=slot_name, name="C_proxy_0001_GRP")
     cmds.select(clear=True)
-
-
-if __name__ == "__main__":
-    create_modeling_template()

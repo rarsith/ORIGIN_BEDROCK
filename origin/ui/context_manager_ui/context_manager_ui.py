@@ -9,6 +9,8 @@ from origin.ui.task_viewer_core import TaskViewerCore
 
 
 class Loader(QtWidgets.QWidget):
+    submit_pressed = QtCore.Signal()
+
     def __init__(self, parent=None):
         super(Loader, self).__init__(parent)
 
@@ -60,6 +62,9 @@ class Loader(QtWidgets.QWidget):
         horizontal_splitter.insertWidget(0, self.project_tree_viewer)
         horizontal_splitter.insertWidget(1, self.task_viewer)
         horizontal_splitter.setSizes([200, 200])
+
+    def on_submit_pressed(self):
+        self.submit_pressed.emit()
 
     def context_receiver(self, context):
         self.new_context = context
@@ -208,6 +213,7 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
 
         self.central_widget.set_context_btn.clicked.connect(self.central_widget.update_context_envars)
         self.central_widget.set_context_btn.clicked.connect(self.compute_context)
+        self.central_widget.set_context_btn.clicked.connect(self.central_widget.on_submit_pressed)
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_project_tree)
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_task_viewer)
 

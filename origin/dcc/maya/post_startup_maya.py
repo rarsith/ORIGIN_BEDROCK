@@ -66,3 +66,6 @@ def set_origin_maya():
 
     set_motion_blur_settings(shutter_open=float(entity_definition["motion_blur_low"]),
                              shutter_close=float(entity_definition["motion_blur_high"]))
+
+
+cmds.scriptJob(event=["SceneOpened", set_origin_maya])

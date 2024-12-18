@@ -75,6 +75,172 @@ def get_db_asset_class(publish_type):
     return pub_types.get(publish_type)
 
 
+class OriginSettingsBase(BaseModel):
+    ROOT_PATH: ClassVar[str] = "root_path"
+    root_path: Optional[str] = None
+
+    ROOT_ORIGIN_PROJECTS: ClassVar[bool] = "root_origin_projects"
+    root_origin_projects: Optional[bool] = None
+
+    APPLICATIONS_REPOSITORY: ClassVar[str] = "applications_repository"
+    applications_repository: Optional[str] = None
+
+    MONGODB_CONNECTION_URL: ClassVar[str] = "mongodb_connection_url"
+    mongodb_connection_url: Optional[str] = None
+
+    STUDIO_NAME: ClassVar[str] = "studio_name"
+    studio_name: Optional[str] = None
+
+    STUDIO_LOGO: ClassVar[str] = "studio_logo"
+    studio_logo: Optional[str] = None
+
+    LAST_SESSION: ClassVar[dict] = "last_session"
+    last_session: Optional[dict] = None
+
+    DATE: ClassVar[str] = "date"
+    date: Optional[str] = None
+
+    TIME: ClassVar[str] = "time"
+    time: Optional[str] = None
+
+    OWNER: ClassVar[str] = "owner"
+    owner: Optional[str] = None
+
+
+class OriginSettingsOperations:
+    def __init__(self, entity: OriginSettingsBase):
+        self.entity = entity
+
+    def set_root_path(self, root_path):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.ROOT_PATH).attribute_value(data=root_path)
+
+    def set_root_origin_projects_path(self, projects_path):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.ROOT_ORIGIN_PROJECTS).attribute_value(data=projects_path)
+
+    def set_applications_repository(self, applications_path):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.APPLICATIONS_REPOSITORY).attribute_value(data=applications_path)
+
+    def set_mongodb_connection(self, mongodb_url):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.MONGODB_CONNECTION_URL).attribute_value(data=mongodb_url)
+
+    def set_studio_name(self, studio_name):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.STUDIO_NAME).attribute_value(data=studio_name)
+
+    def set_studio_logo_path(self, logo_path):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.STUDIO_LOGO).attribute_value(data=logo_path)
+
+    def set_last_session(self, last_session_data):
+        DBSet(db_collection="Origin",
+              entry_id=self.entity.id,
+              attribute=self.entity.LAST_SESSION).attribute_value(data=last_session_data)
+
+
+class DCCBaseModel(BaseModel):
+    ID: ClassVar[str] = "_id"
+    id: Optional[str] = Field(None, alias='_id')
+
+    NAME: ClassVar[str] = "name"
+    name: Optional[str] = None
+
+    ACTIVE: ClassVar[bool] = "active"
+    active: Optional[bool] = None
+
+    TYPE: ClassVar[str] = "type"
+    type: Optional[str] = None
+
+    PARENT: ClassVar[str] = "parent"
+    parent: Optional[str] = None
+
+    VERSIONS: ClassVar[dict] = "versions"
+    versions: Optional[dict] = None
+
+    ICON_PATH: ClassVar[str] = "icon_path"
+    icon_path: Optional[str] = None
+
+    DATE: ClassVar[str] = "date"
+    date: Optional[str] = None
+
+    TIME: ClassVar[str] = "time"
+    time: Optional[str] = None
+
+    OWNER: ClassVar[str] = "owner"
+    owner: Optional[str] = None
+
+    model_config = {
+        "from_attributes": True,
+    }
+
+    def operations(self):
+        return EntityOperations(entity=self)
+
+
+class DCCOperations:
+    def __init__(self, entity: DCCBaseModel):
+        self.entity = entity
+
+    def add_child(self, db_collection, child_id):
+        DBAdd(db_collection=db_collection,
+              entry_id=self.entity.id,
+              attribute=self.entity.CHILDREN).value_to_field(data=child_id)
+
+    def get_children(self):
+        children = []
+        doc_data = CollectionOperators(db_collection=self.parent_show())
+        children_docs = doc_data.children_with_parent_id(parent_id=self.entity.id)
+        for child in children_docs:
+            children.append(child)
+        return children
+
+
+class DCCVersion(BaseModel):
+    ACTIVE: ClassVar[bool] = "active"
+    active: Optional[bool] = None
+
+    VERSION: ClassVar[str] = "version"
+    version: Optional[str] = None
+
+    EXEC_PATH: ClassVar[str] = "exec_path"
+    exec_path: Optional[str] = None
+
+    # ACTIVE_PLUGINS: ClassVar[dict] = "active_plugins"
+    # active_plugins: Optional[dict] = None
+
+    EXEC_PYTHON: ClassVar[str] = "exec_python"
+    exec_python: Optional[str] = None
+
+    ENVARS: ClassVar[str] = "envars"
+    envars: Optional[str] = None
+
+
+class DCCVersionOperations:
+    def __init__(self, entity: DCCVersion):
+        super(DCCVersionOperations, self).__init__(entity=entity)
+        self.entity = entity
+
+    def set_parent(self, parent):
+        DBSet(db_collection=self.parent_show(),
+              entry_id=self.entity.id,
+              attribute=self.entity.PARENT).attribute_value(data=parent)
+
+    def get_parent(self):
+        parent_id = self.entity.id.rsplit(".", 1)[0]
+        doc_data = CollectionOperators(db_collection=self.parent_show())
+        db_doc = doc_data.entity_document(doc_id=parent_id)
+        return DCCVersion(**db_doc)
+
+
 class PublishOptions(BaseModel):
     PARENT_DB_ASSET_ID: ClassVar[str] = "parent_db_asset_id"
     parent_db_asset_id: Optional[str] = None
@@ -318,6 +484,9 @@ class Project(EntityBaseModel):
 
     SHOW_SETTING: ClassVar[dict] = "show_settings"
     show_settings: Optional[dict] = None
+
+    SHOW_SITE: ClassVar[dict] = "show_site"
+    show_site: Optional[dict] = None
 
     def operations(self):
         return ProjectOperations(entity=self)

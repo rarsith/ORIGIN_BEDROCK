@@ -346,6 +346,7 @@ class OriginDatabaseHandler:
             return None
 
     def get_db_asset_document(self):
+        print(self.__context.db_asset_id)
         if self.__context.db_asset_id:
             db_asset_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                       doc_id=self.__context.db_asset_id)

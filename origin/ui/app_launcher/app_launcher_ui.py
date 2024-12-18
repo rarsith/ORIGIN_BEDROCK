@@ -1,6 +1,9 @@
 import threading
 from PySide2 import QtWidgets, QtCore, QtGui
 
+from origin.database.entities.operators import DCCBaseModel, DCCVersion
+from origin.database.mongo import CollectionOperators
+from origin.database.mongo_connection import MongoConnection
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
 from origin.ui.app_launcher.app_launcher_settings_ui import AppLauncherSettings
@@ -29,12 +32,13 @@ class IconTextWidget(QtWidgets.QWidget):
 
 
 class AppLauncher(QtWidgets.QWidget):
-    def __init__(self, config_file_path=None, parent=None):
+    def __init__(self, context: ContextHandler = None, parent=None):
         super(AppLauncher, self).__init__(parent)
 
         self.context_handler = None
-        self.config_file_path = config_file_path
         self.current_context = None
+        if context is not None:
+            self.context_handler = context
 
         self.create_widgets()
         self.create_layout()
@@ -65,13 +69,10 @@ class AppLauncher(QtWidgets.QWidget):
         delegate = QtWidgets.QStyledItemDelegate(self.app_version_select_cb)
         self.app_version_select_cb.setItemDelegate(delegate)
 
-
-        # self.app_version_select_cb.setAlignment(QtCore.Qt.AlignCenter)
-
         self.launch_app_btn = QtWidgets.QPushButton("Start App")
         self.launch_app_btn.setMinimumHeight(30)
 
-        self.add_app_btn = QtWidgets.QPushButton("Add App...")
+        self.add_app_btn = QtWidgets.QPushButton("Applications Setting...")
 
     def create_layout(self):
         main_layout = QtWidgets.QVBoxLayout(self)
@@ -86,22 +87,15 @@ class AppLauncher(QtWidgets.QWidget):
     def populate_widget(self):
         self.launcher_tw.clear()
 
-        get_apps = self.get_config_data(app_config_file=self.config_file_path)
+        get_applications_docs = self.get_config_data()
 
-        rows_cnt = len(get_apps)
+        rows_cnt = len(get_applications_docs)
         self.launcher_tw.setRowCount(rows_cnt)
 
-        if get_apps:
+        if get_applications_docs:
             cnt = 0
-            for keys, values in get_apps.items():
-                app_display_name = keys.capitalize()
-                app_icon = values["icon"]
-
-                self.app_widget_built(name=app_display_name,
-                                      row=cnt,
-                                      icon_path=app_icon,
-                                      custom_data={keys: values})
-
+            for idx, docs_data in enumerate(get_applications_docs):
+                self.app_widget_built(row=cnt, doc_data=docs_data)
                 self.launcher_tw.resizeRowsToContents()
                 cnt += 1
 
@@ -110,18 +104,19 @@ class AppLauncher(QtWidgets.QWidget):
         self.launch_app_btn.setText("Start App")
         self.app_version_select_cb.clear()
 
-    def app_widget_built(self, name, row, icon_path, custom_data=None):
-        custom_item = QtWidgets.QTableWidgetItem(name)
+    def app_widget_built(self, row, doc_data=None):
+        app_display_name = doc_data.name.capitalize()
+        custom_item = QtWidgets.QTableWidgetItem(app_display_name)
 
         self.label_icon = QtWidgets.QLabel()
 
         self.label_icon.setAlignment(QtCore.Qt.AlignCenter)
-        pixmap = QtGui.QPixmap(icon_path).scaled(20, 20)
+        pixmap = QtGui.QPixmap(doc_data.icon_path).scaled(20, 20)
         self.label_icon.setPixmap(pixmap)
         self.label_icon.setStyleSheet("background-color: rgba(50, 50, 50, 50);")
 
         self.label_text = QtWidgets.QLabel()
-        self.label_text.setText(name)
+        self.label_text.setText(app_display_name)
 
         font = QtGui.QFont()
         font.setPointSize(8)
@@ -132,15 +127,20 @@ class AppLauncher(QtWidgets.QWidget):
         self.launcher_tw.setCellWidget(row, 0, self.label_icon)
         self.launcher_tw.setCellWidget(row, 1, self.label_text)
 
-        if custom_data:
-            custom_item.setData(QtCore.Qt.UserRole, custom_data)
+        custom_item.setData(QtCore.Qt.UserRole, doc_data)
 
         self.launcher_tw.setItem(row, 2, custom_item)
 
-    def get_config_data(self, app_config_file=None):
-        from origin.common_utils import json_utils
-        config_data = json_utils.open_json(app_config_file)
-        return config_data["applications"]
+    def get_config_data(self):
+        db_ops = CollectionOperators(db_collection="Applications", database=MongoConnection().origin_setup_database())
+        root_documents_docs = db_ops.get_root_documents(attrib_field="type", attrib_value="application")
+
+        root_documents = []
+        if root_documents_docs:
+            for root_doc in root_documents_docs:
+                doc_data_class = DCCBaseModel(**root_doc)
+                root_documents.append(doc_data_class)
+        return root_documents
 
     def create_connections(self):
         self.add_app_btn.clicked.connect(self.add_app_menu)
@@ -163,20 +163,26 @@ class AppLauncher(QtWidgets.QWidget):
         import os
         import subprocess
         exe_path = self.get_ver_exec_path()
-        self.update_launch_btn()
+        if exe_path:
+            try:
+                self.update_launch_btn()
+                if self.context_handler:
+                    current_session = self.context_handler.snapshot_session()
+                    sys_envar_upper = self.context_handler.convert_to_uppercases(current_session)
+                    path_handler = OriginOSPathHandler(context=self.context_handler)
+                    path_handler.create_work_folders()
+                    env = os.environ.copy()
+                    filtered_dict = dict(filter(lambda item: item[1] is not None, sys_envar_upper.items()))
+                    env.update(filtered_dict)
 
-        current_session = self.context_handler.snapshot_session()
-        sys_envar_upper = self.context_handler.convert_to_uppercases(current_session)
+                    subprocess.Popen(exe_path, shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, env=env)
+                else:
+                    subprocess.Popen(exe_path, shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
 
-        path_handler = OriginOSPathHandler(context=self.context_handler)
-        path_handler.create_work_folders()
-
-        env = os.environ.copy()
-
-        filtered_dict = dict(filter(lambda item: item[1] is not None, sys_envar_upper.items()))
-        env.update(filtered_dict)
-
-        subprocess.Popen(exe_path, shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, env=env)
+            except Exception as e:
+                print(f"No application selected!: {e}")
+        else:
+            print("Please select an Application to start!")
 
     def launch_app(self):
         threading.Thread(target=self.launch_async_app).start()
@@ -184,28 +190,29 @@ class AppLauncher(QtWidgets.QWidget):
     def load_app_versions(self):
         versions = self.get_app_versions()
         if versions:
-            app_current_versions = []
+            app_current_versions_docs = []
             for version_name, version_details in versions.items():
-                app_current_versions.append(version_name)
+                app_current_versions_docs.append(DCCVersion(**version_details))
 
             self.app_version_select_cb.clear()
-            self.app_version_select_cb.addItems(app_current_versions)
-            self.update_launch_btn()
 
+            for version_doc in app_current_versions_docs:
+                self.app_version_select_cb.addItem(version_doc.version, userData=version_doc)
+
+            self.update_launch_btn()
 
     def get_ver_exec_path(self):
         curr_sel = self.get_current_selection()
         if curr_sel:
-            item_data = curr_sel.data(QtCore.Qt.UserRole)
-            curr_sel_ver = self.app_version_select_cb.currentText()
-            exe_path = item_data[curr_sel.text().lower()]["versions"][curr_sel_ver]["executable_path"]
-            return exe_path
+            curr_sel_data = self.app_version_select_cb.currentData()
+            exec_path = curr_sel_data.exec_path
+            return exec_path
 
     def get_app_versions(self):
         curr_sel = self.get_current_selection()
         if curr_sel:
             item_data = curr_sel.data(QtCore.Qt.UserRole)
-            versions = item_data[curr_sel.text().lower()]["versions"]
+            versions = item_data.versions
             return versions
 
     def get_current_selection(self):
@@ -218,7 +225,7 @@ class AppLauncher(QtWidgets.QWidget):
 
 
     def add_app_menu(self):
-        self.ui = AppLauncherSettings(config_file_path=self.config_file_path)
+        self.ui = AppLauncherSettings()
         self.ui.show()
         self.ui.commit_btn.clicked.connect(self.populate_widget)
         self.ui.refresh_btn.clicked.connect(self.populate_widget)
@@ -227,7 +234,23 @@ class AppLauncher(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.chr',
+                      'entity_name': 'tafer',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
+                      'entity_type': 'asset',
+                      'task_name': "modeling",
+                      'task_type': "modeling",
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      # 'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
+                      # 'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
+                      }
+
+    context_obj = ContextHandler()
+    context_obj.load_session(session_data=context_sample)
 
     qss_style_file = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\style\stylesheets\dark_orange\dark_orange_style.qss"
 
@@ -237,9 +260,7 @@ if __name__ == "__main__":
         _style = f.read()
         app.setStyleSheet(_style)
 
-
-
-    test_dialog = AppLauncher(config_file_path=APP_CONFIG_FILE)
+    test_dialog = AppLauncher()
     test_dialog.populate_widget()
     test_dialog.show()
     sys.exit(app.exec_())

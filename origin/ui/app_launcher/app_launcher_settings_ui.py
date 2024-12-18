@@ -1,15 +1,16 @@
 import json
 from PySide2 import QtWidgets, QtCore
+
+from origin.database.mongo import DBSet
+from origin.database.mongo_connection import MongoConnection
 from origin.ui.app_launcher.custom_widgets.app_browser_ui import AppBrowser
 from origin.ui.app_launcher.custom_widgets.app_properties_ui import AppProperties
 
 
 class AppLauncherSettings(QtWidgets.QWidget):
 
-    def __init__(self, config_file_path=None, parent=None):
+    def __init__(self, parent=None):
         super(AppLauncherSettings, self).__init__(parent)
-
-        self.config_file_path = config_file_path
 
         self.setMinimumWidth(1000)
         self.setMinimumHeight(850)
@@ -19,8 +20,8 @@ class AppLauncherSettings(QtWidgets.QWidget):
         self.create_connections()
 
     def create_widgets(self):
-        self.app_browser_wdg = AppBrowser(config_file_path=self.config_file_path)
-        self.app_properties_wdg = AppProperties(config_file_path=self.config_file_path)
+        self.app_browser_wdg = AppBrowser()
+        self.app_properties_wdg = AppProperties()
 
         self.commit_btn = QtWidgets.QPushButton("Commit")
         self.refresh_btn = QtWidgets.QPushButton("Refresh")
@@ -54,16 +55,35 @@ class AppLauncherSettings(QtWidgets.QWidget):
         return sel_app
 
     def update_app_config(self):
+        origin_setup_db = MongoConnection().origin_setup_database()
+        origin_applications_collection = "Applications"
         extract_current_properties = self.app_properties_wdg.extract_properties()
-        current_selected = self.app_browser_wdg.get_selected()
+        current_selected_data = self.app_properties_wdg.selected_app
 
-        with open(self.config_file_path, 'r') as file:
-            existing_data = json.load(file)
+        DBSet(database=origin_setup_db,
+              db_collection=origin_applications_collection,
+              entry_id=current_selected_data.id,
+              attribute=current_selected_data.ACTIVE).attribute_value(extract_current_properties['base']['enabled'])
 
-        existing_data["applications"][current_selected] = (extract_current_properties["base"])
+        DBSet(database=origin_setup_db,
+              db_collection=origin_applications_collection,
+              entry_id=current_selected_data.id,
+              attribute=current_selected_data.ICON_PATH).attribute_value(extract_current_properties['base']['icon'])
 
-        with open(self.config_file_path, 'w') as file:
-            json.dump(existing_data, file, indent=4)
+        DBSet(database=origin_setup_db,
+              db_collection=origin_applications_collection,
+              entry_id=current_selected_data.id,
+              attribute=current_selected_data.NAME).attribute_value(extract_current_properties['base']['display_name'])
+
+        DBSet(database=origin_setup_db,
+              db_collection=origin_applications_collection,
+              entry_id=current_selected_data.id,
+              attribute=current_selected_data.VERSIONS).attribute_value(data={})
+
+        DBSet(database=origin_setup_db,
+              db_collection=origin_applications_collection,
+              entry_id=current_selected_data.id,
+              attribute=current_selected_data.VERSIONS).attribute_value(extract_current_properties['base']['versions'])
 
         self.app_browser_wdg.populate_app_viewer()
         self.app_properties_wdg.clear_all_properties()
@@ -72,10 +92,8 @@ class AppLauncherSettings(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\origin_globals_ui\settings\applications004.json"
-
     app = QtWidgets.QApplication(sys.argv)
 
-    test_dialog = AppLauncherSettings(config_file_path=APP_CONFIG_FILE)
+    test_dialog = AppLauncherSettings()
     test_dialog.show()
     sys.exit(app.exec_())

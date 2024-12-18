@@ -32,7 +32,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
 
     def create_widgets(self):
         self.sanity_checker_wdg = SanityChecker()
-        self.launcher_tw = AppLauncher(config_file_path=APP_CONFIG_FILE)
+        self.launcher_tw = AppLauncher()
         self.show_view_twd = ProjectTreeViewerCore()
         self.tasks_view_lwd = TaskViewerCore()
         self.versions_view_tvw = MainPublishesViewCore()
