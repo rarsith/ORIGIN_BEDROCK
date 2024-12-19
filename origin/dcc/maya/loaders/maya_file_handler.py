@@ -65,10 +65,11 @@ class MayaFileHandler:
         Open the file in Maya, replacing the current scene.
         """
         if self.extension in {".ma", ".mb"}:
-            cmds.file(f=True, new=True)
+            cmds.file(f=True, new=True, force=False, prompt=True)
             cmds.file(self.file_path,
                       open=True,
-                      force=True,
+                      prompt=True,
+                      force=False,
                       loadReferenceDepth="none",
                       ignoreVersion=True,
                       preserveReferences=True)

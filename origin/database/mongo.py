@@ -78,11 +78,19 @@ class DBAdd:
         Returns:
 
         """
-        check_if_exists = DBFind(self.collection, self.entry_id, self.attribute).attr_values()
+        check_if_exists = DBFind(db_collection=self.collection,
+                                 entry_id=self.entry_id,
+                                 attribute=self.attribute).attr_values()
+
 
         if check_if_exists is None:
-            DBSet(self.collection, self.entry_id, self.attribute).attribute_value(data=[data])
-            check_if_exists = DBFind(self.collection, self.entry_id, self.attribute).attr_values()
+            DBSet(db_collection=self.collection,
+                  entry_id=self.entry_id,
+                  attribute=self.attribute).attribute_value(data=[data])
+
+            check_if_exists = DBFind(db_collection=self.collection,
+                                     entry_id=self.entry_id,
+                                     attribute=self.attribute).attr_values()
 
         if not isinstance(data, list):
             if data not in check_if_exists:

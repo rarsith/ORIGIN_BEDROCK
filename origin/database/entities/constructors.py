@@ -186,6 +186,7 @@ class DbConstructors:
             label=set_display_name,
             master_task_type='',
             db_asset_type="db_asset__stream",
+            stacks=[],
 
             date=DateTime().curr_date,
             time=DateTime().curr_time,
@@ -383,8 +384,6 @@ class DbConstructors:
         )
 
         db_asset_stack_doc = document.model_dump(by_alias=True)
-
-        parent_doc.operations().add_stack(db_collection=self.context_handler.project_publishes, stack_id=compiled_id)
 
         return db_asset_stack_doc
 

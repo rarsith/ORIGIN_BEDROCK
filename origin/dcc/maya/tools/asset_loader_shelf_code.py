@@ -24,7 +24,9 @@ def get_maya_main_window():
 
 
 context_window_parent = get_maya_main_window()
+
 qss_style_file = "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\ui\\style\\stylesheets\\dark_orange\\dark_orange_style.qss"
+
 window = loader_ui.LoaderMainUI(context=CLONED_CONTEXT, parent=context_window_parent)
 
 try:
@@ -35,8 +37,6 @@ try:
     with open(qss_style_file, "r") as f:
         _style = f.read()
         window.setStyleSheet(_style)
-
-    # window.show()
 
 except Exception as e:
     print(f"Error occurred: {e}")

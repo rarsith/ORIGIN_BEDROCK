@@ -305,12 +305,15 @@ class Create:
 
     def asset_stack(self, parent_id):
         save_data = DbConstructors(context=self.context_handler).asset_stack_construct(parent_id=parent_id)
-
         try:
             doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
 
-            if not doc_exists:
+            if doc_exists is None:
                 inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                DBAdd(db_collection=self.context_handler.project_publishes,
+                      entry_id=parent_id,
+                      attribute="stacks").value_to_field(inserted_data.inserted_id)
 
                 return inserted_data.inserted_id
             else:
