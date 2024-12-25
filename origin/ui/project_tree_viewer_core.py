@@ -57,10 +57,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.project_tree_viewer_wdg.itemClicked.connect(self.get_selected_entry_name)
         self.project_tree_viewer_wdg.itemClicked.connect(self.resolve_context)
         self.project_tree_viewer_wdg.itemSelectionChanged.connect(self.resolve_context)
-        # self.project_tree_viewer_wdg.itemSelectionChanged.connect(self.curr_sel_entity)
         self.project_tree_viewer_wdg.itemExpanded.connect(self.on_item_expanded)
-
-        # self.about_action.triggered.connect(self.about)
 
     def create_context_menu_connections(self):
         self.create_group_action.triggered.connect(self.create_group_menu)

@@ -78,20 +78,24 @@ class OriginOSPathHandler:
 
         return path_entities
 
-    def __publish_base_path(self):
+    def publish_base_path(self):
         publish_base_path = self.__base_path()
         publish_base_path.append(self.publishes_root)
 
         return publish_base_path
 
-    def __work_base_path(self):
+    def work_base_path(self, as_path=False, abs_path=False):
         base_path = self.__base_path()
         base_path.append(self.__compile_user_work_dir())
 
-        return base_path
+        if not as_path:
+            return base_path
+        elif as_path and abs_path:
+            resolved_path = os.path.join(self.origin_projects_root, *base_path)
+            return resolved_path
 
     def __publish_db_asset_version_branch(self, branch_dir_name):
-        pub_path = self.__publish_base_path()
+        pub_path = self.publish_base_path()
         pub_path.append(branch_dir_name)
         pub_path.append(self.__compile_server_db_asset_dir_name())
         pub_path.append(self.__compile_server_db_asset_version_dir_name())
@@ -99,17 +103,19 @@ class OriginOSPathHandler:
 
         return pub_path
 
-    def __work_db_asset_version_branch(self, branch_dir_name):
-        work_path = self.__work_base_path()
-        work_path.append(branch_dir_name)
+    def __work_db_asset_version_branch(self, branch_dir_name=None):
+        if branch_dir_name is not None:
+            work_path = self.work_base_path()
+            work_path.append(branch_dir_name)
+            return work_path
+        else:
+            return self.work_base_path()
 
-        return work_path
-
-    def publish_path(self, branch_dir_name, create_dir=False, relative=False):
+    def publish_path(self, branch_dir_name=None, create_dir=False, relative=False):
         publish_path_elements = self.__publish_db_asset_version_branch(branch_dir_name=branch_dir_name)
         return self.compose_path(path_elements=publish_path_elements, create_dirs=create_dir, relative=relative)
 
-    def work_path(self, branch_dir_name, create_dir=False, relative=False):
+    def work_path(self, branch_dir_name=None, create_dir=False, relative=False):
         work_path_elements = self.__work_db_asset_version_branch(branch_dir_name=branch_dir_name)
         return self.compose_path(path_elements=work_path_elements, create_dirs=create_dir, relative=relative)
 
@@ -148,19 +154,23 @@ if __name__ == "__main__":
                       'project_publishes': 'The_Rock__PUBLISHES',
                       'project_work': 'The_Rock__WORK',
                       'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
+                      'origin_path_hierarchy': 'assets.props',
+                      'entity_name': 'knife',
+                      'entity_id': 'The_Rock.assets.props.knife',
+                      'asset_breakdown_id': 'The_Rock.assets.props.knife.breakdown',
                       'entity_type': 'asset',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling",
-                      'db_asset_id': 'The_Rock.assets.chr.tafer.modeling.LIDAR_reference'}
+                      'task_id': "The_Rock.assets.props.knife.modeling",
+                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
+                      'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
+                      'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
+                      }
 
     context_obj = ContextHandler()
     context_obj.load_session(session_data=context_sample)
 
     app = OriginOSPathHandler(context=context_obj, file_format="obj")
-    x_path_items = app.publish_path(branch_dir_name=app.branch_pub_images)
+    x_path_items = app.work_base_path(as_path=True, abs_path=True)
     # compile_path = app.compose_path(x_path_items)
     print(x_path_items)

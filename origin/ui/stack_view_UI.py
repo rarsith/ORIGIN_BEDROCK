@@ -10,9 +10,9 @@ class CustomDelegate(QtWidgets.QStyledItemDelegate):
         return size_hint
 
 
-class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
+class StackViewWidgetBuild(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):
-        super(MainPublishesViewWidgetBuild, self).__init__(parent)
+        super(StackViewWidgetBuild, self).__init__(parent)
 
         # self.widget_width = 400
         self.widget_build()
@@ -52,10 +52,10 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         # self.setColumnCount(len(self.widget_columns_names))
         # self.setHeaderLabels(self.widget_columns_names)
 
-        self.setColumnWidth(0, round(width * 0.060))
-        self.setColumnWidth(1, round(width * 0.27))
+        self.setColumnWidth(0, round(width * 0.01))
+        self.setColumnWidth(1, round(width * 0.255))
         self.setColumnWidth(2, round(width * 0.07))
-        self.setColumnWidth(3, round(width * 0.14))
+        self.setColumnWidth(3, round(width * 0.12))
         self.setColumnWidth(4, round(width * 0.1))
         self.setColumnWidth(5, round(width * 0.1))
         self.setColumnWidth(6, round(width * 0.1))
@@ -73,20 +73,20 @@ class MainPublishesViewWidgetBuild(QtWidgets.QTreeWidget):
         self.setColumnHidden(9, True)
         self.setColumnHidden(8, True)
 
-        self.setSortingEnabled(False)
+        self.setSortingEnabled(True)
         self.sortItems(7, QtCore.Qt.DescendingOrder)
 
 
-class MainPublishesViewUI(QtWidgets.QWidget):
+class StackViewUI(QtWidgets.QWidget):
     def __init__(self, parent=None):
-        super(MainPublishesViewUI, self).__init__(parent)
+        super(StackViewUI, self).__init__(parent)
 
         self.create_widgets()
         self.create_layout()
 
     def create_widgets(self):
 
-        self.publish_view_tw = MainPublishesViewWidgetBuild()
+        self.publish_view_tw = StackViewWidgetBuild()
 
         self.search_le = QtWidgets.QLineEdit()
         self.search_le.setPlaceholderText("Search for Publish Name, Asset Type, Owner")
@@ -139,45 +139,23 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         self.load_limit_le.setFixedSize(50, 20)
 
     def create_layout(self):
-        limit_form_layout = QtWidgets.QFormLayout()
-        limit_form_layout.addRow("Limit:", self.load_limit_le)
-
-
         top_layout = QtWidgets.QHBoxLayout()
-        top_layout.addWidget(self.search_le)
+        top_layout.addStretch()
         top_layout.addWidget(self.save_changes_btn)
         top_layout.addWidget(self.refresh_btn)
-        top_layout.addWidget(self.filter_menu_btn)
 
         left_spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         right_spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
 
-        bottom_btn_layout = QtWidgets.QHBoxLayout()
-
-        bottom_btn_layout.addWidget(self.go_to_first_page_btn)
-        bottom_btn_layout.addWidget(self.go_to_prev_page_btn)
-        bottom_btn_layout.addWidget(self.show_total_pages_le)
-        bottom_btn_layout.addWidget(self.show_current_page_le)
-        bottom_btn_layout.addWidget(self.go_to_next_page_btn)
-        bottom_btn_layout.addWidget(self.go_to_last_page_btn)
-        bottom_btn_layout.addItem(right_spacer)
-
-        bottom_btn_layout.addStretch(1)
-        bottom_btn_layout.addItem(left_spacer)
-        bottom_btn_layout.addLayout(limit_form_layout)
-
-        slot_view_layout = QtWidgets.QHBoxLayout()
-        slot_view_layout.addWidget(self.publish_view_tw)
-
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addLayout(top_layout)
         main_layout.addWidget(self.publish_view_tw)
-        main_layout.addLayout(bottom_btn_layout)
+
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    test_dialog = MainPublishesViewUI()
+    test_dialog = StackViewUI()
     test_dialog.show()
     sys.exit(app.exec_())

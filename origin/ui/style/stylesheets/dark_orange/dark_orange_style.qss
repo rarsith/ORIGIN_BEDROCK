@@ -543,7 +543,8 @@ QRadioButton::indicator:hover, QCheckBox::indicator:hover
 
 QCheckBox::indicator:checked
 {
-    image:url(:/dark_orange/img/checkbox.png);
+    background-color: green;
+    border: 2px solid green;
 }
 
 QCheckBox::indicator:disabled, QRadioButton::indicator:disabled

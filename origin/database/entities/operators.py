@@ -695,13 +695,21 @@ class DBAssetOperations(EntityOperations):
                                                                 extra_filters=[{self.entity.TYPE: "publish"}])
         return all_versions
 
-    def get_latest_version(self):
+    def get_latest_version(self, db_asset_type=None, with_status=None):
         if self.entity.version_cnt != 0:
             resolve_db_asset_version = f'v{self.entity.version_cnt:04}'
             db_asset_version_id = ".".join([self.entity.id, resolve_db_asset_version])
             data_ops = CollectionOperators(db_collection=self.entity.operations().project_publishes_collection())
-            latest_version_doc_data = data_ops.entity_document(doc_id=db_asset_version_id)
-            return latest_version_doc_data
+
+            if with_status is not None:
+                latest_version_doc_data = data_ops.get_all_versions_with_status(db_asset=self.entity,
+                                                                                db_asset_type=db_asset_type,
+                                                                                status=with_status,
+                                                                                ids_only=True)
+                return latest_version_doc_data
+            else:
+                latest_version_doc_data = data_ops.entity_document(doc_id=db_asset_version_id)
+                return latest_version_doc_data
         else:
             return None
 
@@ -739,7 +747,7 @@ class StackBaseModel(DBAsset):
         return StackOperations(entity=self)
 
 
-class StackOperations(EntityOperations):
+class StackOperations(DBAssetOperations):
     def __init__(self, entity: StackBaseModel):
         super(StackOperations, self).__init__(entity=entity)
         self.entity = entity

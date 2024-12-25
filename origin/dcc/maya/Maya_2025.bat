@@ -9,7 +9,7 @@ set "MAYA=D:\Program Files\Autodesk\Maya2025"
 rem \---- Maya Executable
 set "MAYABIN=%MAYA%\bin"
 
-set "USD_INSTALL_DIR=D:\Program Files\Autodesk\Maya2025\USD"
+set "USD_INSTALL_DIR=%MAYA%\USD"
 set "PATH=%USD_INSTALL_DIR%\bin;%MAYABIN%;%PATH%"
 
 rem \---- Python paths

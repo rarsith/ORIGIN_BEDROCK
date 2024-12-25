@@ -7,6 +7,7 @@ from origin.ui.publish.asset_stream_manager.widgets.create_asset_stream_ui impor
 from origin.ui.publish.asset_stream_manager.widgets.delete_asset_stream_ui import DeleteEmptyStreamsUI
 from origin.database.entities.operators import Asset
 from origin.database.mongo import CollectionOperators
+from origin.ui.stream_viewer_UI import StreamViewerUI
 
 
 class ContextViewer(ProjectTreeViewerUI):
@@ -198,6 +199,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     test_dialog = EntryStackStream(context=context_obj)
+    test_dialog.populate_streams()
 
     test_dialog.show()
     sys.exit(app.exec_())

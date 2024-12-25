@@ -110,9 +110,9 @@ class OriginPublisher(QtWidgets.QDialog):
 
     def save_widget_options(self, widget):
         widget_selected_options = widget.get_selected_options()
+        print(widget_selected_options)
         if widget_selected_options is not None:
             self.collected_options.update(widget.get_selected_options())
-            print(self.collected_options)
             return widget_selected_options
         else:
             return widget_selected_options
@@ -121,6 +121,7 @@ class OriginPublisher(QtWidgets.QDialog):
         final_widget = self.widgets[-1]
         final_widget.publish(self.collected_options)
         self.close()
+
         QtWidgets.QMessageBox.information(self, "Publishing",
                                           "Publishing process started with options: " + str(self.collected_options))
 

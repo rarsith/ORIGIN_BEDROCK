@@ -1,10 +1,10 @@
 @echo off
 
 rem \---- Codebase Root
-set "ORIGIN_ROOT=C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK"
+set "ORIGIN_ROOT=E:\Local_projects\PycharmProjects\ORIGIN_BEDROCK"
 
 rem \---- Maya Installation
-set "MAYA=D:\Program Files\Autodesk\Maya2024"
+set "MAYA=E:\programs\Autodesk\Maya2024"
 
 rem \---- Maya Executable
 set "MAYABIN=%MAYA%\bin"

@@ -1,3 +1,4 @@
+import os
 import sys
 import importlib
 import maya.OpenMayaUI as omui
@@ -8,12 +9,15 @@ from origin.envars.origin_envars import ContextHandler
 from origin.ui.publish import origin_publisher
 importlib.reload(origin_publisher)
 
-from origin.dcc.maya import context_env
-importlib.reload(context_env)
 
-NEW_CONTEXT = context_env.CURRENT_SESSION.snapshot_session()
-CLONED_CONTEXT = ContextHandler()
-CLONED_CONTEXT.load_session(NEW_CONTEXT)
+def clone_environment():
+    from origin.dcc.maya import context_env
+    importlib.reload(context_env)
+
+    NEW_CONTEXT = context_env.get_context_env()
+    CLONED_CONTEXT = ContextHandler()
+    CLONED_CONTEXT.load_session(NEW_CONTEXT)
+    return CLONED_CONTEXT
 
 
 def get_maya_main_window():
@@ -21,29 +25,34 @@ def get_maya_main_window():
     return wrapInstance(int(main_window_ptr), QtWidgets.QMainWindow)
 
 
-context_window_parent = get_maya_main_window()
-qss_style_file = "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\ui\\style\\stylesheets\\dark_orange\\dark_orange_style.qss"
+def modeling_publish():
+    current_context = clone_environment()
 
-target_root = "main|geo"
+    target_root = "main|geo"
+    context_window_parent = get_maya_main_window()
 
-if not cmds.objExists(target_root):
-    raise Exception(f"Hierachy Imcomplete. {target_root} not found. Use Create Template!")
+    origin_root = os.getenv("ORIGIN_ROOT")
+    qss_style_file = os.path.normpath(
+        os.path.join(origin_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
-elif not CLONED_CONTEXT.task_type == "modeling":
-    raise Exception(f"Task missmatch. You are in {CLONED_CONTEXT.task_type} Task!")
+    if not cmds.objExists(target_root):
+        raise Exception(f"Hierachy Imcomplete. {target_root} not found. Use Create Template!")
 
-else:
-    window = origin_publisher.OriginPublisher(context=CLONED_CONTEXT, publish_type="geometry", parent=context_window_parent)
-    try:
+    elif not current_context.task_type == "modeling":
+        raise Exception(f"Task missmatch. You are in {current_context.task_type} Task!")
 
-        window.setGeometry(100, 100, 700, 300)
-        window.setWindowFlags(QtCore.Qt.Window)
+    else:
+        window = origin_publisher.OriginPublisher(context=current_context, publish_type="geometry", parent=context_window_parent)
+        try:
 
-        with open(qss_style_file, "r") as f:
-            _style = f.read()
-            window.setStyleSheet(_style)
+            window.setGeometry(100, 100, 700, 300)
+            window.setWindowFlags(QtCore.Qt.Window)
 
-        window.show()
+            with open(qss_style_file, "r") as f:
+                _style = f.read()
+                window.setStyleSheet(_style)
 
-    except Exception as e:
-        print(f"Error occurred: {e}")
+            window.show()
+
+        except Exception as e:
+            print(f"Error occurred: {e}")

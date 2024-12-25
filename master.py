@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PySide2 import QtWidgets, QtCore
@@ -9,9 +10,8 @@ from origin.ui.app_launcher.app_launcher_ui import AppLauncher
 from origin.ui.sanity_checker_wdg import SanityChecker
 
 
-
-APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
-thumbnail_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\dcc\icons\movie_pic.png"
+origin_dev_root = os.getenv("ORIGIN_ROOT")
+thumbnail_path = os.path.normpath(os.path.join(origin_dev_root, "origin/dcc/icons/movie_pic.png"))
 
 
 class OriginControlCenterUI(QtWidgets.QWidget):
@@ -81,7 +81,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         vertical_splitter.insertWidget(1, horizontal_splitter)
         vertical_splitter.insertWidget(2, self.entity_details_viewer_wdg)
         vertical_splitter.insertWidget(3, self.launcher_tw)
-        vertical_splitter.setSizes([180, 1000, 350, 200])
+        vertical_splitter.setSizes([150, 890, 465, 150])
 
         button_layout = QtWidgets.QVBoxLayout()
         button_layout.addWidget(self.refresh_btn)
@@ -108,7 +108,9 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.show_view_twd.current_context.connect(self.entity_details_viewer_wdg.properties_wdg.context_receiver)
         self.show_view_twd.current_context.connect(self.tasks_view_lwd.context_receiver)
         self.show_view_twd.current_context.connect(self.versions_view_tvw.context_receiver)
+
         self.versions_view_tvw.selected_version.connect(self.entity_details_viewer_wdg.components_wdg.context_receiver)
+        self.versions_view_tvw.selected_version.connect(self.entity_details_viewer_wdg.stack_slots_wdg.context_receiver)
 
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_shows)
         self.refresh_btn.clicked.connect(self.show_view_twd.refresh_tree_widget)
@@ -120,6 +122,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
 
         self.versions_view_tvw.publish_view_tw.itemSelectionChanged.connect(self.populate_file_components)
+        self.versions_view_tvw.publish_view_tw.itemSelectionChanged.connect(self.populate_stack_viewer)
 
         self.middle_tabmenu_tab.currentChanged.connect(self.on_middle_tab_change)
         self.entity_details_viewer_wdg.details_tabmenu_tab.currentChanged.connect(self.on_properties_tab_change)
@@ -161,11 +164,12 @@ class OriginControlCenterUI(QtWidgets.QWidget):
                 self.entity_details_viewer_wdg.components_wdg.slot_component_viewer_tw.clearSelection()
                 self.entity_details_viewer_wdg.components_wdg.slot_component_viewer_tw.clear()
 
-            if current_widget == self.entity_details_viewer_wdg.links_wdg:
-                pass
+            if current_widget == self.entity_details_viewer_wdg.stack_slots_wdg:
+                self.populate_stack_viewer()
 
             else:
-                pass
+                self.entity_details_viewer_wdg.stack_slots_wdg.publish_view_tw.clearSelection()
+                self.entity_details_viewer_wdg.stack_slots_wdg.publish_view_tw.clear()
 
             if current_widget == self.entity_details_viewer_wdg.notes_wdg:
                 pass
@@ -219,6 +223,20 @@ class OriginControlCenterUI(QtWidgets.QWidget):
             self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clearSelection()
             self.entity_details_viewer_wdg.versions_wdg.publish_view_tw.clear()
 
+    def populate_stack_viewer(self):
+        widget_selection = self.versions_view_tvw.get_current_selected()
+        if len(widget_selection) != 0:
+            tab_idx = self.entity_details_viewer_wdg.details_tabmenu_tab.currentIndex()
+            current_widget = self.entity_details_viewer_wdg.details_tabmenu_tab.widget(tab_idx)
+            if current_widget:
+                if current_widget == self.entity_details_viewer_wdg.stack_slots_wdg:
+                    self.versions_view_tvw.selected_version.connect(
+                        self.entity_details_viewer_wdg.stack_slots_wdg.context_receiver)
+                    self.entity_details_viewer_wdg.stack_slots_wdg.populate_widget()
+        else:
+            self.entity_details_viewer_wdg.stack_slots_wdg.publish_view_tw.clearSelection()
+            self.entity_details_viewer_wdg.stack_slots_wdg.publish_view_tw.clear()
+
     def clear_launch_app_wdg(self):
         widget_selection = self.tasks_view_lwd.get_current_selected()
         if len(widget_selection) == 0:
@@ -267,8 +285,6 @@ class MainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     qss_style_file = "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"
 
-    # app = QtWidgets.QApplication(sys.argv)
-
     app = QtWidgets.QApplication.instance()  # Check if QApplication already exists
     if app is None:  # Create only if it doesn't exist
         app = QtWidgets.QApplication(sys.argv)
@@ -277,8 +293,9 @@ if __name__ == "__main__":
         _style = f.read()
         app.setStyleSheet(_style)
 
-    test_dialog = MainUI()
-    # app.exec_()
+    font = app.font()
+    font.setPointSize(7)
+    app.setFont(font)
 
-    # test_dialog.show()
+    test_dialog = MainUI()
     sys.exit(app.exec_())

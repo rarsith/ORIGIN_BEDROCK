@@ -6,6 +6,7 @@ from origin.ui.entity_properties_ui.custom_widgets.odb_notes_ui import NotesWidg
 from origin.ui.entity_properties_ui.custom_widgets.component_viewer_core import SlotComponentsViewerCore
 from origin.ui.entity_properties_ui.custom_widgets.representation_viewer_wdg import RepresentationViewer
 from origin.ui.publishes_view_core import MainPublishesViewCore
+from origin.ui.stack_view_core import StackViewCore
 
 icon_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\mvoie.png"
 
@@ -21,7 +22,7 @@ class PropertiesViewer(QtWidgets.QWidget):
         self.representation_wdg = RepresentationViewer()
 
         self.notes_wdg = NotesWidget()
-        self.links_wdg = ButtonsWidget()
+        self.stack_slots_wdg = StackViewCore()
         self.properties_wdg = EntryPropertiesEditorUI()
         self.components_wdg = SlotComponentsViewerCore()
 
@@ -32,7 +33,7 @@ class PropertiesViewer(QtWidgets.QWidget):
         self.details_tabmenu_tab.setTabPosition(QtWidgets.QTabWidget.North)
         self.details_tabmenu_tab.addTab(self.components_wdg, "Components")
         self.details_tabmenu_tab.addTab(self.versions_wdg, "Publishes")
-        self.details_tabmenu_tab.addTab(self.links_wdg, "Links")
+        self.details_tabmenu_tab.addTab(self.stack_slots_wdg, "Sack Slots")
         self.details_tabmenu_tab.addTab(self.notes_wdg, "Notes")
         self.details_tabmenu_tab.addTab(self.properties_wdg, "Properties")
 

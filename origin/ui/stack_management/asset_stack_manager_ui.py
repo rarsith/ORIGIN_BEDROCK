@@ -63,7 +63,7 @@ class AssetStackManager(QtWidgets.QWidget):
 
     def reinitialize(self, pub_options=None):
         self.pub_options = pub_options
-        self.context_handler = None
+        self.context_handler: ContextHandler = None
         if self.pub_options is not None:
             self.context_handler = self.pub_options.get("context_object")
 
@@ -138,7 +138,11 @@ class AssetStackManager(QtWidgets.QWidget):
 
     def get_selected_options(self):
         current_selected_stack_id = self.get_selected_stack()
-        return {"stack_db_asset_id": current_selected_stack_id}
+        self.context_handler.stack_id = current_selected_stack_id
+        if current_selected_stack_id is not None:
+            return {"stack_db_asset_id": current_selected_stack_id}
+        else:
+            return None
 
 
 class LoaderMainUI(QtWidgets.QMainWindow):
@@ -156,7 +160,7 @@ class LoaderMainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
 
-    qss_style_file = "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\ui\\style\\stylesheets\\dark_orange\\dark_orange_style.qss"
+    qss_style_file = "../style/stylesheets/dark_orange/dark_orange_style.qss"
 
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',

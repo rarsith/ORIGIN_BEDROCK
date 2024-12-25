@@ -1,7 +1,4 @@
 import os
-import pprint
-
-from origin.envars.origin_envars import ContextHandler
 
 
 def get_context_env():
@@ -27,10 +24,3 @@ def get_context_env():
         
     )
     return context_env
-
-
-__SESSION = get_context_env()
-CURRENT_SESSION = ContextHandler()
-CURRENT_SESSION.load_session(__SESSION)
-
-# pprint.pprint(CURRENT_SESSION.snapshot_session())

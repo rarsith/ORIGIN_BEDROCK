@@ -1,4 +1,5 @@
 import os
+import pprint
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
@@ -8,20 +9,17 @@ from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
 from origin.ui.task_viewer_core import TaskViewerCore
 
 
-class Loader(QtWidgets.QWidget):
+class ContextManager(QtWidgets.QWidget):
     submit_pressed = QtCore.Signal()
 
     def __init__(self, parent=None):
-        super(Loader, self).__init__(parent)
+        super(ContextManager, self).__init__(parent)
 
         self.project_tree_viewer = None
         self.task_viewer = None
 
         self.refresh_btn = None
         self.set_context_btn = None
-
-        self.context_handler: ContextHandler = None
-        self.new_context = None
 
         self.get_current_context()
 
@@ -72,19 +70,31 @@ class Loader(QtWidgets.QWidget):
     def update_context_envars(self):
         current_session = self.new_context.snapshot_session()
         sys_envar_upper = self.new_context.convert_to_uppercases(current_session)
-
+        cleaned_values = self.clean_values(data=sys_envar_upper, value_to_replace=None, value_to_assign='')
         path_handler = OriginOSPathHandler(context=self.new_context)
         path_handler.create_work_folders()
 
-        filtered_dict = dict(filter(lambda item: item[1] is not None, sys_envar_upper.items()))
-        self.update_envar(filtered_dict)
+        self.update_envar(cleaned_values)
         self.populate_project_tree()
         self.populate_task_viewer()
 
+    def clean_values(self, data, value_to_replace, value_to_assign):
+        buffer = {}
+        for key, value in data.items():
+            if value == value_to_replace:
+                value = value_to_assign
+                buffer[key] = value
+            else:
+                buffer[key] = value
+        return buffer
+
     def update_envar(self, env_dict):
         upper_envar_keys = {k.upper(): v for k, v in env_dict.items()}
+        buffer = {}
         for key, value in upper_envar_keys.items():
             os.environ[key] = value
+            buffer[key] = value
+        pprint.pprint(buffer)
 
     def get_current_context(self):
         context_env = {
@@ -113,6 +123,7 @@ class Loader(QtWidgets.QWidget):
         }
         self.context_handler = ContextHandler()
         self.context_handler.load_session(session_data=context_env)
+
         return context_env
 
     def populate_project_tree(self):
@@ -130,17 +141,20 @@ class Loader(QtWidgets.QWidget):
             else:
                 items = [tree_widget.topLevelItem(i) for i in range(tree_widget.topLevelItemCount())]
 
-            for idx, item in enumerate(items):
+            for item in items:
                 if item.text(0) == part:
                     item.setExpanded(True)
-                    if idx == len(items) - 1:
+                    tree_widget.setUpdatesEnabled(False)
+                    stored_data = item.data(0, QtCore.Qt.UserRole)
+                    tree_widget.setUpdatesEnabled(True)
+                    if stored_data.type == "asset":
                         tree_widget.setCurrentItem(item)
                         item.setSelected(True)
+
                     parent = item
                     break
 
     def select_active_task(self, task_widget):
-
         items = [task_widget.topLevelItem(i) for i in range(task_widget.topLevelItemCount())]
 
         for idx, item in enumerate(items):
@@ -151,14 +165,14 @@ class Loader(QtWidgets.QWidget):
     def select_last_item(self):
         if self.project_tree_viewer.project_tree_viewer_wdg.topLevelItemCount() == 0:
             return
+        else:
+            item = self.project_tree_viewer.project_tree_viewer_wdg.topLevelItem(self.project_tree_viewer.project_tree_viewer_wdg.topLevelItemCount() - 1)
 
-        item = self.project_tree_viewer.project_tree_viewer_wdg.topLevelItem(self.project_tree_viewer.project_tree_viewer_wdg.topLevelItemCount() - 1)
+            while item.childCount() > 0:
+                item = item.child(item.childCount() - 1)
 
-        while item.childCount() > 0:
-            item = item.child(item.childCount() - 1)
-
-        self.project_tree_viewer.project_tree_viewer_wdg.setCurrentItem(item)
-        item.setSelected(True)
+            self.project_tree_viewer.project_tree_viewer_wdg.setCurrentItem(item)
+            item.setSelected(True)
 
     def populate_task_viewer(self):
         has_selection = self.project_tree_viewer.get_selected()
@@ -199,7 +213,7 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
         super(ContextManagerMainUI, self).__init__(parent)
 
         self.setMinimumWidth(850)
-        self.central_widget = Loader()
+        self.central_widget = ContextManager()
         self.setCentralWidget(self.central_widget)
         self.create_connections()
         self.compute_context()
@@ -216,7 +230,6 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
         self.central_widget.set_context_btn.clicked.connect(self.central_widget.on_submit_pressed)
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_project_tree)
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_task_viewer)
-
 
     def compute_context(self):
         show_name = self.central_widget.context_handler.show_name
@@ -236,21 +249,24 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
 
-    qss_style_file = "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\ui\\style\\stylesheets\\dark_orange\\dark_orange_style.qss"
+    qss_style_file = "../../ui/style/stylesheets/dark_orange/dark_orange_style.qss"
 
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',
                       'project_work': 'The_Rock__WORK',
                       'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
+                      'origin_path_hierarchy': 'assets.props',
+                      'entity_name': 'rock',
+                      'entity_id': 'The_Rock.assets.props.rock',
+                      'asset_breakdown_id': 'The_Rock.assets.props.rock.breakdown',
                       'entity_type': 'asset',
-                      'task_name': "lookdev",
-                      'task_type': "shading",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling"}
-    # 'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer',
-    # 'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer',
+                      'task_name': "modeling",
+                      'task_type': "modeling",
+                      'task_id': "The_Rock.assets.props.rock.modeling",
+                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.rock_main',
+                      'db_asset_stream_id': 'The_Rock.assets.props.knife.rock_main',
+                      'stack_id': 'The_Rock.assets.props.knife.rock_main.asset_stack',
+                      }
 
     def update_envar(env_dict):
         for key, value in env_dict.items():

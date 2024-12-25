@@ -2,7 +2,7 @@ import os
 from typing import Optional
 from pydantic import BaseModel
 from origin.database.entities.operators import Project, Asset, Task, DBAsset, Group, AssetBreakdown, \
-    AssetBreakdownVersion
+    AssetBreakdownVersion, AssetStack, AssetStackVersion
 from origin.database.mongo import CollectionOperators
 from origin.database.mongo_connection import MongoConnection
 
@@ -22,12 +22,18 @@ class SessionContext(BaseModel):
     task_type: Optional[str] = None
     task_id: Optional[str] = None
     publish_id: Optional[str] = None
+
     db_asset_stream_id: Optional[str] = None
+
     db_asset_id: Optional[str] = None
     db_asset_type: Optional[str] = None
     db_asset_version_id: Optional[str] = None
+
     asset_breakdown_id: Optional[str] = None
+    asset_breakdown_version_id: Optional[str] = None
+
     stack_id: Optional[str] = None
+    stack_version_id: Optional[str] = None
 
 
 class ContextHandler:
@@ -45,6 +51,7 @@ class ContextHandler:
     def load_session(self, session_data):
         conform_lower_case = {k.lower(): v for k, v in session_data.items()}
         self.session_context = SessionContext(**conform_lower_case)
+        self.session_context.entity_id = session_data['entity_id']
 
     def snapshot_session(self) -> dict:
         context_data = self.session_context.dict(by_alias=True)
@@ -96,9 +103,18 @@ class ContextHandler:
         self.session_context.entity_name = None
         self.session_context.task_name = None
         self.session_context.task_type = None
+
         self.session_context.db_asset_stream_id = None
+
         self.session_context.db_asset_id = None
+        self.session_context.db_asset_type = None
         self.session_context.db_asset_version_id = None
+
+        self.session_context.asset_breakdown_id = None
+        self.session_context.asset_breakdown_version_id = None
+
+        self.session_context.stack_id = None
+        self.session_context.stack_version_id = None
 
     @property
     def entity_name(self):
@@ -123,6 +139,7 @@ class ContextHandler:
     @entity_id.setter
     def entity_id(self, value):
         self.session_context.entity_id = value
+        self.resolve_entity_breakdown()
 
     @property
     def asset_breakdown_id(self):
@@ -131,6 +148,14 @@ class ContextHandler:
     @asset_breakdown_id.setter
     def asset_breakdown_id(self, value):
         self.session_context.asset_breakdown_id = value
+
+    @property
+    def asset_breakdown_version_id(self):
+        return self.session_context.asset_breakdown_version_id
+
+    @asset_breakdown_version_id.setter
+    def asset_breakdown_version_id(self, value):
+        self.session_context.asset_breakdown_version_id = value
 
     @property
     def task_name(self):
@@ -182,7 +207,6 @@ class ContextHandler:
     def db_asset_type(self, value):
         self.session_context.db_asset_type = value
 
-
     @property
     def db_asset_version_id(self):
         return self.session_context.db_asset_version_id
@@ -198,6 +222,14 @@ class ContextHandler:
     @stack_id.setter
     def stack_id(self, value):
         self.session_context.stack_id = value
+
+    @property
+    def stack_version_id(self):
+        return self.session_context.stack_version_id
+
+    @stack_version_id.setter
+    def stack_version_id(self, value):
+        self.session_context.stack_version_id = value
 
     def get_entity_category(self):
         origin_path_hierarchy_elements = self.resolve_origin_path_hierarchy()[-1]
@@ -217,6 +249,9 @@ class ContextHandler:
             return self.origin_path_hierarchy.split(delimiter)
         else:
             return [self.origin_path_hierarchy]
+
+    def resolve_entity_breakdown(self):
+        self.session_context.asset_breakdown_id = ".".join([self.entity_id, "breakdown"])
 
     def resolve_to_full_context(self):
         origin_context = ".".join(
@@ -276,17 +311,35 @@ class ContextHandler:
         self.session_context.task_name = None
         self.session_context.task_type = None
         self.session_context.task_id = None
+
         self.session_context.db_asset_stream_id = None
+
         self.session_context.db_asset_id = None
+        self.session_context.db_asset_type = None
         self.session_context.db_asset_version_id = None
+
+        self.session_context.asset_breakdown_id = None
+        self.session_context.asset_breakdown_version_id = None
+
+        self.session_context.stack_id = None
+        self.session_context.stack_version_id = None
 
     def reset_to_entity(self):
         self.session_context.task_name = None
         self.session_context.task_type = None
         self.session_context.task_id = None
+
         self.session_context.db_asset_stream_id = None
+
         self.session_context.db_asset_id = None
+        self.session_context.db_asset_type = None
         self.session_context.db_asset_version_id = None
+
+        # self.session_context.asset_breakdown_id = None
+        # self.session_context.asset_breakdown_version_id = None
+
+        self.session_context.stack_id = None
+        self.session_context.stack_version_id = None
 
     @staticmethod
     def convert_to_uppercases(input_data: dict) -> dict:
@@ -346,7 +399,6 @@ class OriginDatabaseHandler:
             return None
 
     def get_db_asset_document(self):
-        print(self.__context.db_asset_id)
         if self.__context.db_asset_id:
             db_asset_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                       doc_id=self.__context.db_asset_id)
@@ -375,10 +427,36 @@ class OriginDatabaseHandler:
         else:
             return None
 
+    def get_asset_breakdown_context_slots(self):
+        breakdown_latest_version = self.get_asset_breakdown_latest_version()
+        if breakdown_latest_version is not None:
+            breakdown_data = breakdown_latest_version.data
+            asset_stream_id = self.__context.db_asset_stream_id
+            clean_asset_stream_id = asset_stream_id.replace(".", "__")
+            context_slots = breakdown_data[clean_asset_stream_id]["db_assets"]
+            return context_slots
+        else:
+            return None
+
     def get_stack_document(self):
         stack_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                doc_id=self.__context.stack_id)
-        return stack_doc
+        if stack_doc is not None:
+            return AssetStack(**stack_doc)
+        else:
+            return None
+
+    def get_stack_latest_version(self, with_status=None):
+        stack_doc = self.get_stack_document()
+        if stack_doc is not None:
+            latest_version_doc_data = stack_doc.operations().get_latest_version(db_asset_type="db_asset__stack_version",
+                                                                                with_status=with_status)
+            if latest_version_doc_data is not None:
+                return AssetStackVersion(**latest_version_doc_data)
+            else:
+                return None
+        else:
+            return None
 
     # def create(self):
     #     return Create(context=self.context)

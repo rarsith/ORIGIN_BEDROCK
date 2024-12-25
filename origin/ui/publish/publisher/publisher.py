@@ -1,5 +1,8 @@
+import os
+
 from PySide2 import QtWidgets
 
+from origin.common_utils import dict_utils
 from origin.dcc.task_type_publisher import TaskTypePublisher
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
@@ -62,39 +65,19 @@ class Publish(QtWidgets.QWidget):
         for saved_files_categories in published_data:
             if published_data[saved_files_categories] != {}:
                 for file_format, file_path in published_data[saved_files_categories].items():
+                    origin_root = os.getenv("ORIGIN_PROJECTS_ROOT")
+                    relative_path = os.path.relpath(file_path, start=origin_root)
                     create_entity.db_asset_file_component(visibility=True,
                                                           file_ext=file_format,
-                                                          file_path=file_path,
+                                                          file_path=str(relative_path),
                                                           parent_id=db_asset_version_id)
-
-
-    def is_subset_dict(self, subset, main):
-        if not isinstance(subset, dict) or not isinstance(main, dict):
-            return subset != main
-
-        for key, value in subset.items():
-            print(key, value)
-            if key not in main:
-                return True
-            if self.is_subset_dict(value, main[key]):
-                return True
-        return False
-
-    def merge_dicts(self, dictA, dictB):
-        for key, value in dictB.items():
-            if key in dictA and isinstance(dictA[key], dict) and isinstance(value, dict):
-                # If both values are dictionaries, merge them recursively
-                self.merge_dicts(dictA[key], value)
-            else:
-                # Otherwise, overwrite dictA's value with dictB's value
-                dictA[key] = value
-        return dictA
 
     def create_asset_breakdown_version(self, options):
         curr_breakdown_ver_doc = self.context_handler.database_handler().get_asset_breakdown_latest_version()
 
-        asset_stream = self.context_handler.db_asset_stream_id
-        stream_name = asset_stream.rsplit(".", 1)[1]
+        asset_stream_id = self.context_handler.db_asset_stream_id
+        asset_stream = asset_stream_id.replace(".", "__") if "." in asset_stream_id else asset_stream_id
+        stream_name = asset_stream.rsplit("__", 1)[1]
 
         asset_breakdown = {asset_stream: {"db_assets": {options["publish_type"]: self.context_handler.db_asset_id}}}
 
@@ -102,13 +85,21 @@ class Publish(QtWidgets.QWidget):
         if curr_breakdown_ver_doc is not None:
             current_breakdown = curr_breakdown_ver_doc.data
             if current_breakdown is not None:
-                needs_update = self.is_subset_dict(asset_breakdown, curr_breakdown_ver_doc.data)
-
+                needs_update = dict_utils.is_subset_dict(asset_breakdown, curr_breakdown_ver_doc.data)
                 if needs_update:
-                    merged_config = self.merge_dicts(asset_breakdown, curr_breakdown_ver_doc.data)
-                    Create(context=self.context_handler).asset_breakdown_version(data=merged_config)
+                    merged_config = dict_utils.merge_dicts(asset_breakdown, curr_breakdown_ver_doc.data)
+                    new_db_breakdown_version_id = Create(context=self.context_handler).asset_breakdown_version(data=merged_config)
+                    self.context_handler.asset_breakdown_version_id = new_db_breakdown_version_id
+
+                else:
+                    self.context_handler.asset_breakdown_version_id = curr_breakdown_ver_doc.id
+
         else:
-            Create(context=self.context_handler).asset_breakdown_version(data=asset_breakdown)
+            db_breakdown_version_id = Create(context=self.context_handler).asset_breakdown_version(data=asset_breakdown)
+            self.context_handler.asset_breakdown_version_id = db_breakdown_version_id
+
+    def create_stack_version(self, options=None):
+        Create(context=self.context_handler).asset_stack_version(status="PENDING REVIEW")
 
     def publish(self, options):
         get_pub_options = self.get_selected_options()
@@ -124,6 +115,7 @@ class Publish(QtWidgets.QWidget):
                                        published_data=published_data)
 
         self.create_asset_breakdown_version(options)
+        self.create_stack_version()
 
 
 if __name__ == "__main__":

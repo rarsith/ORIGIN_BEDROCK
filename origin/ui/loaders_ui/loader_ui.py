@@ -7,6 +7,7 @@ from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
 from origin.ui.loaders_ui.color_settings import match_color_scheme
 from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
+from origin.ui.stream_viewer_UI import StreamViewerUI
 from origin.ui.task_viewer_core import TaskViewerCore
 from origin.database.entities.registries import registry
 from origin.dcc.dispachers.loaders import get_loader_class
@@ -80,16 +81,22 @@ class VersionLoaderContextMenuWidget(QtWidgets.QWidget):
 
             for file_component in sender_widget.data:
                 for file_component_name, file_path in file_component.items():
-                    if os.path.exists(file_path):
+                    origin_projects_root = os.getenv("ORIGIN_PROJECTS_ROOT")
+
+                    absolute_path = file_path
+                    if not os.path.isabs(file_path):
+                        absolute_path = os.path.join(origin_projects_root, file_path)
+
+                    if os.path.exists(absolute_path):
                         loader = get_loader_class("maya")
-                        init_loader = loader(file_path=file_path)
+                        init_loader = loader(file_path=absolute_path)
                         file_extension, file_ops = init_loader.get_file_types_ops()
 
                         if file_ops:
                             for file_op in file_ops:
                                 file_op_nice_name = file_op.capitalize()
                                 context_import_action = QtWidgets.QAction(f"{file_op_nice_name} {file_component_name} ...", self)
-                                context_import_action.setData([file_op, file_path])
+                                context_import_action.setData([file_op, absolute_path])
                                 context_import_action.triggered.connect(self.get_action_data)
                                 context_menu.addAction(context_import_action)
                 context_menu.addSeparator()
@@ -266,6 +273,7 @@ class VersionLoader(QtWidgets.QWidget):
 
     def context_receiver(self, context: ContextHandler):
         self.context_handler = context
+        self.populate_versions()
 
     def resolve_extra_filters(self, default_filter: List[dict] = None, filters_input: List[dict] = None):
         extra_filters = default_filter
@@ -275,18 +283,19 @@ class VersionLoader(QtWidgets.QWidget):
         return extra_filters
 
     def get_existing_db_assets(self):
-        extra_filters = self.resolve_extra_filters(default_filter=[{"db_asset_type": "db_asset"}])
-        publishes_docs = None
+        q_filters = [{"db_asset_type": "db_asset"},
+                     {"parent": self.context_handler.db_asset_stream_id},
+                     {"master_task_type": self.context_handler.task_type}]
 
-        if self.context_handler.task_id is not None:
-            extra_filters = self.resolve_extra_filters(default_filter=[{"db_asset_type": "db_asset",
-                                                                        "master_task_type": self.context_handler.task_type}])
+        resolved_filters = [{key: value for key, value in q_filter.items() if value is not None}
+                            for q_filter in q_filters
+                            ]
 
         if self.context_handler.entity_name is not None:
             fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
             publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
                                                                        val_starts_with=self.context_handler.resolve_to_base_context(),
-                                                                       extra_filters=extra_filters,
+                                                                       extra_filters=resolved_filters,
                                                                        ids_only=True
                                                                        )
 
@@ -334,12 +343,36 @@ class VersionLoader(QtWidgets.QWidget):
                 self.grid_layout.addWidget(db_asset_widget, idx // 2, idx % 2)
 
 
+class TaskViewerCoreOverride(TaskViewerCore):
+    def __init__(self, context: ContextHandler = None, parent=None):
+        super().__init__(context, parent)
+
+    def get_task_list_current_selected(self):
+        get_selected_task = self.task_viewer_wdg.selectedItems()
+        if len(get_selected_task) != 0:
+            for item in get_selected_task:
+                get_task_data = item.data(11, 0)
+
+                self.context_handler.task_name = get_task_data.name
+                self.context_handler.task_type = get_task_data.task_type
+                self.context_handler.task_id = get_task_data.id
+                self.current_context.emit(self.context_handler)
+
+                return get_task_data
+        else:
+            self.context_handler.task_name = None
+            self.context_handler.task_type = None
+            self.context_handler.task_id = None
+            self.current_context.emit(self.context_handler)
+
+
 class Loader(QtWidgets.QWidget):
     def __init__(self, context: ContextHandler = None, parent=None):
         super(Loader, self).__init__(parent)
 
         self.project_tree_viewer = None
         self.task_viewer = None
+        self.stream_viewer_wdg = None
         self.db_asset_type_btn = None
         self.db_asset_versions_wdg = None
         self.context_menu = None
@@ -352,6 +385,7 @@ class Loader(QtWidgets.QWidget):
         self.create_connections()
 
         self.populate_versions_viewer()
+        self.populate_stream_viewer()
         self.populate_task_viewer()
 
     def create_widgets(self):
@@ -362,17 +396,36 @@ class Loader(QtWidgets.QWidget):
         self.project_tree_viewer.set_show_to(self.context_handler.show_name)
         self.expand_tree_from_id(self.project_tree_viewer.project_tree_viewer_wdg)
 
-        self.task_viewer = TaskViewerCore(context=self.context_handler)
+        self.task_viewer = TaskViewerCoreOverride(context=self.context_handler)
         self.task_viewer_overrides()
 
+        self.stream_viewer_wdg = StreamViewerUI(context=self.context_handler)
+
         self.db_asset_type_btn = AssetTypesButtonsSelectors()
+
         self.db_asset_versions_wdg = VersionLoader(context=self.context_handler)
+
+        self.streams_lb = QtWidgets.QLabel("Streams")
+        self.tasks_lb = QtWidgets.QLabel("Tasks")
         self.refresh_btn = QtWidgets.QPushButton("Refresh")
 
     def create_layout(self):
+        stream_wdg = QtWidgets.QWidget()
+        stream_layout = QtWidgets.QVBoxLayout()
+        stream_layout.addWidget(self.streams_lb)
+        stream_layout.addWidget(self.stream_viewer_wdg)
+        stream_wdg.setLayout(stream_layout)
+
+        tasks_wdg = QtWidgets.QWidget()
+        tasks_layout = QtWidgets.QVBoxLayout()
+        tasks_layout.addWidget(self.tasks_lb)
+        tasks_layout.addWidget(self.task_viewer)
+        tasks_wdg.setLayout(tasks_layout)
+
         top_layout = QtWidgets.QHBoxLayout()
         top_layout.addWidget(self.project_tree_viewer)
-        top_layout.addWidget(self.task_viewer)
+        top_layout.addWidget(stream_wdg)
+        top_layout.addWidget(tasks_wdg)
         top_layout.addWidget(self.db_asset_type_btn)
         top_layout.addWidget(self.db_asset_versions_wdg)
 
@@ -385,22 +438,32 @@ class Loader(QtWidgets.QWidget):
         top_layout.addWidget(horizontal_splitter)
 
         horizontal_splitter.insertWidget(0, self.project_tree_viewer)
-        horizontal_splitter.insertWidget(1, self.task_viewer)
-        horizontal_splitter.insertWidget(2, self.db_asset_type_btn)
-        horizontal_splitter.insertWidget(3, self.db_asset_versions_wdg)
-        horizontal_splitter.setSizes([200, 300, 40, 850])
+        horizontal_splitter.insertWidget(1, stream_wdg)
+        horizontal_splitter.insertWidget(2, tasks_wdg)
+        horizontal_splitter.insertWidget(3, self.db_asset_type_btn)
+        horizontal_splitter.insertWidget(4, self.db_asset_versions_wdg)
+        horizontal_splitter.setSizes([350, 30, 500, 40, 1200])
 
     def create_connections(self):
         self.project_tree_viewer.current_context.connect(self.task_viewer.context_receiver)
         self.project_tree_viewer.current_context.connect(self.db_asset_versions_wdg.context_receiver)
+        self.project_tree_viewer.current_context.connect(self.stream_viewer_wdg.context_receiver)
 
         self.project_tree_viewer.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_task_viewer)
         self.project_tree_viewer.project_tree_viewer_wdg.itemClicked.connect(self.populate_task_viewer)
+
         self.project_tree_viewer.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_versions_viewer)
         self.project_tree_viewer.project_tree_viewer_wdg.itemClicked.connect(self.populate_versions_viewer)
 
+        self.project_tree_viewer.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_stream_viewer)
+        self.project_tree_viewer.project_tree_viewer_wdg.itemClicked.connect(self.populate_stream_viewer)
+
         self.task_viewer.current_context.connect(self.db_asset_versions_wdg.context_receiver)
         self.task_viewer.task_viewer_wdg.itemSelectionChanged.connect(self.populate_versions_viewer)
+
+        self.stream_viewer_wdg.current_context.connect(self.db_asset_versions_wdg.context_receiver)
+        self.stream_viewer_wdg.stack_stream_lw.itemClicked.connect(self.populate_versions_viewer)
+        self.stream_viewer_wdg.stack_stream_lw.itemSelectionChanged.connect(self.populate_versions_viewer)
 
         # self.refresh_btn.clicked.connect(self.populate_task_viewer)
         self.refresh_btn.clicked.connect(self.populate_versions_viewer)
@@ -416,12 +479,16 @@ class Loader(QtWidgets.QWidget):
             else:
                 items = [tree_widget.topLevelItem(i) for i in range(tree_widget.topLevelItemCount())]
 
-            for idx, item in enumerate(items):
+            for item in items:
                 if item.text(0) == part:
                     item.setExpanded(True)
-                    if idx == len(items) - 1:
+                    tree_widget.setUpdatesEnabled(False)
+                    stored_data = item.data(0, QtCore.Qt.UserRole)
+                    tree_widget.setUpdatesEnabled(True)
+                    if stored_data.type == "asset":
                         tree_widget.setCurrentItem(item)
                         item.setSelected(True)
+
                     parent = item
                     break
 
@@ -447,6 +514,14 @@ class Loader(QtWidgets.QWidget):
         else:
             self.project_tree_viewer.project_tree_viewer_wdg.clearSelection()
             self.task_viewer.task_viewer_wdg.clear()
+
+    def populate_stream_viewer(self):
+        has_selection = self.project_tree_viewer.get_selected()
+        if len(has_selection) != 0:
+            self.stream_viewer_wdg.populate_widget()
+        else:
+            self.stream_viewer_wdg.stack_stream_lw.clearSelection()
+            self.stream_viewer_wdg.stack_stream_lw.clear()
 
     def populate_versions_viewer(self):
         has_selection = self.project_tree_viewer.get_selected()
@@ -481,7 +556,7 @@ class LoaderMainUI(QtWidgets.QMainWindow):
         super(LoaderMainUI, self).__init__(parent)
 
         # self.setMinimumHeight(850)
-        self.setMinimumWidth(1200)
+        self.setMinimumWidth(1500)
         self.central_widget = Loader(context=context)
 
         self.setWindowTitle(f"Assets Loader")

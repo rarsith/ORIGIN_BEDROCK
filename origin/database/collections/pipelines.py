@@ -1,3 +1,6 @@
+from typing import List
+
+
 class OriginDBPipelines:
 
     def __init__(self):
@@ -30,6 +33,11 @@ class OriginDBPipelines:
         self._criteria.append(criteria)
         return criteria
 
+    def add_count_attr(self, aggr_attribute):
+        criteria = {"$count": aggr_attribute}
+        self._pipeline.append(criteria)
+        return criteria
+
     def add_match_attribute(self, attribute_field: str, value_field: str):
         criteria = {attribute_field: value_field}
         self._criteria.append(criteria)
@@ -37,6 +45,11 @@ class OriginDBPipelines:
 
     def add_match_attribute_dict(self, filter_data: dict):
         self._criteria.append(filter_data)
+
+    def add_match_attribute_multi_values(self, attribute_field: str, values_field: List[str]):
+        criteria = {"$match": {attribute_field: {"$in": values_field}}}
+        self._pipeline.append(criteria)
+        return criteria
 
     def add_sorting(self, sort_by_attr: str, sort_value: int):
         criteria = {"$sort": {sort_by_attr, sort_value}}

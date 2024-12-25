@@ -15,6 +15,7 @@ from origin.database.entities.operators import (DBAssetVersion,
                                                 DBAssetFileComponent, AssetBreakdown, AssetBreakdownVersion, AssetStack,
                                                 AssetStackVersion, DCCBaseModel, DCCVersion)
 from origin.database.mongo import CollectionOperators, DBSet
+from origin.database.statuses import DbVersionStatuses
 
 
 class DbConstructors:
@@ -206,7 +207,10 @@ class DbConstructors:
         db_asset_class = get_db_asset_class(publish_type)
         compiled_id = ".".join([self.context_handler.entity_id, publish_type, parent_name])
 
-        parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=compiled_id)
+        try:
+            parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=compiled_id)
+        except:
+            pass
 
         document = db_asset_class(
             _id=compiled_id,
@@ -247,7 +251,7 @@ class DbConstructors:
 
         set_display_name = "_".join(
             [self.context_handler.entity_name,
-             f"_{self.context_handler.task_type}",
+             f"_{self.context_handler.task_name}",
              f"_{parent_doc.name}",
              f"_{version_string}"])
 
@@ -387,7 +391,105 @@ class DbConstructors:
 
         return db_asset_stack_doc
 
-    def asset_stack_version_construct(self, input_data: dict):
+    def compile_entity_stack_input_data(self):
+        version_statuses = DbVersionStatuses()
+        statuses_priority = [version_statuses.approved_internal, version_statuses.wip]
+
+        data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        all_breakdown_slots = self.context_handler.database_handler().get_asset_breakdown_latest_version()
+        context_slots = all_breakdown_slots.data
+
+        breakdown_data = []
+        stack_resolved_data = {}
+        if context_slots is not None:
+
+            for db_stream in context_slots:
+                stack_resolved_data[db_stream] = {}
+                for slot, db_asset_id in context_slots[db_stream]["db_assets"].items():
+                    stack_resolved_data[db_stream][slot] = ""
+
+                    db_asset_db_doc = data_ops.entity_document(doc_id=db_asset_id)
+                    db_asset_data = DBAsset(**db_asset_db_doc)
+
+                    for status in statuses_priority:
+                        latest_version_with_status = db_asset_data.operations().get_latest_version(with_status=status)
+                        collected_version = latest_version_with_status[0] if latest_version_with_status else None
+                        if collected_version is not None and stack_resolved_data[db_stream][slot] == "":
+                            stack_resolved_data[db_stream].update({slot: collected_version["_id"]})
+
+            return stack_resolved_data
+        else:
+            return None
+
+    def compile_stack_input_data(self):
+        from origin.database.statuses import DbVersionStatuses
+
+        version_statuses = DbVersionStatuses()
+        statuses_priority = [version_statuses.approved_internal, version_statuses.wip, ]
+
+        data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+
+        context_slots = None
+
+        if self.context_handler.db_asset_stream_id is not None:
+            context_slots = self.context_handler.database_handler().get_asset_breakdown_context_slots()
+
+        stack_resolved_data = {}
+        if context_slots is not None:
+            for slot, db_asset_id in context_slots.items():
+                stack_resolved_data[slot] = ''
+
+                db_asset_db_doc = data_ops.entity_document(doc_id=db_asset_id)
+                db_asset_data = DBAsset(**db_asset_db_doc)
+
+                for status in statuses_priority:
+                    latest_version_with_status = db_asset_data.operations().get_latest_version(with_status=status)
+                    collected_version = latest_version_with_status[0] if latest_version_with_status else None
+                    if collected_version is not None and stack_resolved_data[slot] == "":
+                        stack_resolved_data[slot] = collected_version["_id"]
+
+            return stack_resolved_data
+        else:
+            return None
+
+    def stack_same_data_check(self) -> bool:
+        current_breakdown_resolve = self.compile_stack_input_data()
+        from origin.database.statuses import DbVersionStatuses
+        version_statuses = DbVersionStatuses()
+
+        statuses_priority = [version_statuses.approved_internal,
+                             version_statuses.wip, ]
+
+        compile_stack_id = ".".join([self.context_handler.db_asset_stream_id, "asset_stack"])
+        self.context_handler.stack_id = compile_stack_id
+
+        stack_db_doc = self.context_handler.database_handler().get_stack_document()
+
+        first_stack_version = stack_db_doc.version_cnt
+        if first_stack_version == 0:
+            return False
+
+        gathered_stack_doc = {}
+        if current_breakdown_resolve is not None:
+            for status in statuses_priority:
+                latest_version_with_status = stack_db_doc.operations().get_latest_version(with_status=status)
+                collected_version = latest_version_with_status[0] if latest_version_with_status else None
+
+                if collected_version is not None:
+                    gathered_stack_doc.update(collected_version)
+                    break
+                else:
+                    continue
+
+            if gathered_stack_doc:
+                return current_breakdown_resolve == gathered_stack_doc["data"]
+            else:
+                return False
+
+        else:
+            return False
+
+    def asset_stack_version_construct(self, status, breakdown_version_id=None):
         compiled_parent_id = ".".join([self.context_handler.db_asset_stream_id, "asset_stack"])
         data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
         parent_data = data_ops.entity_document(doc_id=compiled_parent_id)
@@ -396,13 +498,16 @@ class DbConstructors:
         version_string, version = vup.version_up(parent_doc.version_cnt)
         parent_doc.operations().update_version_count(1)
 
-        set_display_name = "_".join(
+        set_display_name = "__".join(
             [self.context_handler.entity_name,
-             "asset_stack",
+             "stack",
+             parent_doc.name,
              f"_{version_string}"])
 
         entity_id = ".".join([compiled_parent_id, version_string])
         parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
+
+        input_data = self.compile_stack_input_data()
 
         document = AssetStackVersion(
 
@@ -412,7 +517,9 @@ class DbConstructors:
             type="db_asset__stack_version",
             parent=compiled_parent_id,
             children=[],
+            status=status,
             origin_db_path=compiled_parent_id,
+            parent_task_type="origin_pipe",
 
             label=set_display_name,
             db_asset_type="db_asset__stack_version",
@@ -516,14 +623,27 @@ class DbConstructors:
 
 
 if __name__ == "__main__":
-    data = {
-        "stack_streams": ["main"],
-        "variant_sets": {"geo_var_sets": {}
-                         },
-        "groom_var_sets": {},
-        "mtl_var_sets": {}}
+    context_sample = {'show_name': 'The_Rock',
+                      'project_publishes': 'The_Rock__PUBLISHES',
+                      'project_work': 'The_Rock__WORK',
+                      'project_control': 'The_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.props',
+                      'entity_name': 'knife',
+                      'entity_id': 'The_Rock.assets.props.knife',
+                      'asset_breakdown_id': 'The_Rock.assets.props.knife.breakdown',
+                      'entity_type': 'asset',
+                      'task_name': "modeling",
+                      'task_type': "modeling",
+                      'task_id': "The_Rock.assets.props.knife.modeling",
+                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
+                      'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
+                      'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
+                      }
 
-    xx = DBAssetConstruct()
-    xx.label = "label"
-    xx.show_name = "DUDU"
-    print(xx.dict())
+    context_class = ContextHandler()
+    context_class.load_session(session_data=context_sample)
+
+    xx = DbConstructors(context=context_class)
+    xx.compile_entity_stack_input_data()
+    # doc_data =
+    # print(doc_data)

@@ -295,20 +295,25 @@ class Create:
                                                               entity_id=create_id,
                                                               name=name,
                                                               )
+        doc_exists = self.db_publish_collection.find_one({"_id": db_asset["_id"]})
 
-        try:
-            inserted_data = self.db_publish_collection.insert_one(db_asset)
-            return inserted_data.inserted_id
+        if doc_exists is None:
+            try:
+                inserted_data = self.db_publish_collection.insert_one(db_asset)
+                return inserted_data.inserted_id
 
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
+            except Exception as e:
+                print(f"Error {e}, Nothing Done!")
+
+        else:
+            return db_asset["_id"]
 
     def asset_stack(self, parent_id):
         save_data = DbConstructors(context=self.context_handler).asset_stack_construct(parent_id=parent_id)
-        try:
-            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+        doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
 
-            if doc_exists is None:
+        if doc_exists is None:
+            try:
                 inserted_data = self.db_publish_collection.insert_one(save_data)
 
                 DBAdd(db_collection=self.context_handler.project_publishes,
@@ -316,46 +321,63 @@ class Create:
                       attribute="stacks").value_to_field(inserted_data.inserted_id)
 
                 return inserted_data.inserted_id
+
+            except Exception as e:
+                print(f"Error {e}, Nothing Done!")
+
+        else:
+            return save_data["_id"]
+
+    def asset_stack_version(self, status, db_asset_stream_id=None):
+        if db_asset_stream_id is not None:
+            if "__" in db_asset_stream_id:
+                rebuilt_id = db_asset_stream_id.replace("__", ".")
+                self.context_handler.db_asset_stream_id = rebuilt_id
             else:
-                return save_data["_id"]
+                self.context_handler.db_asset_stream_id = db_asset_stream_id
+        else:
+            stack_data_current = DbConstructors(context=self.context_handler).stack_same_data_check()
 
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
+            if not stack_data_current:
+                save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(status=status)
+                doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+                if not doc_exists:
+                    try:
+                        inserted_data = self.db_publish_collection.insert_one(save_data)
+                        return inserted_data.inserted_id
 
-    def asset_stack_version(self, data):
-        save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(input_data=data)
+                    except Exception as e:
+                        print(f"Error {e}, Nothing Done!")
+                else:
+                    return save_data["_id"]
 
-        try:
-            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
-
-            if not doc_exists:
-                inserted_data = self.db_publish_collection.insert_one(save_data)
-
-                return inserted_data.inserted_id
             else:
-                return save_data["_id"]
-
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
+                print("No Stack Update Needed! Continuing!")
 
     def db_asset(self, parent, publish_type):
         db_asset = DbConstructors(context=self.context_handler).db_asset_construct(parent_id=parent,
                                                                                    publish_type=publish_type,
                                                                                    task_type=self.context_handler.task_type
                                                                                    )
+        doc_exists = self.db_publish_collection.find_one({"_id": db_asset["_id"]})
 
-        try:
-            doc_exists = self.db_publish_collection.find_one({"_id": db_asset["_id"]})
-
-            if not doc_exists:
+        if not doc_exists:
+            try:
                 inserted_data = self.db_publish_collection.insert_one(db_asset)
 
                 return inserted_data.inserted_id
-            else:
-                return db_asset["_id"]
+            except Exception as e:
 
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
+                print(f"Error {e}, Nothing Done!")
+
+        else:
+            return db_asset["_id"]
+
+    def asset_stack_version_update(self, status):
+        asset_breakdown_resolve = DbConstructors(context=self.context_handler).compile_entity_stack_input_data()
+
+        for db_stream_id in asset_breakdown_resolve:
+            self.asset_stack_version(status=status, db_asset_stream_id=db_stream_id)
 
     def db_asset_version(self,
                          parent_id: str,
@@ -368,7 +390,6 @@ class Create:
 
         try:
             inserted_data = self.db_publish_collection.insert_one(db_asset)
-            print(f"Created Version with ID: {inserted_data.inserted_id}")
             return inserted_data.inserted_id
 
         except Exception as e:
@@ -446,14 +467,20 @@ if __name__ == "__main__":
                       'project_publishes': 'The_Rock__PUBLISHES',
                       'project_work': 'The_Rock__WORK',
                       'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr.tafer',
+                      'origin_path_hierarchy': 'assets.chr',
                       'entity_name': 'tafer',
+                      'entity_id': 'The_Rock.assets.chr.tafe',
+                      'asset_breakdown_id': 'The_Rock.assets.chr.tafer.breakdown',
                       'entity_type': 'asset',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'task_name': "modeling",
-                      'task_type': "modeling"}
+                      # 'task_name': "modeling",
+                      # 'task_type': "modeling",
+                      # 'task_id': "The_Rock.assets.props.knife.modeling",
+                      # 'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
+                      # 'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
+                      # 'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
+                      }
 
     context_class = ContextHandler()
     context_class.load_session(session_data=context_sample)
 
-    Create(context=context_class).asset_breakdown()
+    Create(context=context_class).asset_stack_version_update(status="WIP")
