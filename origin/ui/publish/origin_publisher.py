@@ -110,7 +110,6 @@ class OriginPublisher(QtWidgets.QDialog):
 
     def save_widget_options(self, widget):
         widget_selected_options = widget.get_selected_options()
-        print(widget_selected_options)
         if widget_selected_options is not None:
             self.collected_options.update(widget.get_selected_options())
             return widget_selected_options

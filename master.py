@@ -283,10 +283,11 @@ class MainUI(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    qss_style_file = "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"
+    origin_dev_root = os.getenv("ORIGIN_ROOT")
+    qss_style_file = os.path.normpath(os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
-    app = QtWidgets.QApplication.instance()  # Check if QApplication already exists
-    if app is None:  # Create only if it doesn't exist
+    app = QtWidgets.QApplication.instance()
+    if app is None:
         app = QtWidgets.QApplication(sys.argv)
 
     with open(qss_style_file, "r") as f:

@@ -1,24 +1,22 @@
+import os
+import sys
 from PySide2 import QtWidgets
 from origin.ui.app_launcher import app_launcher_ui
 
-if __name__ == "__main__":
-    import sys
+origin_dev_root = os.getenv("ORIGIN_ROOT")
+qss_style_file = os.path.normpath(os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
-    APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\config\applications\config_applications.json"
+app = QtWidgets.QApplication(sys.argv)
 
-    qss_style_file = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\style\stylesheets\dark_orange\dark_orange_style.qss"
+with open(qss_style_file, "r") as f:
+    _style = f.read()
+    app.setStyleSheet(_style)
 
-    app = QtWidgets.QApplication(sys.argv)
+test_dialog = app_launcher_ui.AppLauncher()
+test_dialog.setWindowTitle("Application Launcher")
+test_dialog.setMinimumHeight(650)
+test_dialog.setMinimumWidth(450)
 
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
-
-    test_dialog = app_launcher_ui.AppLauncher(config_file_path=APP_CONFIG_FILE)
-    test_dialog.setWindowTitle("Application Launcher")
-    test_dialog.setMinimumHeight(650)
-    test_dialog.setMinimumWidth(450)
-
-    test_dialog.populate_widget()
-    test_dialog.show()
-    sys.exit(app.exec_())
+test_dialog.populate_widget()
+test_dialog.show()
+sys.exit(app.exec_())

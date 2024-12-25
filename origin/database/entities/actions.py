@@ -367,7 +367,6 @@ class Create:
 
                 return inserted_data.inserted_id
             except Exception as e:
-
                 print(f"Error {e}, Nothing Done!")
 
         else:
@@ -413,7 +412,7 @@ class Create:
             try:
                 inserted_data = self.db_publish_collection.insert_one(db_asset)
 
-                print(f"Created File Components with ID: {inserted_data.inserted_id}")
+                print(f"----> Created File Components with ID: {inserted_data.inserted_id}")
                 return inserted_data.inserted_id
 
             except Exception as e:

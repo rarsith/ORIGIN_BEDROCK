@@ -166,7 +166,7 @@ class AppLauncher(QtWidgets.QWidget):
         if exe_path:
             try:
                 self.update_launch_btn()
-                if self.context_handler:
+                if self.context_handler is not None:
                     current_session = self.context_handler.snapshot_session()
                     sys_envar_upper = self.context_handler.convert_to_uppercases(current_session)
                     path_handler = OriginOSPathHandler(context=self.context_handler)
@@ -234,31 +234,25 @@ class AppLauncher(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
 
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'entity_type': 'asset',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling",
-                      # 'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
-                      # 'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
-                      }
-
-    context_obj = ContextHandler()
-    context_obj.load_session(session_data=context_sample)
-
-    qss_style_file = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\style\stylesheets\dark_orange\dark_orange_style.qss"
+    # context_sample = {'show_name': 'The_Rock',
+    #                   'project_publishes': 'The_Rock__PUBLISHES',
+    #                   'project_work': 'The_Rock__WORK',
+    #                   'project_control': 'The_Rock__CONTROL',
+    #                   'origin_path_hierarchy': 'assets.chr',
+    #                   'entity_name': 'tafer',
+    #                   'entity_id': 'The_Rock.assets.chr.tafer',
+    #                   'entity_type': 'asset',
+    #                   'task_name': "modeling",
+    #                   'task_type': "modeling",
+    #                   'task_id': "The_Rock.assets.chr.tafer.modeling",
+    #                   # 'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
+    #                   # 'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
+    #                   }
+    #
+    # context_obj = ContextHandler()
+    # context_obj.load_session(session_data=context_sample)
 
     app = QtWidgets.QApplication(sys.argv)
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
 
     test_dialog = AppLauncher()
     test_dialog.populate_widget()
