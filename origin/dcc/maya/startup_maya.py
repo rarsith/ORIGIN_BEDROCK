@@ -26,10 +26,17 @@ def add_origin_icons():
 
     if "XBMLANGPATH" in os.environ:
         maya_icons_dir = os.environ["XBMLANGPATH"]
-        if unix_path not in maya_icons_dir:
+        if unix_path not in maya_icons_dir.split(";"):
             os.environ["XBMLANGPATH"] = maya_icons_dir + unix_path
     else:
         os.environ["XBMLANGPATH"] = unix_path
+
+    if "MAYA_SCRIPT_PATH" in os.environ:
+        maya_scripts_dir = os.environ["MAYA_SCRIPT_PATH"]
+        if unix_path not in maya_scripts_dir.split(";"):
+            os.environ["MAYA_SCRIPT_PATH"] = maya_scripts_dir + unix_path
+    else:
+        os.environ["MAYA_SCRIPT_PATH"] = unix_path
 
 
 def set_working_directory(base_directory):

@@ -215,6 +215,10 @@ class AppLauncher(QtWidgets.QWidget):
             versions = item_data.versions
             return versions
 
+    def closeEvent(self, event):
+        # Disconnect signals here
+        super().closeEvent(event)
+
     def get_current_selection(self):
         selected_rows = [index.row() for index in self.launcher_tw.selectedIndexes()]
         if selected_rows is not None:
@@ -231,30 +235,36 @@ class AppLauncher(QtWidgets.QWidget):
         self.ui.refresh_btn.clicked.connect(self.populate_widget)
 
 
+class AppLauncherMainUI(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        super(AppLauncherMainUI, self).__init__(parent)
+
+        self.central_widget = AppLauncher()
+        self.central_widget.populate_widget()
+        self.setWindowTitle(f"Origin Application Launcher")
+        self.setCentralWidget(self.central_widget)
+
+
 if __name__ == "__main__":
     import sys
+    import os
 
-    # context_sample = {'show_name': 'The_Rock',
-    #                   'project_publishes': 'The_Rock__PUBLISHES',
-    #                   'project_work': 'The_Rock__WORK',
-    #                   'project_control': 'The_Rock__CONTROL',
-    #                   'origin_path_hierarchy': 'assets.chr',
-    #                   'entity_name': 'tafer',
-    #                   'entity_id': 'The_Rock.assets.chr.tafer',
-    #                   'entity_type': 'asset',
-    #                   'task_name': "modeling",
-    #                   'task_type': "modeling",
-    #                   'task_id': "The_Rock.assets.chr.tafer.modeling",
-    #                   # 'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
-    #                   # 'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
-    #                   }
-    #
-    # context_obj = ContextHandler()
-    # context_obj.load_session(session_data=context_sample)
+    origin_dev_root = os.getenv("ORIGIN_ROOT")
+    qss_style_file = os.path.normpath(
+        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
-    app = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication.instance()
+    if app is None:
+        app = QtWidgets.QApplication(sys.argv)
 
-    test_dialog = AppLauncher()
-    test_dialog.populate_widget()
+    with open(qss_style_file, "r") as f:
+        _style = f.read()
+        app.setStyleSheet(_style)
+
+    font = app.font()
+    font.setPointSize(7)
+    app.setFont(font)
+
+    test_dialog = AppLauncherMainUI()
     test_dialog.show()
     sys.exit(app.exec_())

@@ -69,6 +69,8 @@ class TrayApp:
         self.save_task_schema_action = QAction("Task Manager...")
         self.assignment_manager_action = QAction("Assignment Manager...")
 
+    def context_menu_connections(self):
+        pass
     def start_background_task(self):
         """Start a background task in a separate thread."""
         self.thread = QThread()

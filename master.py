@@ -275,11 +275,25 @@ class MainUI(QtWidgets.QMainWindow):
         super(MainUI, self).__init__(parent)
 
         self.central_widget = OriginControlCenterUI()
-
-        self.setWindowTitle(f"ORIGIN")
-
+        self.setWindowTitle("ORIGIN")
         self.setCentralWidget(self.central_widget)
-        self.show()
+        # self.show()
+
+        # self.set_style()
+
+    def set_style(self):
+        origin_dev_root = os.getenv("ORIGIN_ROOT")
+
+        qss_style_file = os.path.normpath(
+            os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
+
+        with open(qss_style_file, "r") as f:
+            _style = f.read()
+            self.central_widget.setStyleSheet(_style)
+
+        app_font = self.central_widget.font()
+        app_font.setPointSize(7)
+        self.central_widget.setFont(app_font)
 
 
 if __name__ == "__main__":
@@ -299,4 +313,5 @@ if __name__ == "__main__":
     app.setFont(font)
 
     test_dialog = MainUI()
+    test_dialog.show()
     sys.exit(app.exec_())

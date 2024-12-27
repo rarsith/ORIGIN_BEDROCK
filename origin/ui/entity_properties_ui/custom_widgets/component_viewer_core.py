@@ -74,12 +74,15 @@ class ComponentViewerWidget(QtWidgets.QWidget):
         self.copy_path_btn.clicked.connect(self.copy_to_clipboard)
 
     def copy_to_clipboard(self):
-        unix_style_path = Path(self.path_le.text())
+        projects_root = os.getenv("ORIGIN_PROJECTS_ROOT")
+        unix_style_path_relative = Path(self.path_le.text())
+        unix_style_path = projects_root / unix_style_path_relative
         if QtCore.QSysInfo().productType() == 'windows':
             os_compatible_path = unix_style_path.__str__()
         else:
             os_compatible_path = unix_style_path.as_posix()
         clipboard = QtWidgets.QApplication.clipboard()
+        print(os_compatible_path)
         clipboard.setText(os_compatible_path)
 
 
