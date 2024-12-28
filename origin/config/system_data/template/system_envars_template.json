@@ -1,11 +1,19 @@
-{"ORIGIN_ROOT": "",
-  "ORIGIN_PROJECTS_ROOT": "",
-  "ORIGIN_MONGO_URL": "",
-  "ORIGIN_STUDIO_NAME": "",
-  "ORIGIN_INITIAL_SETUP": 0,
-  "ORIGIN_STYLESHEET": "",
-  "ORIGIN_FONTS": "",
-  "ORIGIN_ICONS_DIR": "",
-  "ORIGIN_LIB_PROJECT_ROOT": "",
-  "ORIGIN_USD_DIR": "",
+{
+  "user_managed": {
+    "ORIGIN_PROJECTS_ROOT": "",
+    "ORIGIN_MONGO_URL": "",
+    "ORIGIN_STUDIO_NAME": "",
+    "ORIGIN_STYLESHEET_SELECT": "",
+    "ORIGIN_INITIAL_SETUP": "0",
+    "ORIGIN_FONT_SIZE": "7",
+    "ORIGIN_FONT_STYLE": "",
+    "ORIGIN_LIB_PROJECT_ROOT": ""
+  },
+  "origin_managed": {
+    "ORIGIN_ROOT": "",
+    "ORIGIN_STYLESHEET_DIR": "",
+    "ORIGIN_FONTS_DIR": "",
+    "ORIGIN_ICONS_DIR": "",
+    "ORIGIN_USD_DIR": ""
+  }
 }

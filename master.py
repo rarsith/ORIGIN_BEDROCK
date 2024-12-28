@@ -2,6 +2,8 @@ import os
 import sys
 
 from PySide2 import QtWidgets, QtCore
+from PySide2.QtGui import QIcon
+
 from origin.ui.publishes_view_core import MainPublishesViewCore
 from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
 from origin.ui.task_viewer_core import TaskViewerCore
@@ -276,6 +278,7 @@ class MainUI(QtWidgets.QMainWindow):
 
         self.central_widget = OriginControlCenterUI()
         self.setWindowTitle("ORIGIN")
+        self.setWindowIcon(QIcon("path/to/your/icon.png"))
         self.setCentralWidget(self.central_widget)
         # self.show()
 
@@ -299,6 +302,7 @@ class MainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     origin_dev_root = os.getenv("ORIGIN_ROOT")
     qss_style_file = os.path.normpath(os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
+    window_icon_file = os.path.normpath(os.path.join(origin_dev_root, "origin/icons/origin_tray_icons/origin_tray_v007_32x32.png"))
 
     app = QtWidgets.QApplication.instance()
     if app is None:
@@ -313,5 +317,7 @@ if __name__ == "__main__":
     app.setFont(font)
 
     test_dialog = MainUI()
+    test_dialog.setWindowIcon(QIcon(window_icon_file))
     test_dialog.show()
+
     sys.exit(app.exec_())

@@ -1,3 +1,5 @@
+import maya.cmds as cmds
+from maya.OpenMaya import MGlobal as om
 from origin.dcc.abc.camera_exporter import CameraExporter
 
 
