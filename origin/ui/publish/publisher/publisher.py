@@ -3,7 +3,7 @@ import os
 from PySide2 import QtWidgets
 
 from origin.common_utils import dict_utils
-from origin.dcc.task_type_publisher import TaskTypePublisher
+from origin.dcc.task_type_publisher import PublisherType
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.actions import Create
@@ -107,7 +107,8 @@ class Publish(QtWidgets.QWidget):
         db_asset_id = self.create_task_db_asset(selected_options=options)
         self.context_handler.db_asset_id = db_asset_id
 
-        task_publisher = TaskTypePublisher(publish_options=options)
+        # task_publisher = TaskTypePublisher(publish_options=options)
+        task_publisher = PublisherType(publish_options=options)
         published_data = task_publisher.execute_publish()
 
         db_asset_version_id = self.create_db_asset_version(selected_options=options)

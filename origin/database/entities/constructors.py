@@ -248,10 +248,12 @@ class DbConstructors:
 
         version_string, version = vup.version_up(parent_doc.version_cnt)
         parent_doc.operations().update_version_count(1)
+        publish_type = parent_doc.id.split(".")[-2]
 
         set_display_name = "_".join(
             [self.context_handler.entity_name,
              f"_{self.context_handler.task_name}",
+             f"_{publish_type}",
              f"_{parent_doc.name}",
              f"_{version_string}"])
 

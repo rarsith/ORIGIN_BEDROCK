@@ -27,6 +27,7 @@ class ContextManager(QtWidgets.QWidget):
         self.create_layout()
 
         self.populate_task_viewer()
+        self.select_active_task(self.task_viewer.task_viewer_wdg)
 
     def create_widgets(self):
         self.project_tree_viewer = ProjectTreeViewerCore(has_project_select_wdg=True,
@@ -37,7 +38,7 @@ class ContextManager(QtWidgets.QWidget):
         self.expand_tree_from_id(self.project_tree_viewer.project_tree_viewer_wdg)
 
         self.task_viewer = TaskViewerCore(context=self.context_handler)
-        self.select_active_task(self.task_viewer.task_viewer_wdg)
+        # self.select_active_task(self.task_viewer.task_viewer_wdg)
         self.task_viewer_overrides()
 
         self.set_context_btn = QtWidgets.QPushButton("Set Context")
@@ -179,7 +180,7 @@ class ContextManager(QtWidgets.QWidget):
 
         if len(has_selection) != 0:
             self.task_viewer.populate_widget()
-            self.select_active_task(self.task_viewer.task_viewer_wdg)
+            # self.select_active_task(self.task_viewer.task_viewer_wdg)
         else:
             self.project_tree_viewer.project_tree_viewer_wdg.clearSelection()
             self.task_viewer.task_viewer_wdg.clear()

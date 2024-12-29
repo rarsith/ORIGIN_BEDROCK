@@ -29,7 +29,6 @@ def get_maya_main_window():
 
 
 def context_setter():
-    current_context = clone_environment()
     context_window_parent = get_maya_main_window()
 
     origin_root = os.getenv("ORIGIN_ROOT")

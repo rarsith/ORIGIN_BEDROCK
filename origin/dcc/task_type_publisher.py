@@ -1,36 +1,46 @@
-import os
-from origin.envars.origin_envars import ContextHandler
-
-from origin.dcc.task_type_publishers.rotomation_publish import RotomationPublish
-from origin.dcc.task_type_publishers.animation_publish import AnimationPublish
-from origin.dcc.task_type_publishers.camera_publish import CameraPublish
-from origin.dcc.task_type_publishers.layout_publish import LayoutPublish
-from origin.dcc.task_type_publishers.modeling_publish import ModelingPublish
-from origin.dcc.task_type_publishers.rigging_publish import RiggingPublish
-from origin.dcc.task_type_publishers.shot_sculpt_publish import ShotSculptPublish
+from origin.dcc.publishers.animation_publish import AnimationPublish
+from origin.dcc.publishers.camera_publish import CameraPublish
+from origin.dcc.publishers.modeling_publish import GeometryPublish
+from origin.dcc.publishers.rigging_publish import AnimationRigPublish
+from origin.dcc.publishers.shot_sculpt_publish import ShotSculptPublish
+from origin.dcc.publishers.turntable_camera_publisher import TurntableCameraPublish
 
 
-def get_task_type_publish_class(task_type):
+def get_publish_type_class(publish_type):
     publish_types = {
-        "modeling": ModelingPublish,
-        "rigging": RiggingPublish,
-        "matchmove": CameraPublish,
-        "layout": LayoutPublish,
-        "rotomation": RotomationPublish,
+        # "fx_cache": FxCachePublish,
+        # "scene": SceneFilePublish,
+        # "hda": HoudiniDigitalAssetPublish,
+        # "editorial": EditorialMediaPublish,
+        # "render": RenderPublish,
+        # "groom": GroomPublish,
+        # "comp": CompPublish,
+        # "look": LookPublish,
+        # "template": TemplatePublish,
+        "geometry": GeometryPublish,
+        # "usd_assembly": USDAssemblyPublish,
+        # "img_seq": ImageSequencePublish,
+        "camera": CameraPublish,
+        "turntable_camera": TurntableCameraPublish,
+        # "rig_module": RigModulePublish,
+        "animation_rig": AnimationRigPublish,
+        # "texture_set": TextureSetPublish,
+        # "texture": TexturePublish,
         "animation": AnimationPublish,
         "shot_sculpt": ShotSculptPublish,
+        # "image": ImagePublish,
+        # "reference": ReferencePublish,
     }
-    if task_type in list(publish_types.keys()):
-        return publish_types[task_type]
+    if publish_type in list(publish_types.keys()):
+        return publish_types[publish_type]
 
 
-class TaskTypePublisher:
+class PublisherType:
     def __init__(self, publish_options):
         self.publishing_options = publish_options
-        self.context_handler: ContextHandler = self.publishing_options["context_object"]
-        self.task_type_publisher = get_task_type_publish_class(task_type=self.context_handler.task_type)
+
+        self.publisher_type = get_publish_type_class(publish_options["publish_type"])
 
     def execute_publish(self):
-        publish_results = self.task_type_publisher(publish_options=self.publishing_options).publish()
+        publish_results = self.publisher_type(publish_options=self.publishing_options).publish()
         return publish_results
-

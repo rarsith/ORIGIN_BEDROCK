@@ -2,12 +2,10 @@ from origin.envars.origin_envars import ContextHandler
 from origin.ui.publish.publisher.publisher import Publish
 from origin.ui.publish.quality_checks.quality_checks import QcGhost
 from origin.ui.publish.set_file_types.file_types import FileTypes
-from origin.ui.publish.bundle_selector.assign_to_bundle import BundleSelector
 from origin.ui.publish.output_reviewable_options.preview_render_options import PreviewOptions
 from origin.ui.publish.material_assignment.material_assignment import MaterialSetsAssignments
 from origin.ui.publish.inject_displacement.inject_displacement import InjectDisplacement
 from origin.ui.publish.asset_stream_manager.asset_stream_manager_ui import EntryStackStream
-from origin.ui.stack_management.asset_stack_manager_ui import LoaderMainUI
 from origin.ui.stack_management.asset_stack_manager_ui import AssetStackManager
 
 
@@ -27,6 +25,14 @@ def get_publish_type(context: ContextHandler, pub_type):
         ],
 
         "camera": [
+            EntryStackStream(context=context),
+            QcGhost(),
+            AssetStackManager(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
+
+        "turntable_camera": [
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),

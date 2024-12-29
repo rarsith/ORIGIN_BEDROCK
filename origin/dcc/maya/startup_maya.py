@@ -123,6 +123,6 @@ maya_shelves = ["shelf_ORIGIN.mel"]
 env_setup()
 add_origin_icons()
 
-load_origin_maya_shelves(shelves_files_list=maya_shelves)
+# load_origin_maya_shelves(shelves_files_list=maya_shelves)
 
 set_current_working_directory()

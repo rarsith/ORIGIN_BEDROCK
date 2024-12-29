@@ -42,7 +42,7 @@ class CheckRunEnv(QtWidgets.QWidget):
 
     def format_dict_as_html(self, data):
         # Convert dictionary to HTML string with bold keys
-        html_lines = ["<b style='color:green;'>Those who seek the path to enlightenment must not be led astray!</b><br>"]
+        html_lines = ["<b style='color:green;'>Those who seek the PATH to enlightenment must not be led astray!</b><br>"]
         for envar_name, envar_value in data.items():
             if envar_value is not None or envar_value == "":
                 html_lines.append(f"<b>{envar_name}</b>: --> {envar_value}.....<b style='color:green;'>OK</b><br>")

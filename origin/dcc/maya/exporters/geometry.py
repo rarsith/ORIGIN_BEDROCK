@@ -31,6 +31,7 @@ class MayaGeometryExporter(GeometryExporter):
         full_path = f"{file_path_path}.mb"
         cmds.file(rename=full_path)
         cmds.file(save=True, type='mayaBinary')
+
         return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
 
     def export_alembic(self,

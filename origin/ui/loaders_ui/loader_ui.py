@@ -242,6 +242,7 @@ class VersionLoader(QtWidgets.QWidget):
     def __init__(self, context: ContextHandler = None, parent=None):
         super(VersionLoader, self).__init__(parent)
 
+
         self.context_handler = context
 
         self.version_loader_sra = None
@@ -275,22 +276,26 @@ class VersionLoader(QtWidgets.QWidget):
         self.context_handler = context
         self.populate_versions()
 
-    def resolve_extra_filters(self, default_filter: List[dict] = None, filters_input: List[dict] = None):
-        extra_filters = default_filter
-        if filters_input:
-            for extra_filter in filters_input:
-                extra_filters.append(extra_filter)
-        return extra_filters
-
     def get_existing_db_assets(self):
-        q_filters = [{"db_asset_type": "db_asset"},
-                     {"parent": self.context_handler.db_asset_stream_id},
-                     {"master_task_type": self.context_handler.task_type}]
+        print("db_asset_stream_id:", self.context_handler.db_asset_stream_id)
+        print("task_type: ", self.context_handler.task_type)
+
+        q_filters = [{"db_asset_type": "db_asset"}]
+
+        if self.context_handler.db_asset_stream_id is not None or self.context_handler.db_asset_stream_id != '':
+            q_filters.append({"parent": self.context_handler.db_asset_stream_id})
+        if self.context_handler.task_type is not None or self.context_handler.task_type != '':
+            q_filters.append({"master_task_type": self.context_handler.task_type})
+
+        # self.q_filters = [{"db_asset_type": "db_asset"},
+        #                   {"parent": self.context_handler.db_asset_stream_id},
+        #                   {"master_task_type": self.context_handler.task_type}]
 
         resolved_filters = [{key: value for key, value in q_filter.items() if value is not None}
                             for q_filter in q_filters
                             ]
 
+        print(resolved_filters)
         if self.context_handler.entity_name is not None:
             fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
             publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
@@ -298,6 +303,7 @@ class VersionLoader(QtWidgets.QWidget):
                                                                        extra_filters=resolved_filters,
                                                                        ids_only=True
                                                                        )
+
 
         return publishes_docs
 
@@ -385,8 +391,10 @@ class Loader(QtWidgets.QWidget):
         self.create_connections()
 
         self.populate_versions_viewer()
-        self.populate_stream_viewer()
+
         self.populate_task_viewer()
+        self.select_active_task(self.task_viewer.task_viewer_wdg)
+        self.populate_stream_viewer()
 
     def create_widgets(self):
         self.project_tree_viewer = ProjectTreeViewerCore(has_project_select_wdg=True,
@@ -397,7 +405,9 @@ class Loader(QtWidgets.QWidget):
         self.expand_tree_from_id(self.project_tree_viewer.project_tree_viewer_wdg)
 
         self.task_viewer = TaskViewerCoreOverride(context=self.context_handler)
+        # self.select_active_task(self.task_viewer.task_viewer_wdg)
         self.task_viewer_overrides()
+        print("Selecting task name")
 
         self.stream_viewer_wdg = StreamViewerUI(context=self.context_handler)
 
@@ -468,6 +478,18 @@ class Loader(QtWidgets.QWidget):
         # self.refresh_btn.clicked.connect(self.populate_task_viewer)
         self.refresh_btn.clicked.connect(self.populate_versions_viewer)
         # self.refresh_btn.clicked.connect(self.project_tree_viewer.refresh_tree_widget)
+
+    def select_active_task(self, task_widget):
+        items = [task_widget.topLevelItem(i) for i in range(task_widget.topLevelItemCount())]
+        print(items)
+        try:
+            for idx, item in enumerate(items):
+                if item.text(0) == self.context_handler.task_name:
+                    task_widget.setCurrentItem(item)
+                    item.setSelected(True)
+                    print(f"Selected {item.text(0)}")
+        except:
+            print("WTF?")
 
     def expand_tree_from_id(self, tree_widget):
         parts = self.context_handler.entity_id.split(".")

@@ -20,17 +20,19 @@ class CameraExporter(ABC):
         pass
 
     @abstractmethod
-    def export_camera(self, export_path, file_format="ma"):
+    def export_alembic(self):
         pass
 
     @abstractmethod
-    def export_alembic(self, export_path):
+    def export_usd(self):
         pass
 
     @abstractmethod
-    def export_usd(self, export_path):
+    def export_camera(self, file_format):
         pass
 
     @abstractmethod
-    def run_export(self, focal_length=None, filmback=None, resolution_gate=None, export_path=None, file_format="ma"):
+    def run_export(self, file_format, focal_length=None, filmback=None, resolution_gate=None, cam_motion_blur=False):
         pass
+
+

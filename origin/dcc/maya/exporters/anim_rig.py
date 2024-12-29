@@ -1,33 +1,14 @@
 from pathlib import Path
 from typing import Literal
 
+from origin.dcc.abc.animation_rig_exporter import AnimationRigExporter
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
 
 import maya.cmds as cmds
-from abc import ABC, abstractmethod
 
 
-class AnimRiggingExporter(ABC):
-
-    @abstractmethod
-    def save_master_file(self):
-        """
-        - implementation for saving the current DCC scene from where all the other exports will be derived from
-
-        """
-        pass
-
-    @abstractmethod
-    def save_maya_scene(self):
-        pass
-
-    @abstractmethod
-    def export_rigging(self, file_format):
-        pass
-
-
-class MayaAnimRiggingExporter(AnimRiggingExporter):
+class MayaAnimationRigExporter(AnimationRigExporter):
     usd_file = "usd"
     origin_scene_file = "master"
     maya_scene = "maya_scene"

@@ -3,7 +3,7 @@ from PySide2 import QtWidgets
 
 from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.operators import PublishOptions
-from origin.ui.publish.utils.publishing_widgets_factory import get_publish_type
+from origin.ui.publish.utils.publishing_type_widgets_factory import get_publish_type
 
 
 class OriginPublisher(QtWidgets.QDialog):
@@ -20,7 +20,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.publish_options = PublishOptions()
 
-        context_task_type = get_publish_type(context=context)
+        context_task_type = get_publish_type(context=context, pub_type=self.publish_type)
         self.widgets = context_task_type
 
         self.current_step = 0
@@ -60,6 +60,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
     def load_next_widget(self):
         current_widget = self.widgets[self.current_step]
+        print(current_widget)
         final_widget = self.widgets[-1]
 
         options_status = ""
@@ -112,6 +113,7 @@ class OriginPublisher(QtWidgets.QDialog):
         widget_selected_options = widget.get_selected_options()
         if widget_selected_options is not None:
             self.collected_options.update(widget.get_selected_options())
+            print(widget_selected_options)
             return widget_selected_options
         else:
             return widget_selected_options

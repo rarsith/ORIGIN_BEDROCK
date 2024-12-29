@@ -46,30 +46,32 @@ def get_file_component_class(component_type):
 
 def get_db_asset_class(publish_type):
     pub_types = {
-        "asset_stack_breakdown": AssetStackBreakdown,
-        "asset_stack": AssetStack,
-        "fx_cache": FxCache,
-        "scene": SceneFile,
-        "hda": HoudiniDigitalAsset,
-        "editorial": EditorialMedia,
-        "render": Render,
-        "groom": Groom,
-        "comp": EditorialMedia,
-        "look": Look,
-        "template": Template,
-        "geometry": Geometry,
-        "usd_assembly": USDAssembly,
-        "img_seq": ImageSequence,
-        "camera": Camera,
-        "rig_module": RigModule,
-        "animation_rig": AnimationRig,
-        "texture_set": TextureSet,
-        "texture": Texture,
-        "shot_stack": ShotStack,
-        "shot_breakdown": ShotBreakdown,
-        "animation": Animation,
-        "image": Image,
-        "reference": Reference,
+        "asset_stack_breakdown": AssetStackBreakdown,  # ORIGIN proc
+        "asset_stack": AssetStack,  # ORIGIN proc
+        "fx_cache": FxCache,  # Houdini Integration Required
+        "scene": SceneFile,  # all DDCs Integration Required
+        "hda": HoudiniDigitalAsset,  # Houdini Integration Required
+        "editorial": EditorialMedia,   # Editing DCC Integration Required - Unknown
+        "render": Render,   # Gaffer/Arnold/Cycles Integration Required
+        "groom": Groom,  # Houdini Integration Required
+        "comp": Comp,  # Natron/Nuke Integration Required
+        "look": Look,   # Gaffer/Arnold/Cycles Integration Required
+        "template": Template,  # Nuke/Natron/Gaffer/Maya/EditingDCC Integration Required
+        "geometry": Geometry,  # Maya/Zbrush
+        "usd_assembly": USDAssembly,  # Maya/Houdini/Blender
+        "img_seq": ImageSequence,  # Natron/Nuke/Standalone
+        "camera": Camera,  # Maya/3DE/Blender/Houdini
+        "turntable_camera": TurntableCamera,  # Maya/3DE/Blender/Houdini
+        "rig_module": RigModule,  # Maya/
+        "animation_rig": AnimationRig,  # Maya
+        "texture_set": TextureSet,  # ORIGIN proc
+        "texture": Texture,  # Mari/Blender/ZB/Standalone
+        "shot_sculpt": ShotSculpt,  # Maya/Blender
+        "shot_stack": ShotStack,  # ORIGIN proc
+        "shot_breakdown": ShotBreakdown,  # ORIGIN proc
+        "animation": Animation,  # Maya/Blender
+        "image": Image,  # Natron/Nuke/Gaffer
+        "reference": Reference,  # Natron/Nuke/Maya
 
     }
     return pub_types.get(publish_type)
@@ -826,6 +828,10 @@ class Camera(DBAsset):
     type: Optional[str] = "camera"
 
 
+class TurntableCamera(DBAsset):
+    type: Optional[str] = "turntable_camera"
+
+
 class RigModule(DBAsset):
     type: Optional[str] = "rig_module"
 
@@ -844,6 +850,10 @@ class Texture(DBAsset):
 
 class Animation(DBAsset):
     type: Optional[str] = "animation"
+
+
+class ShotSculpt(DBAsset):
+    type: Optional[str] = "shot_sculpt"
 
 
 class Image(DBAsset):

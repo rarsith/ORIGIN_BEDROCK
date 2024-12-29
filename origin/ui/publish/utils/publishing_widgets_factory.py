@@ -25,6 +25,15 @@ def get_publish_type(context: ContextHandler):
             PreviewOptions(),
             Publish(context=context)
         ],
+
+        "turntable_camera": [
+            EntryStackStream(context=context),
+            QcGhost(),
+            AssetStackManager(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
+
         "texturing": [
             EntryStackStream(context=context),
             QcGhost(),
@@ -35,7 +44,6 @@ def get_publish_type(context: ContextHandler):
         "rigging": [
             EntryStackStream(context=context),
             QcGhost(),
-            FileTypes(),
             AssetStackManager(),
             PreviewOptions(),
             Publish(context=context)

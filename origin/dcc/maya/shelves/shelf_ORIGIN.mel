@@ -94,7 +94,7 @@ global proc shelf_ORIGIN () {
         -flipY 0
         -useAlpha 1
         -font "plainLabelFont" 
-        -imageOverlayLabel "GEO" 
+        -imageOverlayLabel "GEOX" 
         -overlayLabelColor 0 0 0 
         -overlayLabelBackColor 0.292457 0.628814 0.256803 1 
         -image "origin__publish__64x64.png" 
@@ -375,7 +375,7 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "" 
+        -command "import importlib\n\nfrom origin.dcc.maya.utils.common import turntable_camera\nimportlib.reload(turntable_camera)\n\nturntable_camera.main()"
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
@@ -409,7 +409,41 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "" 
+        -command "import importlib\n\nfrom origin.dcc.maya.tools import turntable_camera_publisher_shelf_code\nimportlib.reload(turntable_camera_publisher_shelf_code)\n\nturntable_camera_publisher_shelf_code.publish()"
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+	;
+	shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Refreshes from database Work Session" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Refresh Work Session" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0 0 0 
+        -overlayLabelBackColor 0.234642 0.487747 0.885802 0 
+        -image "origin__refresh_work_session__64x64.png" 
+        -image1 "origin__refresh_work_session__64x64.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "from origin.dcc.maya import post_startup_maya\nset_origin_maya()"
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
