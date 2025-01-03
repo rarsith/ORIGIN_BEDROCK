@@ -1,5 +1,3 @@
-import os
-
 from PySide2 import QtWidgets
 
 from origin.common_utils import dict_utils
@@ -7,6 +5,7 @@ from origin.dcc.task_type_publisher import PublisherType
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.actions import Create
+from origin.paths.output_paths import OriginOSPathHandler
 
 
 class Publish(QtWidgets.QWidget):
@@ -14,6 +13,7 @@ class Publish(QtWidgets.QWidget):
         super(Publish, self).__init__(parent)
 
         self.context_handler = context
+        self.path_handler = OriginOSPathHandler(context=self.context_handler)
 
         self.create_widgets()
         self.create_layout()
@@ -47,10 +47,10 @@ class Publish(QtWidgets.QWidget):
         get_publishing_status = self.status_wdg.currentText()
         return {"pub_comment": get_comment_text, "pub_status": get_publishing_status}
 
-    def create_task_db_asset(self, selected_options):
+    def create_task_db_asset(self, parent, publish_type):
         create_entity = Create(context=self.context_handler)
-        db_asset_id = create_entity.db_asset(parent=self.context_handler.db_asset_stream_id,
-                                             publish_type=selected_options["publish_type"])
+        db_asset_id = create_entity.db_asset(parent=parent,
+                                             publish_type=publish_type)
         return db_asset_id
 
     def create_db_asset_version(self, selected_options):
@@ -65,11 +65,10 @@ class Publish(QtWidgets.QWidget):
         for saved_files_categories in published_data:
             if published_data[saved_files_categories] != {}:
                 for file_format, file_path in published_data[saved_files_categories].items():
-                    origin_root = os.getenv("ORIGIN_PROJECTS_ROOT")
-                    relative_path = os.path.relpath(file_path, start=origin_root)
+                    unix_file_path = self.path_handler.resolve_to_relative(file_path, as_unix=True)
                     create_entity.db_asset_file_component(visibility=True,
                                                           file_ext=file_format,
-                                                          file_path=str(relative_path),
+                                                          file_path=str(unix_file_path),
                                                           parent_id=db_asset_version_id)
 
     def create_asset_breakdown_version(self, options):
@@ -88,7 +87,8 @@ class Publish(QtWidgets.QWidget):
                 needs_update = dict_utils.is_subset_dict(asset_breakdown, curr_breakdown_ver_doc.data)
                 if needs_update:
                     merged_config = dict_utils.merge_dicts(asset_breakdown, curr_breakdown_ver_doc.data)
-                    new_db_breakdown_version_id = Create(context=self.context_handler).asset_breakdown_version(data=merged_config)
+                    new_db_breakdown_version_id = Create(context=self.context_handler).asset_breakdown_version(
+                        data=merged_config)
                     self.context_handler.asset_breakdown_version_id = new_db_breakdown_version_id
 
                 else:
@@ -104,12 +104,24 @@ class Publish(QtWidgets.QWidget):
     def publish(self, options):
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
-        db_asset_id = self.create_task_db_asset(selected_options=options)
+        self.context_handler = options["context_object"]
+
+        db_asset_id = self.create_task_db_asset(parent=self.context_handler.db_asset_stream_id,
+                                                publish_type=options["publish_type"])
+
+        # Update CONTEXT with the new db_asset_id
         self.context_handler.db_asset_id = db_asset_id
 
-        # task_publisher = TaskTypePublisher(publish_options=options)
-        task_publisher = PublisherType(publish_options=options)
-        published_data = task_publisher.execute_publish()
+        options["context_object"] = self.context_handler
+
+        publisher_type = PublisherType(publish_options=options)
+        published_data = publisher_type.execute_publish()
+
+        # images_db_asset_id = self.create_task_db_asset(parent=self.context_handler.db_asset_stream_id,
+        #                                                publish_type=published_data["img_seq"])
+        #
+        # quicktime_db_asset_id = self.create_task_db_asset(parent=self.context_handler.db_asset_stream_id,
+        #                                                   publish_type="quicktime")
 
         db_asset_version_id = self.create_db_asset_version(selected_options=options)
         self.create_db_file_components(db_asset_version_id=db_asset_version_id,

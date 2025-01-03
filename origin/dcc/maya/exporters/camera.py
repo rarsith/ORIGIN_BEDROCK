@@ -32,8 +32,18 @@ class MayaCameraExporter(CameraExporter):
     def save_master_file(self):
         file_path_path = self.set_output_path(file_format=self.origin_scene_file)
         full_path = f"{file_path_path}.mb"
-        cmds.file(rename=full_path)
-        cmds.file(save=True, type='mayaBinary')
+        # cmds.file(rename=full_path)
+        # cmds.file(save=True, type='mayaBinary')
+        cmds.select(self.camera_transform, replace=True)
+
+        cmds.file(
+            full_path,
+            force=True,
+            options="v=0;",
+            typ="mayaBinary",
+            pr=True,
+            es=True)
+
         return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
 
     def get_camera_nodes(self):
@@ -67,10 +77,55 @@ class MayaCameraExporter(CameraExporter):
 
     def bake_animation(self):
         # Bake animation if camera is animated and frame range is provided
+
         if self.start_frame and self.end_frame:
-            cmds.bakeResults(self.camera_transform, t=(self.start_frame, self.end_frame),
-                             sampleBy=1, simulation=True,
-                             disableImplicitControl=True, preserveOutsideKeys=False)
+            temp_locator = cmds.spaceLocator()
+
+            parent_to_cam = cmds.parentConstraint(self.camera_transform, temp_locator, maintainOffset=0)
+
+            cmds.bakeResults(
+                temp_locator,
+                simulation=True,
+                preserveOutsideKeys=True,
+                sparseAnimCurveBake=False,
+                removeBakedAttributeFromLayer=False,
+                bakeOnOverrideLayer=False,
+                minimizeRotation=True,
+                sampleBy=1,
+                oversamplingRate=1,
+                disableImplicitControl=True,
+                controlPoints=False,
+                shape=False,
+                time=(self.start_frame, self.end_frame)
+            )
+
+            cmds.delete(parent_to_cam[0])
+
+            parent = cmds.listRelatives(self.camera_transform, parent=True)
+            if parent:
+                cmds.parent(self.camera_transform, world=True)
+
+            parent_cam_to_locator = cmds.parentConstraint(temp_locator, self.camera_transform, maintainOffset=1)
+
+            cmds.bakeResults(
+                self.camera_transform,
+                simulation=True,
+                preserveOutsideKeys=True,
+                sparseAnimCurveBake=False,
+                removeBakedAttributeFromLayer=False,
+                bakeOnOverrideLayer=False,
+                minimizeRotation=True,
+                sampleBy=1,
+                oversamplingRate=1,
+                disableImplicitControl=True,
+                controlPoints=False,
+                shape=False,
+                time=(self.start_frame, self.end_frame)
+            )
+
+            cmds.delete(parent_cam_to_locator[0])
+            cmds.delete(temp_locator)
+            cmds.select(cl=True)
 
     def export_alembic(self):
         # Export the camera to Alembic

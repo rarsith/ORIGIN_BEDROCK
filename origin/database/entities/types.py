@@ -43,6 +43,11 @@ class EntityTypes:
         '''return the correct string for the entity type'''
         return "package"
 
+    @classmethod
+    def template(cls):
+        '''return the correct string for the entity type'''
+        return "template"
+
 
 class TaskTypes:
 
@@ -126,6 +131,11 @@ class TaskTypes:
         '''return the correct string for the entity type'''
         return "compositing"
 
+    @classmethod
+    def template(cls):
+        '''return the correct string for the entity type'''
+        return "template"
+
     def all_types(self):
         return [self.concept(),
                 self.modeling(),
@@ -143,7 +153,8 @@ class TaskTypes:
                 self.shot_sculpt(),
                 self.lighting(),
                 self.rendering(),
-                self.compositing()]
+                self.compositing(),
+                self.template()]
 
     def all_build_types(self):
         return [

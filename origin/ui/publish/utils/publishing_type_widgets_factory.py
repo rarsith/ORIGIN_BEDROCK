@@ -36,7 +36,6 @@ def get_publish_type(context: ContextHandler, pub_type):
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
-            PreviewOptions(),
             Publish(context=context)
         ],
 
@@ -138,7 +137,6 @@ def get_publish_type(context: ContextHandler, pub_type):
         "template": [
             EntryStackStream(context=context),
             QcGhost(),
-            FileTypes(),
             AssetStackManager(),
             PreviewOptions(),
             Publish(context=context)
@@ -194,3 +192,40 @@ def get_publish_type(context: ContextHandler, pub_type):
         return pub_types[pub_type]
     else:
         return []
+    #
+    # initialized = []
+    # if pub_type in list(pub_types.keys()):
+    #     for p_type in pub_types[pub_type]:
+    #         print(p_type)
+    #         if hasattr(p_type, "context"):
+    #             if context_handler:
+    #                 cls = p_type(context=context_handler)
+    #                 initialized.append(cls)
+    #         else:
+    #             cls = p_type()
+    #             initialized.append(cls)
+    #     return initialized
+    # else:
+    #     return []
+
+if __name__ == "__main__":
+    context_sample = {'show_name': 'The_Rock',
+                                        'project_publishes': 'The_Rock__PUBLISHES',
+                                        'project_work': 'The_Rock__WORK',
+                                        'project_control': 'The_Rock__CONTROL',
+                                        'origin_path_hierarchy': 'assets.chr',
+                                        'entity_name': 'tafer',
+                                        'entity_id': 'The_Rock.assets.chr.tafer',
+                                        'entity_type': 'asset',
+                                        'task_name': "modeling",
+                                        'task_type': "modeling",
+                                        'task_id': "The_Rock.assets.chr.tafer.modeling",
+                                        'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
+                                        'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
+                                        }
+
+    con = ContextHandler()
+    con.load_session(context_sample)
+
+    typeso = get_publish_type(context=con, pub_type="geometry")
+    print(typeso)

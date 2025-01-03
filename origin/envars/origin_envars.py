@@ -399,13 +399,14 @@ class OriginDatabaseHandler:
             return None
 
     def get_db_asset_document(self):
-        if self.__context.db_asset_id:
+        if self.__context.db_asset_id is not None:
             db_asset_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                       doc_id=self.__context.db_asset_id)
 
-            return DBAsset(**db_asset_doc)
-        else:
-            return None
+            if db_asset_doc is not None:
+                return DBAsset(**db_asset_doc)
+            else:
+                return None
 
     def get_asset_breakdown(self):
         if self.__context.asset_breakdown_id:
@@ -457,9 +458,6 @@ class OriginDatabaseHandler:
                 return None
         else:
             return None
-
-    # def create(self):
-    #     return Create(context=self.context)
 
     def collection(self):
         pass  # use of Create Module

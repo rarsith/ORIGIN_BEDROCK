@@ -1,8 +1,9 @@
 from origin.dcc.publishers.animation_publish import AnimationPublish
 from origin.dcc.publishers.camera_publish import CameraPublish
-from origin.dcc.publishers.modeling_publish import GeometryPublish
-from origin.dcc.publishers.rigging_publish import AnimationRigPublish
+from origin.dcc.publishers.geometry_publish import GeometryPublish
+from origin.dcc.publishers.animationrig_publish import AnimationRigPublish
 from origin.dcc.publishers.shot_sculpt_publish import ShotSculptPublish
+from origin.dcc.publishers.template_publish import TemplatePublish
 from origin.dcc.publishers.turntable_camera_publisher import TurntableCameraPublish
 
 
@@ -16,7 +17,7 @@ def get_publish_type_class(publish_type):
         # "groom": GroomPublish,
         # "comp": CompPublish,
         # "look": LookPublish,
-        # "template": TemplatePublish,
+        "template": TemplatePublish,
         "geometry": GeometryPublish,
         # "usd_assembly": USDAssemblyPublish,
         # "img_seq": ImageSequencePublish,

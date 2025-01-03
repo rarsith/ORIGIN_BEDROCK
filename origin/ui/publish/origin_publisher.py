@@ -3,6 +3,7 @@ from PySide2 import QtWidgets
 
 from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.operators import PublishOptions
+from origin.ui.publish.playblast_options.playblast_options_ui import PlayblastOptionsUI
 from origin.ui.publish.utils.publishing_type_widgets_factory import get_publish_type
 
 
@@ -12,8 +13,8 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.setWindowTitle("Publish")
 
-        self.setMinimumWidth(400)
-        self.setMinimumHeight(200)
+        self.setMinimumWidth(500)
+        self.setMinimumHeight(420)
 
         self.context_handler = context
         self.publish_type = publish_type
@@ -33,6 +34,12 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.load_widgets()
 
+        self.playblast_widget = PlayblastOptionsUI(context=self.context_handler)
+        self.playblast_widget.playblast_btn.setEnabled(False)
+        self.playblast_widget.playblast_btn.setVisible(False)
+        self.playblast_widget.cancel_bn.setEnabled(False)
+        self.playblast_widget.cancel_bn.setVisible(False)
+
     def create_widgets(self):
         self.next_btn = QtWidgets.QPushButton("Next")
         self.back_btn = QtWidgets.QPushButton("Back")
@@ -51,7 +58,23 @@ class OriginPublisher(QtWidgets.QDialog):
         self.next_btn.clicked.connect(self.load_next_widget)
         self.back_btn.clicked.connect(self.load_previous_widget)
 
+    def resolve_preview_widgets(self):
+        if "review_medium" in list(self.collected_options.keys()) and self.collected_options["review_medium"] == "playblast":
+            if self.playblast_widget not in self.widgets:
+                self.widgets.insert(self.current_step, self.playblast_widget)
+        else:
+            if self.playblast_widget in self.widgets:
+                get_index = self.widgets.index(self.playblast_widget)
+                self.widgets.remove(self.playblast_widget)
+
+    def clear_stacked_widget(self, stacked_widget):
+        while stacked_widget.count() > 0:
+            widget = stacked_widget.widget(0)
+            stacked_widget.removeWidget(widget)
+
     def load_widgets(self):
+        self.clear_stacked_widget(self.widget_container)
+
         for widget in self.widgets:
             if hasattr(widget, "reinitialize"):
                 widget.reinitialize(pub_options=self.collected_options)
@@ -59,8 +82,9 @@ class OriginPublisher(QtWidgets.QDialog):
         self.widget_container.setCurrentIndex(0)
 
     def load_next_widget(self):
+        self.back_btn.setDisabled(False)
+
         current_widget = self.widgets[self.current_step]
-        print(current_widget)
         final_widget = self.widgets[-1]
 
         options_status = ""
@@ -73,7 +97,9 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.current_step += 1
         if self.current_step < len(self.widgets):
+            self.resolve_preview_widgets()
             self.load_widgets()
+
             self.widget_container.setCurrentIndex(self.current_step)
 
             if self.current_step == len(self.widgets) - 1:
@@ -86,34 +112,40 @@ class OriginPublisher(QtWidgets.QDialog):
             self.start_publishing()
 
     def load_previous_widget(self):
-        if self.current_step == 0:
-            self.back_btn.setDisabled(True)
-            return
+        current_widget = self.widgets[self.current_step]
+        first_widget = self.widgets[0]
 
-        current_widget = ""
-
-        if not self.current_step < 0:
+        if not self.current_step <= 0:
             current_widget = self.widgets[self.current_step]
 
         self.current_step -= 1
-        final_widget = self.widgets[-1]
+        self.widget_container.setCurrentIndex(self.current_step)
 
-        if current_widget != final_widget:
-            self.save_widget_options(current_widget)
+        if current_widget != first_widget and self.current_step < len(self.widgets):
+            current_active_widget = self.widgets[self.current_step]
+            get_current_widget_options = current_active_widget.get_selected_options()
 
-        if self.current_step < len(self.widgets):
-            self.widget_container.setCurrentIndex(self.current_step)
+            for option in get_current_widget_options:
+                del self.collected_options[option]
 
-            if self.current_step == 0:
-                self.back_btn.setDisabled(True)
-            else:
-                self.back_btn.setDisabled(False)
+        self.resolve_preview_widgets()
+
+        if self.current_step == len(self.widgets) - 1:
+            self.next_btn.setText("Publish")
+            self.current_step = len(self.widgets) - 1
+        else:
+            self.next_btn.setText("Next")
+
+        if self.current_step == 0:
+            self.back_btn.setDisabled(True)
+        else:
+            self.back_btn.setDisabled(False)
 
     def save_widget_options(self, widget):
         widget_selected_options = widget.get_selected_options()
         if widget_selected_options is not None:
             self.collected_options.update(widget.get_selected_options())
-            print(widget_selected_options)
+            print(self.collected_options)
             return widget_selected_options
         else:
             return widget_selected_options

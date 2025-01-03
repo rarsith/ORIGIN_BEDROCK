@@ -72,75 +72,31 @@ global proc shelf_ORIGIN () {
         -commandRepeatable 1
         -flat 1
     ;
-    shelfButton
-        -enableCommandRepeat 1
-        -flexibleWidthType 3
-        -flexibleWidthValue 32
+    separator
         -enable 1
-        -width 35
-        -height 34
+        -width 12
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Publishes Geometry" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "PUB" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -imageOverlayLabel "GEOX" 
-        -overlayLabelColor 0 0 0 
-        -overlayLabelBackColor 0.292457 0.628814 0.256803 1 
-        -image "origin__publish__64x64.png" 
-        -image1 "origin__publish__64x64.png" 
-        -style "iconOnly" 
-        -marginWidth 0
-        -marginHeight 1
-        -command "import importlib\n\nfrom origin.dcc.maya.tools import modeling_publisher_shelf_code\nimportlib.reload(modeling_publisher_shelf_code)\n\nmodeling_publisher_shelf_code.modeling_publish()\n" 
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
+        -style "shelf" 
+        -horizontal 0
     ;
-    shelfButton
-        -enableCommandRepeat 1
-        -flexibleWidthType 3
-        -flexibleWidthValue 32
+    separator
         -enable 1
-        -width 35
-        -height 34
+        -width 12
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Animation Rigging Publisher" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "RIG_PUB" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -imageOverlayLabel "RIG" 
-        -overlayLabelColor 0 0 0 
-        -overlayLabelBackColor 0.292457 0.628814 0.256803 1 
-        -image "origin__publish__64x64.png" 
-        -image1 "origin__publish__64x64.png" 
-        -style "iconOnly" 
-        -marginWidth 0
-        -marginHeight 1
-        -command "import importlib\n\nfrom origin.dcc.maya.tools import rigging_publisher_shelf_code\nimportlib.reload(rigging_publisher_shelf_code)\n\nrigging_publisher_shelf_code.rigging_publish()" 
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
+        -style "shelf" 
+        -horizontal 0
     ;
     shelfButton
         -enableCommandRepeat 1
@@ -220,6 +176,66 @@ global proc shelf_ORIGIN () {
         -manage 1
         -visible 1
         -preventOverride 0
+        -annotation "Refreshes from database Work Session" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Refresh Work Session" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0 0 0 
+        -overlayLabelBackColor 0.234642 0.487747 0.885802 0 
+        -image "origin__refresh_work_session__64x64.png" 
+        -image1 "origin__refresh_work_session__64x64.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "from origin.dcc.maya import post_startup_maya\nset_origin_maya()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
         -annotation "Sets Asset Outliner Hierarchy Template" 
         -enableBackground 0
         -backgroundColor 0 0 0 
@@ -244,7 +260,7 @@ global proc shelf_ORIGIN () {
         -commandRepeatable 1
         -flat 1
     ;
-	shelfButton
+    shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
         -flexibleWidthValue 32
@@ -273,12 +289,11 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "" 
-        -sourceType "python" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
-	shelfButton
+    shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
         -flexibleWidthValue 32
@@ -307,12 +322,11 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "" 
-        -sourceType "python" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
-	shelfButton
+    shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
         -flexibleWidthValue 32
@@ -341,12 +355,11 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "" 
-        -sourceType "python" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
-	shelfButton
+    shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
         -flexibleWidthValue 32
@@ -375,12 +388,38 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "import importlib\n\nfrom origin.dcc.maya.utils.common import turntable_camera\nimportlib.reload(turntable_camera)\n\nturntable_camera.main()"
+        -command "import importlib\n\nfrom origin.dcc.maya.utils.common import turntable_camera\nimportlib.reload(turntable_camera)\n\nturntable_camera.main()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
-	;
-	shelfButton
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
         -flexibleWidthValue 32
@@ -409,45 +448,11 @@ global proc shelf_ORIGIN () {
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "import importlib\n\nfrom origin.dcc.maya.tools import turntable_camera_publisher_shelf_code\nimportlib.reload(turntable_camera_publisher_shelf_code)\n\nturntable_camera_publisher_shelf_code.publish()"
+        -command "import importlib\n\nfrom origin.dcc.maya.tools import turntable_camera_publisher_shelf_code\nimportlib.reload(turntable_camera_publisher_shelf_code)\n\nturntable_camera_publisher_shelf_code.publish()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
-	;
-	shelfButton
-        -enableCommandRepeat 1
-        -flexibleWidthType 3
-        -flexibleWidthValue 32
-        -enable 1
-        -width 35
-        -height 34
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -annotation "Refreshes from database Work Session" 
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "Refresh Work Session" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -overlayLabelColor 0 0 0 
-        -overlayLabelBackColor 0.234642 0.487747 0.885802 0 
-        -image "origin__refresh_work_session__64x64.png" 
-        -image1 "origin__refresh_work_session__64x64.png" 
-        -style "iconOnly" 
-        -marginWidth 0
-        -marginHeight 1
-        -command "from origin.dcc.maya import post_startup_maya\nset_origin_maya()"
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
-	;
+    ;
     shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
@@ -458,28 +463,61 @@ global proc shelf_ORIGIN () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Reverse the normals of the selected faces." 
+        -annotation "Animation Rigging Publisher" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Reverse" 
+        -label "RIG_PUB" 
         -labelOffset 0
         -rotation 0
         -flipX 0
         -flipY 0
         -useAlpha 1
         -font "plainLabelFont" 
-        -overlayLabelColor 0.8 0.8 0.8 
-        -overlayLabelBackColor 0 0 0 0.5 
-        -image "polyNormal.png" 
-        -image1 "polyNormal.png" 
+        -overlayLabelColor 0 0 0 
+        -overlayLabelBackColor 0.292457 0.628814 0.256803 1 
+        -image "origin__animrig_publish__64x64.png" 
+        -image1 "origin__animrig_publish__64x64.png" 
         -style "iconOnly" 
         -marginWidth 0
         -marginHeight 1
-        -command "ReversePolygonNormals" 
-        -sourceType "mel" 
-        -doubleClickCommand "ReversePolygonNormalsOptions" 
+        -command "import importlib\n\nfrom origin.dcc.maya.tools import rigging_publisher_shelf_code\nimportlib.reload(rigging_publisher_shelf_code)\n\nrigging_publisher_shelf_code.rigging_publish()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Publishes Geometry" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PUB" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0 0 0 
+        -overlayLabelBackColor 0 0 0 0 
+        -image "origin__geo_publish__64x64.png" 
+        -image1 "origin__geo_publish__64x64.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import importlib\n\nfrom origin.dcc.maya.tools import modeling_publisher_shelf_code\nimportlib.reload(modeling_publisher_shelf_code)\n\nmodeling_publisher_shelf_code.modeling_publish()\n" 
+        -sourceType "python" 
         -commandRepeatable 1
         -flat 1
     ;

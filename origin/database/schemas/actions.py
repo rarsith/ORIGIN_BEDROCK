@@ -67,6 +67,7 @@ class _DefinitionSchemas:
     @property
     def skeleton_schema(self):
         json_load = json_utils.open_json(odb_path_resolver.get_path(entities_definitions))
+        print(odb_path_resolver.get_path(entities_definitions))
         tasks_read = json_utils.read_dictionary(json_load, "base")
         return tasks_read
 
@@ -75,6 +76,6 @@ class _DefinitionSchemas:
 if __name__=="__main__":
     import pprint
 
-    tt = EntityDefaultSchemas().output_slot.skeleton_schema
+    tt = EntityDefaultSchemas().entry_definition.skeleton_schema
 
     pprint.pprint (tt)

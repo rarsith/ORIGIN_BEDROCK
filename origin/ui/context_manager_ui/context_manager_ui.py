@@ -95,7 +95,7 @@ class ContextManager(QtWidgets.QWidget):
         for key, value in upper_envar_keys.items():
             os.environ[key] = value
             buffer[key] = value
-        pprint.pprint(buffer)
+        # pprint.pprint(buffer)
 
     def get_current_context(self):
         context_env = {
@@ -229,6 +229,7 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
         self.central_widget.set_context_btn.clicked.connect(self.central_widget.update_context_envars)
         self.central_widget.set_context_btn.clicked.connect(self.compute_context)
         self.central_widget.set_context_btn.clicked.connect(self.central_widget.on_submit_pressed)
+        self.central_widget.set_context_btn.clicked.connect(lambda: self.close())
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_project_tree)
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_task_viewer)
 
@@ -250,7 +251,9 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
 
-    qss_style_file = "../../ui/style/stylesheets/dark_orange/dark_orange_style.qss"
+    origin_dev_root = os.getenv("ORIGIN_ROOT")
+    qss_style_file = os.path.normpath(
+        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',

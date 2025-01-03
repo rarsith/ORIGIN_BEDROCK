@@ -277,9 +277,6 @@ class VersionLoader(QtWidgets.QWidget):
         self.populate_versions()
 
     def get_existing_db_assets(self):
-        print("db_asset_stream_id:", self.context_handler.db_asset_stream_id)
-        print("task_type: ", self.context_handler.task_type)
-
         q_filters = [{"db_asset_type": "db_asset"}]
 
         if self.context_handler.db_asset_stream_id is not None or self.context_handler.db_asset_stream_id != '':
@@ -291,11 +288,10 @@ class VersionLoader(QtWidgets.QWidget):
         #                   {"parent": self.context_handler.db_asset_stream_id},
         #                   {"master_task_type": self.context_handler.task_type}]
 
-        resolved_filters = [{key: value for key, value in q_filter.items() if value is not None}
+        resolved_filters = [{key: value for key, value in q_filter.items() if value is not None and value != ''}
                             for q_filter in q_filters
                             ]
 
-        print(resolved_filters)
         if self.context_handler.entity_name is not None:
             fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
             publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
@@ -590,7 +586,9 @@ class LoaderMainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
 
-    qss_style_file = "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\ui\\style\\stylesheets\\dark_orange\\dark_orange_style.qss"
+    origin_dev_root = os.getenv("ORIGIN_ROOT")
+    qss_style_file = os.path.normpath(
+        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',

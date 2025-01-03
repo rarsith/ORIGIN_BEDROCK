@@ -78,7 +78,7 @@ def load_origin_maya_shelves(shelves_files_list):
 
 def set_working_directory(base_directory):
     folders = {
-        "scenes": os.path.join(base_directory, "scenes"),
+        "scene_files": os.path.join(base_directory, "scene_files"),
         "caches/alembic": os.path.join(base_directory, "caches", "alembic"),
         "exchange": os.path.join(base_directory, "exchange"),
     }
@@ -89,7 +89,7 @@ def set_working_directory(base_directory):
 
     cmds.workspace(base_directory, openWorkspace=True)
     cmds.workspace(saveWorkspace=True)
-    cmds.workspace(fileRule=["scene", folders["scenes"]])
+    cmds.workspace(fileRule=["scene", folders["scene_files"]])
     cmds.workspace(fileRule=["AlembicCache", folders["caches/alembic"]])
     cmds.workspace(fileRule=["other", folders["exchange"]])
 
@@ -103,7 +103,7 @@ def set_working_directory(base_directory):
 
     print("----> Workspace file rules updated and saved.")
     print(f"----> Workspace set to: {base_directory}")
-    print(f"----> Scenes will be saved in: {folders['scenes']}")
+    print(f"----> Scenes will be saved in: {folders['scene_files']}")
     print(f"----> Alembic caches will be saved in: {folders['caches/alembic']}")
     print(f"----> Other exports will be saved in: {folders['exchange']}")
 

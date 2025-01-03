@@ -40,6 +40,7 @@ def get_file_component_class(component_type):
         "thumbnail": ThumbnailComponent,
         "wav": AudioComponent,
         "texture": SourceTextureComponent,
+        "jpg_seq": JPGImageSequenceComponent,
     }
     return components_file_types.get(component_type)
 
@@ -72,6 +73,7 @@ def get_db_asset_class(publish_type):
         "animation": Animation,  # Maya/Blender
         "image": Image,  # Natron/Nuke/Gaffer
         "reference": Reference,  # Natron/Nuke/Maya
+        "quicktime": Quicktime,  # Natron/Nuke/Maya
 
     }
     return pub_types.get(publish_type)
@@ -864,6 +866,10 @@ class Reference(DBAsset):
     type: Optional[str] = "reference"
 
 
+class Quicktime(DBAsset):
+    type: Optional[str] = "quicktime"
+
+
 class DBAssetVersion(EntityBaseModel):
     LABEL: ClassVar[str] = "label"
     label: Optional[str] = None
@@ -1075,6 +1081,12 @@ class SourceTextureComponent(DBAssetFileComponent):
     type: Optional[str] = "source_texture_component"
     label: Optional[str] = "source_texture"
     file_extension: Optional[str] = "exr"
+
+
+class JPGImageSequenceComponent(DBAssetFileComponent):
+    type: Optional[str] = "jpg__img_seq__component"
+    label: Optional[str] = "source_jpg"
+    file_extension: Optional[str] = "jpg"
 
 
 class TaskPublish:

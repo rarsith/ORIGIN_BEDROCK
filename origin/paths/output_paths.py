@@ -19,13 +19,15 @@ class OriginOSPathHandler:
     branch_user_workspace = "workspace"
     branch_user_caches = "caches"
 
-    def __init__(self, context, file_format=None):
+    def __init__(self, context: ContextHandler = None, file_format=None):
         self.__context_handler = context
-        self.origin_projects_root = os.getenv("ORIGIN_PROJECTS_ROOT")
+        self.origin_projects_root = Path(os.getenv("ORIGIN_PROJECTS_ROOT"))
 
-        self.__origin_path_elements = self.__context_handler.resolve_origin_path_hierarchy()
-        self.__category_name = self.__context_handler.get_entity_category()
-        self.__db_asset_doc = self.__context_handler.database_handler().get_db_asset_document()
+        if self.__context_handler is not None:
+            self.__origin_path_elements = self.__context_handler.resolve_origin_path_hierarchy()
+            self.__category_name = self.__context_handler.get_entity_category()
+            self.__db_asset_doc = self.__context_handler.database_handler().get_db_asset_document()
+
         self.__version_string = None
         self.output_file_name = None
         self.file_format = file_format
@@ -125,11 +127,56 @@ class OriginOSPathHandler:
         self.work_path(self.branch_user_scene_files, create_dir=True)
         self.work_path(self.branch_user_workspace, create_dir=True)
 
+    def get_publish_data_path(self):
+        return self.publish_path(self.branch_pub_data)
+
+    def get_publish_quicktime_path(self):
+        return self.publish_path(self.branch_pub_quicktime)
+
+    def get_publish_images_path(self):
+        return self.publish_path(self.branch_pub_images)
+
+    def get_user_caches_path(self):
+        return self.work_path(self.branch_user_caches)
+
+    def get_user_exchange(self):
+        return self.work_path(self.branch_user_exchange)
+
+    def get_user_scene_files(self):
+        return self.work_path(self.branch_user_scene_files)
+
     def get_next_version_string(self):
         return self.__compile_next_version()
 
+    def resolve_to_absolute_path(self, rel_path, as_unix=False):
+        to_path = Path(rel_path)
+
+        if self.origin_projects_root in to_path.parents:
+            resolved_path = to_path
+        else:
+            resolved_path = self.origin_projects_root / to_path
+
+        if as_unix:
+            return self.convert_path_to_unix(resolved_path)
+
+        return resolved_path
+
+    def resolve_to_relative(self, abs_path, as_unix=False):
+        to_path = Path(abs_path)
+
+        if self.origin_projects_root in to_path.parents:
+            resolved_path = to_path.relative_to(self.origin_projects_root)
+        else:
+            resolved_path = to_path
+
+        if as_unix:
+            return self.convert_path_to_unix(resolved_path)
+
+        return resolved_path
+
     def convert_path_to_unix(self, path):
         to_path = Path(path)
+        to_path.resolve()
         return to_path.as_posix()
 
     @staticmethod
@@ -155,22 +202,38 @@ if __name__ == "__main__":
                       'project_work': 'The_Rock__WORK',
                       'project_control': 'The_Rock__CONTROL',
                       'origin_path_hierarchy': 'assets.props',
-                      'entity_name': 'knife',
-                      'entity_id': 'The_Rock.assets.props.knife',
-                      'asset_breakdown_id': 'The_Rock.assets.props.knife.breakdown',
+                      'entity_name': 'tafer',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
+                      'asset_breakdown_id': 'The_Rock.assets.chr.tafer.breakdown',
                       'entity_type': 'asset',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "The_Rock.assets.props.knife.modeling",
-                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
-                      'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
-                      'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
+                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
+                      'stack_id': 'The_Rock.assets.chr.tafer.tafer_main.asset_stack',
                       }
 
     context_obj = ContextHandler()
     context_obj.load_session(session_data=context_sample)
 
     app = OriginOSPathHandler(context=context_obj, file_format="obj")
-    x_path_items = app.work_base_path(as_path=True, abs_path=True)
+    x_path_items = app.get_publish_quicktime_path()
+    x_to_unix = app.convert_path_to_unix(x_path_items)
+    print("UNIX:  ", x_to_unix)
+
+    y_path_items = app.get_publish_images_path()
+    z_path_items = app.get_publish_data_path()
+    a_path_items = app.get_user_caches_path()
+    b_path_items = app.get_user_scene_files()
+    c_path_items = app.get_user_exchange()
+    rel_unix = app.resolve_to_relative(c_path_items, as_unix=True)
+    print("RELATIVE: ", rel_unix)
     # compile_path = app.compose_path(x_path_items)
     print(x_path_items)
+    print(y_path_items)
+    print(z_path_items)
+
+    print(a_path_items)
+    print(b_path_items)
+    print(c_path_items)

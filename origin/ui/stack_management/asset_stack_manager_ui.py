@@ -1,3 +1,5 @@
+import os
+
 from PySide2 import QtWidgets, QtGui, QtCore
 
 from origin.envars.origin_envars import ContextHandler
@@ -160,7 +162,9 @@ class LoaderMainUI(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
 
-    qss_style_file = "../style/stylesheets/dark_orange/dark_orange_style.qss"
+    origin_dev_root = os.getenv("ORIGIN_ROOT")
+    qss_style_file = os.path.normpath(
+        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',
