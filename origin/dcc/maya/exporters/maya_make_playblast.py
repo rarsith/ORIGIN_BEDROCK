@@ -1,24 +1,10 @@
-import maya.standalone
-import argparse
-import re
-import json
 from pathlib import Path
-
 import maya.cmds as cmds
 
-from origin.dcc.env_setup import env_setup
-env_setup()
-
+from origin.database.entities.actions import Create
+from origin.database.publisher.db_publisher import DBPublisher
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
-
-def ensure_alembic_plugin():
-    plugin_name = "AbcImport"
-    if not cmds.pluginInfo(plugin_name, query=True, loaded=True):
-        print(f"Loading Alembic plugin: {plugin_name}")
-        cmds.loadPlugin(plugin_name)
-    else:
-        print(f"Alembic plugin '{plugin_name}' is already loaded.")
 
 
 class MayaMakePlayblast:
@@ -39,6 +25,8 @@ class MayaMakePlayblast:
 
         self.path_handler = None
         self.context_handler = self.options["context_object"]
+
+        self.db_publisher = None
 
         if isinstance(self.context_handler, dict):
             self.context_handler = ContextHandler()
@@ -67,6 +55,9 @@ class MayaMakePlayblast:
                                                         create_dir=True)) / self.path_handler.output_file_name
         return full_path
 
+    def fresh_scene(self):
+        cmds.file(new=True, force=True)
+
     def setup_playblast_options(self):
         panel = "modelPanel4"
 
@@ -86,7 +77,9 @@ class MayaMakePlayblast:
 
         cmds.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
         cmds.setAttr("hardwareRenderingGlobals.ssaoAmount", 1.0)  # Adjust strength
-        cmds.setAttr("hardwareRenderingGlobals.ssaoRadius", 16.0)  # Adjust radius
+        cmds.setAttr("hardwareRenderingGlobals.ssaoRadius", 32.0)  # Adjust radius
+        cmds.setAttr("hardwareRenderingGlobals.ssaoSamples", 32.0)  # Adjust radius
+        cmds.setAttr("hardwareRenderingGlobals.ssaoFilterRadius", 32.0)  # Adjust radius
 
         cmds.modelEditor('modelPanel4', e=True, displayLights="all")
 
@@ -144,6 +137,7 @@ class MayaMakePlayblast:
             return
 
     def run_playblast(self):
+        self.fresh_scene()
         self.setup_playblast_options()
         self.open_template()
         self.open_geometry_scene()
@@ -151,12 +145,12 @@ class MayaMakePlayblast:
         self.setup_scene()
 
         frames = cmds.playblast(
-            startTime=self.frame_range[0],
-            endTime=self.frame_range[1],
+            startTime=int(self.frame_range[0]),
+            endTime=int(self.frame_range[1]),
             format="image",
             filename=self.output_path,
-            width=self.resolution[0],
-            height=self.resolution[1],
+            width=int(self.resolution[0]),
+            height=int(self.resolution[1]),
             percent=self.resolution_percentage * 100,
             offScreen=True,
             viewer=False,
@@ -170,54 +164,13 @@ class MayaMakePlayblast:
 
         return {self.jpg_seq: frames}
 
-
-
     def execute(self):
         captured_frames = self.run_playblast()
+
+        self.db_publisher = DBPublisher(context=self.context_handler)
+        self.db_publisher.create_db_file_components(
+            db_asset_version_id=self.context_handler.db_asset_version_id,
+            published_data=captured_frames,
+            component_parent_id=self.context_handler.db_asset_version_id)
+
         return captured_frames
-
-
-def parse_arguments():
-    parser = argparse.ArgumentParser(description="Run a Maya playblast in batch mode.")
-    parser.add_argument("--options", type=str, required=True, help="Serialized JSON string of options.")
-    return parser.parse_args()
-
-
-def main():
-    maya.standalone.initialize(name='python')
-
-    try:
-
-        ensure_alembic_plugin()
-
-        args = parse_arguments()
-
-        # Parse the options JSON string into a dictionary
-        options = json.loads(args.options)
-
-        # Extract review options from the provided options dictionary
-        review_options = options.get("review_options", {})
-
-        # Initialize the playblast object
-        playblast_obj = MayaMakePlayblast(
-            options=options,  # Pass the entire options dictionary
-            frame_range=review_options.get("frame_range"),
-            resolution=review_options.get("resolution"),
-            resolution_percentage=review_options.get("resolution_percentage"),
-            geo_scene_path=review_options.get("geo_scene_path"),
-            camera_scene_path=review_options.get("camera_asset_ver_id"),
-            template_scene_path=review_options.get("template_asset_ver_id"),
-            output_path=review_options.get("output_path")
-        )
-
-        # Execute the playblast
-        captured_frames = playblast_obj.execute()
-        print("captured_frames:", captured_frames)
-        return captured_frames
-
-    finally:
-        maya.standalone.uninitialize()
-
-
-if __name__ == "__main__":
-    main()

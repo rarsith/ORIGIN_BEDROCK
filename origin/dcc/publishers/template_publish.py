@@ -8,7 +8,7 @@ from origin.envars.origin_envars import ContextHandler
 class TemplatePublish:
     def __init__(self, publish_options):
 
-        self.exported_results = {"data": {}, "images": {}, "quicktime": {}}
+        self.exported_results = {"data": {}, "img_seq": {}, "quicktime": {}}
         self.publishing_options = publish_options
         self.context_handler: ContextHandler = self.publishing_options["context_object"]
         self.dcc = os.getenv("DCC")

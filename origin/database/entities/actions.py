@@ -400,12 +400,14 @@ class Create:
                                 parent_id: str = None,
                                 file_path: str = None,
                                 db_insert: bool = True,
+                                component_parent_id: str = None,
                                 ) -> dict:
 
         db_asset = DbConstructors(context=self.context_handler).db_asset_file_component(visibility=visibility,
                                                                                         file_ext=file_ext,
                                                                                         parent_id=parent_id,
-                                                                                        file_path=file_path
+                                                                                        file_path=file_path,
+                                                                                        component_parent_id=component_parent_id
                                                                                         )
 
         if db_insert:

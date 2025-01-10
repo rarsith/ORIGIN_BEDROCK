@@ -543,6 +543,8 @@ class DbConstructors:
                                 file_ext: str,
                                 parent_id: str,
                                 file_path: str,
+                                component_parent_id: str = None
+
                                 ) -> dict:
         from origin.common_utils.generate_uuid import generate_uuid
         from origin.database.entities.operators import get_file_component_class
@@ -555,6 +557,11 @@ class DbConstructors:
         parent_doc = DBAssetVersion(**parent_data)
 
         parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
+
+        if component_parent_id is not None:
+            component_parent_data = data_ops.entity_document(doc_id=component_parent_id)
+            component_parent_doc = DBAssetVersion(**component_parent_data)
+            component_parent_doc.operations().add_component(component_id=entity_id)
 
         file_component_class = get_file_component_class(file_ext)
 

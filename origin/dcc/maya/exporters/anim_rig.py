@@ -33,6 +33,14 @@ class MayaAnimationRigExporter(AnimationRigExporter):
         cmds.file(save=True, type='mayaBinary')
         return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
 
+    def export_master_file(self):
+        file_path_path = self.set_output_path(file_format=self.origin_scene_file)
+        full_path = f"{file_path_path}.mb"
+        # cmds.file(rename=full_path)
+        cmds.file(full_path, ea=True, force=True, type='mayaBinary')
+
+        return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
+
     def save_maya_scene(self):
         file_path_path = self.set_output_path(file_format=self.origin_scene_file)
         full_path = f"{file_path_path}.mb"
@@ -46,7 +54,7 @@ class MayaAnimationRigExporter(AnimationRigExporter):
 
         return {self.usd_file: self.path_handler.convert_path_to_unix(usd_file_path)}
 
-    def export_rigging(self, file_format: Literal["maya_scene", "master", "usd"]):
+    def export(self, file_format: Literal["maya_scene", "master", "usd"]):
         """
         file_type should be one of the predefined class variables:
             - MayaAnimRiggingExporter.usd_file
@@ -54,7 +62,7 @@ class MayaAnimationRigExporter(AnimationRigExporter):
             - MayaAnimRiggingExporter.maya_scene
             """
         if file_format == self.origin_scene_file:
-            return self.save_master_file()
+            return self.export_master_file()
 
         if file_format == self.save_maya_scene():
             return self.save_maya_scene()

@@ -80,7 +80,9 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
     def create_widgets(self):
         stream_name = ''
         if self.context_handler.db_asset_stream_id is not None:
-            stream_name = self.context_handler.db_asset_stream_id.r1split(".", 1)[1]
+            if "." in self.context_handler.db_asset_stream_id:
+                stream_name = self.context_handler.db_asset_stream_id.rsplit(".", 1)[1]
+
         title_name = f"Current Properties for --> {self.context_handler.entity_name.capitalize()} --> {stream_name}"
 
         self.entity_info_lb = QtWidgets.QLabel(title_name)
@@ -216,9 +218,10 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
         self.template_streams_cb.clear()
 
         stored_streams = self.get_template_streams()
-        for stream in stored_streams:
-            stream_name = stream.rsplit(".", 1)[1]
-            self.template_streams_cb.addItem(stream_name, userData=stream)
+        if stored_streams is not None:
+            for stream in stored_streams:
+                stream_name = stream.rsplit(".", 1)[1]
+                self.template_streams_cb.addItem(stream_name, userData=stream)
 
     def update_template_to_status(self):
         pass
@@ -230,16 +233,18 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
         fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
         get_sel_stream_doc = fetch_ent.entity_document(doc_id=current_sel_stream)
 
-        get_task_db_asset_id = get_sel_stream_doc['children'][0]
-
+        get_all_versions = None
         allowed_statuses = ["INTERNAL APPROVED", "WIP", "PENDING REVIEW"]
 
-        extra_filters = [{"status": allowed_statuses}]
+        if get_sel_stream_doc:
+            get_task_db_asset_id = get_sel_stream_doc['children'][0]
 
-        get_all_versions = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
-                                                                     val_starts_with=get_task_db_asset_id,
-                                                                     extra_filters=extra_filters
-                                                                     )
+            extra_filters = [{"status": allowed_statuses}]
+
+            get_all_versions = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
+                                                                         val_starts_with=get_task_db_asset_id,
+                                                                         extra_filters=extra_filters
+                                                                         )
         # model = QtGui.QStandardItemModel()
         # item = QtGui.QStandardItem(display_name)
         # item.setBackground(QtGui.QColor())
@@ -296,10 +301,11 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
                                                                                    ]
                                                                                    )
 
-                file_rel_path = cam_ver_file_component[0]["file_path"]
-                resolve_path = self.path_manager.resolve_to_absolute_path(file_rel_path)
-                unix_path = self.path_manager.convert_path_to_unix(resolve_path)
-                self.active_camera_cb.addItem(QtGui.QIcon(get_status_style), display_name, userData=unix_path)
+                if cam_ver_file_component:
+                    file_rel_path = cam_ver_file_component[0]["file_path"]
+                    resolve_path = self.path_manager.resolve_to_absolute_path(file_rel_path)
+                    unix_path = self.path_manager.convert_path_to_unix(resolve_path)
+                    self.active_camera_cb.addItem(QtGui.QIcon(get_status_style), display_name, userData=unix_path)
 
             for status in allowed_statuses:
                 for idx, version in enumerate(get_all_versions):

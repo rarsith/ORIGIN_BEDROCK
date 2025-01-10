@@ -477,7 +477,6 @@ class Loader(QtWidgets.QWidget):
 
     def select_active_task(self, task_widget):
         items = [task_widget.topLevelItem(i) for i in range(task_widget.topLevelItemCount())]
-        print(items)
         try:
             for idx, item in enumerate(items):
                 if item.text(0) == self.context_handler.task_name:

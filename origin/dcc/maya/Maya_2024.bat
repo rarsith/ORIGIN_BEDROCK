@@ -1,7 +1,7 @@
 @echo off
 
 rem \---- Codebase Root
-set "ORIGIN_ROOT=C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK"
+rem set "ORIGIN_ROOT=E:\Local_projects\PycharmProjects\ORIGIN_BEDROCK"
 
 rem \---- Maya Installation
 set "MAYA=D:\Program Files\Autodesk\Maya2024"
@@ -10,6 +10,7 @@ rem \---- Maya Executable
 set "MAYABIN=%MAYA%\bin"
 
 set "USD_INSTALL_DIR=%MAYA%\USD"
+
 set "PATH=%USD_INSTALL_DIR%\bin;%MAYABIN%;%PATH%"
 
 rem \---- Python paths
@@ -23,9 +24,3 @@ rem ---- Construct the Python command string
 set "PY_CMD=import os; exec(open(os.path.join(os.getenv('ORIGIN_ROOT'), 'origin/dcc/maya/startup_maya.py')).read())"
 
 "%MAYABIN%\maya.exe" -command "python(\"%PY_CMD%\")"
-
-rem \"%MAYABIN%\maya.exe" -command "python(\"import os;exec(open(os.path.join(os.getenv('ORIGIN_ROOT'), 'origin/dcc/maya/startup_maya.py')).read())\")"
-
-rem \'C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/maya/startup_maya.py'
-
-rem \ "%MAYABIN%\mayapy.exe" "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/maya/postup_maya.py"

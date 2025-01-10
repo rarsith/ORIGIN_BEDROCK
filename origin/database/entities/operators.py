@@ -901,6 +901,20 @@ class DBAssetVersion(EntityBaseModel):
     ORIGIN_DATA: ClassVar[dict] = "origin_data"
     origin_data: Optional[dict] = None
 
+    def operations(self):
+        return DBAssetVersionOperations(entity=self)
+
+
+class DBAssetVersionOperations(DBAssetOperations):
+    def __init__(self, entity: DBAssetVersion):
+        super(DBAssetVersionOperations, self).__init__(entity=entity)
+        self.entity = entity
+
+    def add_component(self, component_id):
+        DBAdd(db_collection=self.entity.operations().project_publishes_collection(),
+              entry_id=self.entity.id,
+              attribute=self.entity.COMPONENTS).value_to_field(data=component_id)
+
 
 class AssetBreakdownVersion(DBAssetVersion):
     db_asset_type: Optional[str] = "db_asset_breakdown_version"

@@ -8,7 +8,7 @@ from origin.envars.origin_envars import ContextHandler
 class AnimationRigPublish:
     def __init__(self, publish_options):
 
-        self.exported_results = {"data": {}, "images": {}, "quicktime": {}}
+        self.exported_results = {"data": {}, "img_seq": {}, "quicktime": {}}
         self.publishing_options = publish_options
         self.context_handler: ContextHandler = self.publishing_options["context_object"]
         self.dcc = os.getenv("DCC")
@@ -16,17 +16,17 @@ class AnimationRigPublish:
         self.rigging_publisher: AnimationRigExporter = self.get_publisher_class(dcc=self.dcc)
 
     def get_publisher_class(self, dcc):
-        rigging_classes = {
+        classes = {
             "maya": MayaAnimationRigExporter(objects_names=["main|rig"], context=self.context_handler),
 
         }
-        if dcc in list(rigging_classes.keys()):
-            return rigging_classes[dcc]
+        if dcc in list(classes.keys()):
+            return classes[dcc]
 
     def export_file_types(self):
         exported_data = {}
 
-        collected_data = self.rigging_publisher.export_rigging("master")
+        collected_data = self.rigging_publisher.export("master")
         exported_data.update(collected_data)
 
         return exported_data

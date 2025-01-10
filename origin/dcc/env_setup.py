@@ -4,11 +4,11 @@ from pathlib import Path
 
 
 def env_setup():
-    pass
+
     origin_root = os.getenv("ORIGIN_ROOT")
 
     origin_pipe_root = Path(origin_root)
-    origin_site_packages = Path(".venv") / "Lib" / "site-packages"
+    origin_site_packages = Path("venv") / "Lib" / "site-packages"
     pymongo_parent_dir = origin_pipe_root / origin_site_packages
 
     origin_user_setup = Path("origin") / "dcc" / "maya"

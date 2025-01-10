@@ -1,7 +1,7 @@
 ::[Bat To Exe Converter]
 ::
 ::YAwzoRdxOk+EWAjk
-::fBw5plQjdCqDJHWL90M8FwtGQw6HP3+pOoUF6+D6/ee3sEIXUeEra7P06J2pCc4syGDAR7kO/UZVisILBRVkdxGkYBwIpnxLsW2LCNOOshbeQ0uG6FgMFHd9gGresz8pYcpXjJNThG63/0Kf
+::fBw5plQjdCyDJGyX8VAjFBpGXw2WNHm7OoUF6+D6/ee3sEIXUeEra7P06J2pCc4syGDAR7kO/UZVisILBRVkdxGkYBwIpnxLsW2LCNOOshbeQ0uG6FgMFHd9gGresz8pYcpXjJNThG63/0Kf
 ::YAwzuBVtJxjWCl3EqQJgSA==
 ::ZR4luwNxJguZRRnk
 ::Yhs/ulQjdF+5
@@ -26,7 +26,7 @@
 ::ZQ0/vhVqMQ3MEVWAtB9wSA==
 ::Zg8zqx1/OA3MEVWAtB9wSA==
 ::dhA7pRFwIByZRRnk
-::Zh4grVQjdCqDJHWL90M8FwtGQw6HP3+pOoUF6+D6/ee3sEIXUeEra7P06J2pCc4syGDAR7kO/UZVisILBRVkdxGkYBwIpnxLsW2LCNOOshbeQ0uG6FgMFHd9gGrewi4jZbM=
+::Zh4grVQjdCyDJGyX8VAjFBpGXw2WNHm7OoUF6+D6/ee3sEIXUeEra7P06J2pCc4syGDAR7kO/UZVisILBRVkfBulUgAmoGlLuCqAL8L8
 ::YB416Ek+ZG8=
 ::
 ::
@@ -42,9 +42,23 @@ echo ORIGIN_ROOT is set to: %ORIGIN_ROOT%
 
 cd /d %ORIGIN_ROOT%
 
+
+REM Check for "venv" or ".venv" directory
+if exist "%ORIGIN_ROOT%\venv" (
+    echo "venv found."
+    set VENV_PATH=%ORIGIN_ROOT%\venv
+) else if exist "%ORIGIN_ROOT%\.venv" (
+    echo ".venv found."
+    set VENV_PATH=%ORIGIN_ROOT%\.venv
+) else (
+    echo "No venv or .venv found. Exiting..."
+    exit /b 1
+)
+
+
 set PYTHONPATH=%PYTHONPATH%;%ORIGIN_ROOT%
 
-call %ORIGIN_ROOT%\.venv\Scripts\activate.bat
+call %VENV_PATH%\Scripts\activate.bat
 python %ORIGIN_ROOT%\origin\sys_tray\origin_tray.py
 
 REM deactivate

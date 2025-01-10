@@ -34,6 +34,14 @@ class MayaGeometryExporter(GeometryExporter):
 
         return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
 
+    def export_master_file(self):
+        file_path_path = self.set_output_path(file_format=self.origin_scene_file)
+        full_path = f"{file_path_path}.mb"
+        # cmds.file(rename=full_path)
+        cmds.file(full_path, ea=True, force=True, type='mayaBinary')
+
+        return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
+
     def export_alembic(self,
                        frame_range=(1, 1),
                        uv_write=True,
@@ -80,6 +88,8 @@ class MayaGeometryExporter(GeometryExporter):
                   pr=True,
                   es=True)
 
+        cmds.select(cl=True)
+
         return {self.obj_file: self.path_handler.convert_path_to_unix(obj_file_path)}
 
     def export_usd(self):
@@ -95,9 +105,9 @@ class MayaGeometryExporter(GeometryExporter):
             - MayaGeometryExporter.alembic_file
             - MayaGeometryExporter.usd_file
             - MayaGeometryExporter.origin_scene_file
-            """
+        """
         if file_format == self.origin_scene_file:
-            return self.save_master_file()
+            return self.export_master_file()
 
         if file_format == self.alembic_file:
             return self.export_alembic()

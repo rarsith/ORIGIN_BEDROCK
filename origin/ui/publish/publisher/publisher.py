@@ -1,6 +1,9 @@
 from PySide2 import QtWidgets
 
 from origin.common_utils import dict_utils
+from origin.database.publisher.db_publisher import DBPublisher
+from origin.dcc.maya.batch.maya_batch import MayaBatchScript
+from origin.dcc.save_session import master_scene_operations_class
 from origin.dcc.task_type_publisher import PublisherType
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
@@ -14,6 +17,7 @@ class Publish(QtWidgets.QWidget):
 
         self.context_handler = context
         self.path_handler = OriginOSPathHandler(context=self.context_handler)
+        self.db_publisher = None
 
         self.create_widgets()
         self.create_layout()
@@ -47,135 +51,34 @@ class Publish(QtWidgets.QWidget):
         get_publishing_status = self.status_wdg.currentText()
         return {"pub_comment": get_comment_text, "pub_status": get_publishing_status}
 
-    def create_task_db_asset(self, parent, publish_type):
-        create_entity = Create(context=self.context_handler)
-        db_asset_id = create_entity.db_asset(parent=parent,
-                                             publish_type=publish_type)
-        return db_asset_id
-
-    def create_db_asset_version(self, selected_options):
-        create_entity = Create(context=self.context_handler)
-        db_asset_version_id = create_entity.db_asset_version(parent_id=self.context_handler.db_asset_id,
-                                                             status=selected_options["pub_status"],
-                                                             comment=selected_options["pub_comment"])
-        return db_asset_version_id
-
-    def create_db_file_components(self, db_asset_version_id, published_data):
-        create_entity = Create(context=self.context_handler)
-        for saved_files_categories in published_data:
-            if published_data[saved_files_categories] != {}:
-                for file_format, file_path in published_data[saved_files_categories].items():
-                    unix_file_path = self.path_handler.resolve_to_relative(file_path, as_unix=True)
-                    create_entity.db_asset_file_component(visibility=True,
-                                                          file_ext=file_format,
-                                                          file_path=str(unix_file_path),
-                                                          parent_id=db_asset_version_id)
-
-    def create_asset_breakdown_version(self, options):
-        curr_breakdown_ver_doc = self.context_handler.database_handler().get_asset_breakdown_latest_version()
-
-        asset_stream_id = self.context_handler.db_asset_stream_id
-        asset_stream = asset_stream_id.replace(".", "__") if "." in asset_stream_id else asset_stream_id
-        stream_name = asset_stream.rsplit("__", 1)[1]
-
-        asset_breakdown = {asset_stream: {"db_assets": {options["publish_type"]: self.context_handler.db_asset_id}}}
-
-        needs_update = False
-        if curr_breakdown_ver_doc is not None:
-            current_breakdown = curr_breakdown_ver_doc.data
-            if current_breakdown is not None:
-                needs_update = dict_utils.is_subset_dict(asset_breakdown, curr_breakdown_ver_doc.data)
-                if needs_update:
-                    merged_config = dict_utils.merge_dicts(asset_breakdown, curr_breakdown_ver_doc.data)
-                    new_db_breakdown_version_id = Create(context=self.context_handler).asset_breakdown_version(
-                        data=merged_config)
-                    self.context_handler.asset_breakdown_version_id = new_db_breakdown_version_id
-
-                else:
-                    self.context_handler.asset_breakdown_version_id = curr_breakdown_ver_doc.id
-
-        else:
-            db_breakdown_version_id = Create(context=self.context_handler).asset_breakdown_version(data=asset_breakdown)
-            self.context_handler.asset_breakdown_version_id = db_breakdown_version_id
-
-    def create_stack_version(self, options=None):
-        Create(context=self.context_handler).asset_stack_version(status="PENDING REVIEW")
-
     def publish(self, options):
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
-        self.context_handler = options["context_object"]
+        self.context_handler: ContextHandler = options["context_object"]
 
-        db_asset_id = self.create_task_db_asset(parent=self.context_handler.db_asset_stream_id,
-                                                publish_type=options["publish_type"])
+        self.db_publisher = DBPublisher(context=self.context_handler)
+        db_asset_id = self.db_publisher.create_db_asset(parent=self.context_handler.db_asset_stream_id,
+                                                        publish_type=options["publish_type"])
 
-        # Update CONTEXT with the new db_asset_id
         self.context_handler.db_asset_id = db_asset_id
+
+        db_asset_version_id = self.db_publisher.create_db_asset_version(options=options)
+
+        self.context_handler.db_asset_version_id = db_asset_version_id
 
         options["context_object"] = self.context_handler
 
-        publisher_type = PublisherType(publish_options=options)
-        published_data = publisher_type.execute_publish()
+        current_scene = master_scene_operations_class(context=options["context_object"])
+        master_scene_path = current_scene.export_current_file()
 
-        # images_db_asset_id = self.create_task_db_asset(parent=self.context_handler.db_asset_stream_id,
-        #                                                publish_type=published_data["img_seq"])
-        #
-        # quicktime_db_asset_id = self.create_task_db_asset(parent=self.context_handler.db_asset_stream_id,
-        #                                                   publish_type="quicktime")
+        options["master_scene"] = master_scene_path["master"]
 
-        db_asset_version_id = self.create_db_asset_version(selected_options=options)
-        self.create_db_file_components(db_asset_version_id=db_asset_version_id,
-                                       published_data=published_data)
+        publisher_type = MayaBatchScript(options=options, task="publish")
+        publisher_type.run()
 
-        self.create_asset_breakdown_version(options)
-        self.create_stack_version()
+        self.db_publisher.create_asset_breakdown_version(options=options)
+        self.db_publisher.create_stack_version()
 
 
 if __name__ == "__main__":
-    import sys
-
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'yellow_hulk',
-                      'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.yellow_hulk',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "New_State.assets.chr.yellow_hulk.modeling",
-                      'db_asset_id': 'New_State.assets.chr.yellow_hulk.modeling.foo'}
-
-    # context_class = ContextHandler()
-    # context_class.load_session(session_data=context_sample)
-    #
-    # publishing_options = {'db_asset_id': 'New_State.assets.chr.yellow_hulk.modeling.gloves_metalic',
-    #                       'db_asset_qc': 'OK',
-    #                       'file_formats': ['ABC', 'USD', 'OBJ'],
-    #                       'all_sets_assigned': [],
-    #                       'inject_textures_path': None,
-    #                       'bundle_stream_id': '',
-    #                       'review_options': ['Playblast'],
-    #                       'pub_comment': 'asdfasdfzdf',
-    #                       'pub_status': 'IN PROGRESS',
-    #                       'context_object': context_class}
-
-    DATA = {'data':
-        {
-            'master': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/origin_scene/chr__tafer__tafarMain__v0003.mb',
-            'abc': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/alembic/chr__tafer__tafarMain__v0003.abc',
-            'usd': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/USD/chr__tafer__tafarMain__v0003.usd',
-            'obj': 'X:/projects/The_Rock/assets/chr/tafer/modeling/publishes/data/geometry__tafer__tafarMain/chr__tafer__tafarMain__v0003/obj/chr__tafer__tafarMain__v0003.obj'},
-        'images': {},
-        'quicktime': {}
-    }
-
-    print(DATA.keys())
-
-    # app = QtWidgets.QApplication(sys.argv)
-    # test_dialog = Publish(context=context_class)
-    # test_dialog.publish(options=DATA)
-    #
-    # test_dialog.show()
-    # sys.exit(app.exec_())
+   pass

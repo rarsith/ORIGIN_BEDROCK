@@ -16,5 +16,5 @@ class AnimationRigExporter(ABC):
         pass
 
     @abstractmethod
-    def export_rigging(self, file_format):
+    def export(self, file_format):
         pass

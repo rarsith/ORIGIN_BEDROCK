@@ -2,7 +2,7 @@ import os
 from typing import Optional
 from pydantic import BaseModel
 from origin.database.entities.operators import Project, Asset, Task, DBAsset, Group, AssetBreakdown, \
-    AssetBreakdownVersion, AssetStack, AssetStackVersion
+    AssetBreakdownVersion, AssetStack, AssetStackVersion, DBAssetVersion
 from origin.database.mongo import CollectionOperators
 from origin.database.mongo_connection import MongoConnection
 
@@ -255,7 +255,8 @@ class ContextHandler:
 
     def resolve_to_full_context(self):
         origin_context = ".".join(
-            filter(None, [self.show_name, self.origin_path_hierarchy, self.entity_name, self.task_name, self.db_asset_id]))
+            filter(None,
+                   [self.show_name, self.origin_path_hierarchy, self.entity_name, self.task_name, self.db_asset_id]))
         return origin_context
 
     def resolve_to_task_type_context(self):
@@ -405,6 +406,16 @@ class OriginDatabaseHandler:
 
             if db_asset_doc is not None:
                 return DBAsset(**db_asset_doc)
+            else:
+                return None
+
+    def get_db_asset_version_document(self):
+        if self.__context.db_asset_version_id is not None:
+            db_asset_version_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
+                                                              doc_id=self.__context.db_asset_version_id)
+
+            if db_asset_version_doc is not None:
+                return DBAssetVersion(**db_asset_version_doc)
             else:
                 return None
 

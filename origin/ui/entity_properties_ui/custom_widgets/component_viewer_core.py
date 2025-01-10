@@ -91,7 +91,7 @@ class SlotComponentsViewerCore(SlotComponentsViewerUI):
     def __init__(self, parent=None):
         super(SlotComponentsViewerCore, self).__init__(parent)
 
-        self.context_handler = None
+        self.context_handler = ContextHandler()
 
     def get_selection_id(self):
         if self.slot_component_viewer_tw.selectedItems():
@@ -103,6 +103,7 @@ class SlotComponentsViewerCore(SlotComponentsViewerUI):
 
     def populate_widget(self):
         db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        db_asset_version_data = self.context_handler.database_handler().get_db_asset_version_document()
         file_comp_docs = db_ops.entities_attr_value_starts_with(attr_field="_id",
                                                                 val_starts_with=self.context_handler.db_asset_version_id,
                                                                 extra_filters=[{"type": "db_asset_file_component"}])
