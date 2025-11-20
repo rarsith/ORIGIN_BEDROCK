@@ -53,6 +53,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.show_select_cb.currentIndexChanged.connect(self.curr_sel_show)
         self.show_select_cb.currentIndexChanged.connect(self.get_current_index_data)
         self.show_select_cb.currentIndexChanged.connect(self.refresh_tree_widget)
+        self.show_select_cb.currentIndexChanged.connect(self.resolve_context)
 
         self.project_tree_viewer_wdg.itemClicked.connect(self.get_selected_entry_name)
         self.project_tree_viewer_wdg.itemClicked.connect(self.resolve_context)

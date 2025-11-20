@@ -1,5 +1,8 @@
 import argparse
 import json
+import os
+from pathlib import Path
+
 import maya.standalone
 import maya.cmds as cmds
 from origin.dcc.env_setup import env_setup
@@ -24,6 +27,16 @@ def parse_arguments():
 
 
 def main():
+    dev_root = Path(os.environ["ORIGIN_ROOT"])
+    empty_plugins_path = dev_root / Path("origin/dcc/maya/dummy_area")
+
+    # os.environ["MAYA_MODULE_PATH"] = empty_plugins_path.as_posix()
+    # os.environ["MAYA_RENDER_DESC_PATH"] = empty_plugins_path.as_posix()
+    # os.environ["MAYA_NO_PLUGINS"] = "1"
+    os.environ["MAYA_DISABLE_XGEN"] = "1"
+    # os.environ["MTOA_STARTUP_LOGGING"] = "0"
+    # os.environ["MAYA_DISABLE_ADP"] = "1"
+
     maya.standalone.initialize(name='python')
 
     try:

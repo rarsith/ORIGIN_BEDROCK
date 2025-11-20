@@ -1,8 +1,11 @@
 from PySide2 import QtWidgets, QtCore, QtGui
+
+from origin.database.entities.actions import Create
 from origin.database.entities.operators import DCCBaseModel
 from origin.database.mongo import CollectionOperators, DBRemove, DBDelete
 from origin.database.mongo_connection import MongoConnection
 from origin.ui.app_launcher.custom_widgets.add_app_ui import AddAppUI
+from origin.ui.app_launcher.custom_widgets.import_from_json_ui import ImportAppsUI
 
 
 class AppBrowser(QtWidgets.QWidget):
@@ -27,16 +30,19 @@ class AppBrowser(QtWidgets.QWidget):
 
         self.add_app_group_btn = QtWidgets.QPushButton("Add Application...")
         self.remove_app_group_btn = QtWidgets.QPushButton("Remove Application")
+        self.import_app_group_btn = QtWidgets.QPushButton("Import From JSON...")
 
     def create_layout(self):
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addWidget(self.app_tree_tw)
         main_layout.addWidget(self.add_app_group_btn)
+        main_layout.addWidget(self.import_app_group_btn)
         main_layout.addWidget(self.remove_app_group_btn)
 
     def create_connections(self):
         self.app_tree_tw.itemClicked.connect(self.get_app_data_from_selected)
         self.add_app_group_btn.clicked.connect(self.add_app_menu)
+        self.import_app_group_btn.clicked.connect(self.import_app_menu)
         self.remove_app_group_btn.clicked.connect(self.remove_app)
 
     def remove_app(self):
@@ -88,6 +94,10 @@ class AppBrowser(QtWidgets.QWidget):
         self.ui.create_btn.clicked.connect(self.populate_app_viewer)
         self.ui.create_and_close_btn.clicked.connect(self.populate_app_viewer)
 
+    def import_app_menu(self):
+        self.ui = ImportAppsUI()
+        self.ui.show()
+        self.ui.import_btn.clicked.connect(self.populate_app_viewer)
 
 
 if __name__ == "__main__":
@@ -137,14 +147,16 @@ if __name__ == "__main__":
     #     print(f"{software} not found.")
 
 
-    app = QtWidgets.QApplication(sys.argv)
-
-    test_dialog = AppBrowser()
-    test_dialog.show()
-    sys.exit(app.exec_())
+    # app = QtWidgets.QApplication(sys.argv)
     #
-    config_file_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
+    # test_dialog = AppBrowser()
+    # test_dialog.show()
+    # sys.exit(app.exec_())
 
+
+    # config_file_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\config\applications\config_applications.json"
+    #
+    #
     # def get_config_data(app_config_file=None):
     #     from origin.common_utils import json_utils
     #     config_data = json_utils.open_json(app_config_file)

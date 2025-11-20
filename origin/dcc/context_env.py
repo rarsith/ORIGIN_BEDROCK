@@ -1,6 +1,5 @@
 import os
 
-
 def get_context_env():
     context_env = dict(
         session_filename=os.getenv('SESSION_FILENAME'),

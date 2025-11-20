@@ -15,6 +15,7 @@ class ContextManager(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(ContextManager, self).__init__(parent)
 
+        self.context_handler = None
         self.project_tree_viewer = None
         self.task_viewer = None
 
@@ -27,7 +28,7 @@ class ContextManager(QtWidgets.QWidget):
         self.create_layout()
 
         self.populate_task_viewer()
-        self.select_active_task(self.task_viewer.task_viewer_wdg)
+        # self.select_active_task(self.task_viewer.task_viewer_wdg)
 
     def create_widgets(self):
         self.project_tree_viewer = ProjectTreeViewerCore(has_project_select_wdg=True,
@@ -38,7 +39,7 @@ class ContextManager(QtWidgets.QWidget):
         self.expand_tree_from_id(self.project_tree_viewer.project_tree_viewer_wdg)
 
         self.task_viewer = TaskViewerCore(context=self.context_handler)
-        # self.select_active_task(self.task_viewer.task_viewer_wdg)
+        self.select_active_task(self.task_viewer.task_viewer_wdg)
         self.task_viewer_overrides()
 
         self.set_context_btn = QtWidgets.QPushButton("Set Context")
@@ -125,6 +126,8 @@ class ContextManager(QtWidgets.QWidget):
         self.context_handler = ContextHandler()
         self.context_handler.load_session(session_data=context_env)
 
+        print("LOADING CURRENT SESSION: ", self.context_handler.snapshot_session())
+
         return context_env
 
     def populate_project_tree(self):
@@ -156,6 +159,7 @@ class ContextManager(QtWidgets.QWidget):
                     break
 
     def select_active_task(self, task_widget):
+        print(self.context_handler.task_name)
         items = [task_widget.topLevelItem(i) for i in range(task_widget.topLevelItemCount())]
 
         for idx, item in enumerate(items):
@@ -215,6 +219,9 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
 
         self.setMinimumWidth(850)
         self.central_widget = ContextManager()
+        self.central_widget.get_current_context()
+        self.central_widget.populate_task_viewer()
+        self.central_widget.select_active_task(self.central_widget.task_viewer.task_viewer_wdg)
         self.setCentralWidget(self.central_widget)
         self.create_connections()
         self.compute_context()
@@ -234,15 +241,19 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
         self.central_widget.refresh_btn.clicked.connect(self.central_widget.populate_task_viewer)
 
     def compute_context(self):
+        # show_name = os.getenv("SHOW_NAME")  # self.central_widget.context_handler.show_name
         show_name = self.central_widget.context_handler.show_name
+        # origin_path = os.getenv("ORIGIN_PATH_HIERARCHY")  # self.central_widget.context_handler.origin_path_hierarchy
         origin_path = self.central_widget.context_handler.origin_path_hierarchy
+        # entity_name = os.getenv("ENTITY_NAME")  # self.central_widget.context_handler.entity_name
         entity_name = self.central_widget.context_handler.entity_name
+        # task_name = os.getenv("TASK_NAME")  # self.central_widget.context_handler.task_name
         task_name = self.central_widget.context_handler.task_name
+        # task_type = f"({os.getenv('TASK_TYPE')})"  # f"({self.central_widget.context_handler.task_type})"
         task_type = f"({self.central_widget.context_handler.task_type})"
 
         split_hierarchy_name = ">>".join(origin_path.split("."))
         compiled_name = ">>".join([show_name, split_hierarchy_name, entity_name, task_name, task_type])
-
         self.setWindowTitle(f"Context Manager - {compiled_name}")
 
         return compiled_name

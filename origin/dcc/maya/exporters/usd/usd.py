@@ -13,15 +13,17 @@ class MayaUSDExporter:
     usd_file = "usd"
 
     def __init__(self,
-                 object_transform: list,
+                 options,
+                 object_transform: str,
                  context: ContextHandler,
                  frame_range: tuple = None):
 
+        self.options = options
         self.object_transform = object_transform
         self.frame_range = frame_range
         self.context_handler = context
         self.path_handler = None
-        self.db_publisher = DBPublisher(context=self.context_handler)
+        self.db_publisher = DBPublisher(options=self.options)
 
     def set_output_path(self, file_format):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)
@@ -46,7 +48,7 @@ class MayaUSDExporter:
                        "frameStride=1",
                        "frameSample=0.0",
                        "defaultUSDFormat=usdc",
-                       "parentScope=camera",
+                       # "parentScope=camera",
                        "exportDisplayColor=0"
                        "convertMaterialsTo=[]",
                        "exportInstances=1",

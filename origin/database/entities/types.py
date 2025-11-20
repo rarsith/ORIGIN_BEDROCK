@@ -97,6 +97,11 @@ class TaskTypes:
         return "tracking"
 
     @classmethod
+    def plate(cls):
+        '''return the correct string for the entity type'''
+        return "plate"
+
+    @classmethod
     def layout(cls):
         '''return the correct string for the entity type'''
         return "layout"
@@ -132,9 +137,19 @@ class TaskTypes:
         return "compositing"
 
     @classmethod
+    def editorial(cls):
+        '''return the correct string for the entity type'''
+        return "editorial"
+
+    @classmethod
     def template(cls):
         '''return the correct string for the entity type'''
         return "template"
+
+    @classmethod
+    def assembly(cls):
+        '''return the correct string for the entity type'''
+        return "assembly"
 
     def all_types(self):
         return [self.concept(),
@@ -145,7 +160,9 @@ class TaskTypes:
                 self.shading(),
                 self.character_fx(),
                 self.fx(),
+                self.plate(),
                 self.tracking(),
+                self.editorial(),
                 self.layout(),
                 self.rotomation(),
                 self.animation(),
@@ -154,6 +171,7 @@ class TaskTypes:
                 self.lighting(),
                 self.rendering(),
                 self.compositing(),
+                self.assembly(),
                 self.template()]
 
     def all_build_types(self):
@@ -170,6 +188,8 @@ class TaskTypes:
 
     def all_shot_types(self):
         return [
+            self.plate(),
+            self.editorial(),
             self.tracking(),
             self.layout(),
             self.rotomation(),

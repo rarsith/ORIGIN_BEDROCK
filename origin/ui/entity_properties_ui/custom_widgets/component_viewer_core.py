@@ -32,13 +32,15 @@ class ComponentViewerWidget(QtWidgets.QWidget):
     def create_widgets(self):
         self.component_name_lb = QtWidgets.QLabel("component_name")
         self.component_name_lb.setText(self.label)
-        self.component_name_lb.setMinimumWidth(75)
+        self.component_name_lb.setMinimumWidth(100)
+        # self.component_name_lb.setFixedHeight(10)
         self.component_name_lb.setAlignment(QtCore.Qt.AlignCenter)
 
         self.path_le = QtWidgets.QLineEdit("Some text")
         self.path_le.setReadOnly(True)
         self.path_le.setText(self.file_path)
         self.path_le.setCursorPosition(0)
+        # self.path_le.setFixedHeight(25)
 
         self.copy_path_btn = QtWidgets.QPushButton("Copy Path")
         self.copy_path_btn.setMinimumWidth(60)
@@ -65,10 +67,12 @@ class ComponentViewerWidget(QtWidgets.QWidget):
         top_layout.addWidget(self.open_with_btn)
 
         main_layout = QtWidgets.QVBoxLayout(self)
-        main_layout.setSpacing(1)
+
         main_layout.addLayout(top_layout)
-        # main_layout.addWidget(self.path_le)
-        # main_layout.addWidget(self.proc_progress_bar)
+        main_layout.setSpacing(1)
+        main_layout.addWidget(self.path_le)
+        main_layout.addStretch(1)
+        main_layout.addWidget(self.proc_progress_bar)
 
     def create_connections(self):
         self.copy_path_btn.clicked.connect(self.copy_to_clipboard)
@@ -135,7 +139,7 @@ class SlotComponentsViewerCore(SlotComponentsViewerUI):
     def compile_file_component_widget(self, label, file_path, row):
         components_widget = ComponentViewerWidget(label=label, file_path=file_path)
         self.slot_component_viewer_tw.setCellWidget(row, 0, components_widget)
-        self.slot_component_viewer_tw.setRowHeight(row, 40)
+        self.slot_component_viewer_tw.setRowHeight(row, 70)
 
 
 if __name__ == "__main__":

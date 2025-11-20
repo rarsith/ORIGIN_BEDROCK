@@ -2,7 +2,6 @@ import importlib
 import os
 
 import maya.OpenMayaUI as omui
-import maya.cmds as cmds
 from shiboken2 import wrapInstance
 from PySide2 import QtWidgets, QtCore
 from origin.envars.origin_envars import ContextHandler
@@ -14,7 +13,7 @@ importlib.reload(context_manager_ui)
 
 
 def clone_environment():
-    from origin.dcc.maya import context_env
+    from origin.dcc import context_env
     importlib.reload(context_env)
 
     NEW_CONTEXT = context_env.get_context_env()

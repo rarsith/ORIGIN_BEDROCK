@@ -13,32 +13,23 @@ class TemplatePublish:
         self.context_handler: ContextHandler = self.publishing_options["context_object"]
         self.dcc = os.getenv("DCC")
 
-        self.publisher: TemplateExporter = self.get_publisher_class(dcc=self.dcc)
+        self.publisher = None
 
     def get_publisher_class(self, dcc):
         exporter_classes = {
-            "maya": MayaPlayblastTemplateExporter(objects_names=["main|template"], context=self.context_handler),
-
+            "maya": MayaPlayblastTemplateExporter(options=self.publishing_options)
         }
         if dcc in list(exporter_classes.keys()):
             return exporter_classes[dcc]
 
     def export_file_types(self):
         exported_data = {}
-
+        self.publisher = self.get_publisher_class(dcc=self.dcc)
         collected_data = self.publisher.export("master")
         exported_data.update(collected_data)
 
         return exported_data
 
-    def process_review_media(self):
-        processed_reviews = {}
-        return processed_reviews
-
     def publish(self):
-        data_components = self.export_file_types()
-        self.exported_results["data"] = data_components
-
-        reviewable_components = self.process_review_media()
-
+        self.export_file_types()
         return self.exported_results

@@ -1,0 +1,467 @@
+[{
+  "_id": "Maya.application",
+  "name": "Maya",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "2024": {
+      "active": true,
+      "version": "2024",
+      "exec_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\maya\\Maya_2024.bat",
+      "exec_python": "",
+      "envars": "{\"DCC\":\"maya\"}"
+    },
+    "2025_3": {
+      "active": true,
+      "version": "2025_3",
+      "exec_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\maya\\Maya_2025.bat",
+      "exec_python": "",
+      "envars": "{\"DCC\":\"maya\"}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\maya.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Djvu.application",
+  "name": "Djvu",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "2_024": {
+      "active": true,
+      "version": "2_024",
+      "exec_path": "D:\\Program Files\\DJV2\\bin\\djv.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\djv_logo.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Houdini.application",
+  "name": "Houdini",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "20_5_332": {
+      "active": true,
+      "version": "20_5_332",
+      "exec_path": "D:\\Program Files\\Houdini19\\Houdini20.5.332\\bin\\houdini.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\houdini.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Blender.application",
+  "name": "Blender",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "4_2": {
+      "active": true,
+      "version": "4_2",
+      "exec_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\blender\\Blender.bat",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\blender.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Gaffer.application",
+  "name": "Gaffer",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "1_5_0_1": {
+      "active": true,
+      "version": "1_5_0_1",
+      "exec_path": "D:\\__REPOSITORIES\\Installs\\gaffer\\gaffer-1.5.0.1-windows\\bin\\gaffer.cmd",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\gaffer.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Natron.application",
+  "name": "Natron",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "2_5": {
+      "active": true,
+      "version": "2_5",
+      "exec_path": "D:\\__REPOSITORIES\\Installs\\Natron\\bin\\Natron.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\natron.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Zbrush.application",
+  "name": "Zbrush",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "2_5": {
+      "active": true,
+      "version": "2_5",
+      "exec_path": "D:\\Program Files\\Maxon ZBrush 2023\\ZBrush.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\zbrush.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Davinciresolve.application",
+  "name": "Davinciresolve",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "19": {
+      "active": true,
+      "version": "19",
+      "exec_path": "D:\\Program Files\\Blackmagic Design\\DaVinci Resolve\\Resolve.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\pngwing.com.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Quiltix.application",
+  "name": "Quiltix",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "0_4_0": {
+      "active": true,
+      "version": "0_4_0",
+      "exec_path": "\"D:\\__REPOSITORIES\\Installs\\QuiltiX_win_v0.4.0\\QuiltiX.bat\"",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\quiltix.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Wrap3d.application",
+  "name": "Wrap3d",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "3_2_0": {
+      "active": true,
+      "version": "3_2_0",
+      "exec_path": "D:\\Program Files\\R3DS\\Wrap 3\\Wrap3.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\wrap3D.png",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Topogun.application",
+  "name": "Topogun",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "3": {
+      "active": true,
+      "version": "3",
+      "exec_path": "D:\\Program Files\\TopoGun 3\\TopoGun.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\topogun.ico",
+  "date": "2025-01-24",
+  "time": "10:08:03",
+  "owner": "arsithra"
+},
+{
+  "_id": "Vue.application",
+  "name": "Vue",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "9_00_83_54": {
+      "active": true,
+      "version": "9_00_83_54",
+      "exec_path": "D:\\Program Files\\e-on software\\VUE\\Application\\VUE.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\VUE.ico",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Pureref.application",
+  "name": "Pureref",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "2_0": {
+      "active": true,
+      "version": "2_0",
+      "exec_path": "D:\\Program Files\\PureRef\\PureRef.exe",
+      "exec_python": "",
+      "envars": ""
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\pureRef.ico",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Editorkden.application",
+  "name": "Editorkden",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "24_02_2": {
+      "active": true,
+      "version": "24_02_2",
+      "exec_path": "D:\\Program Files\\kdenlive\\bin\\kdenlive.exe",
+      "exec_python": "",
+      "envars": ""
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\kdenlive_small.ico",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Asset bundle manager.application",
+  "name": "Asset bundle manager",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {},
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Shot bundle manager.application",
+  "name": "Shot bundle manager",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {},
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Shot bundle editor.application",
+  "name": "Shot bundle editor",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {},
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Publisher.application",
+  "name": "Publisher",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {},
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Mari.application",
+  "name": "Mari",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "7": {
+      "active": true,
+      "version": "7",
+      "exec_path": "",
+      "exec_python": "",
+      "envars": ""
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\mari.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Nuke.application",
+  "name": "Nuke",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "15": {
+      "active": true,
+      "version": "15",
+      "exec_path": "",
+      "exec_python": "",
+      "envars": ""
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\nuke.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "3dequilizer.application",
+  "name": "3dequilizer",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "R5": {
+      "active": true,
+      "version": "R5",
+      "exec_path": "D:\\__REPOSITORIES\\Installs\\3DE\\eq_fwin\\3DE4_win64_r5\\bin\\3DE4.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Xstudio.application",
+  "name": "Xstudio",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "1_00": {
+      "active": true,
+      "version": "1_00",
+      "exec_path": "D:\\__REPOSITORIES\\Installs\\XStudio_DNeg\\xstudio_install\\bin\\xstudio.exe",
+      "exec_python": "",
+      "envars": "{}"
+    }
+  },
+  "icon_path": "C:\\Users\\arsithra\\PycharmProjects\\ORIGIN_BEDROCK\\origin\\dcc\\icons\\xstudio_full.jpg",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Task manager.application",
+  "name": "Task manager",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {},
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Adk sketchbook.application",
+  "name": "Adk sketchbook",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    " 8_7_1": {
+      "active": true,
+      "version": " 8_7_1",
+      "exec_path": "C:\\Program Files\\Autodesk\\SketchBook\\SketchBook.exe",
+      "exec_python": "",
+      "envars": ""
+    }
+  },
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+},
+{
+  "_id": "Mudbox.application",
+  "name": "Mudbox",
+  "active": true,
+  "type": "application",
+  "parent": null,
+  "versions": {
+    "2025": {
+      "active": true,
+      "version": "2025",
+      "exec_path": "D:\\Program Files\\Autodesk\\Mudbox 2025\\mudbox.exe",
+      "exec_python": "",
+      "envars": "{\"DCC\":\"mudbox\"}"
+    }
+  },
+  "icon_path": "C:/Users/arsithra/PycharmProjects/ORIGIN_BEDROCK/origin/dcc/icons/default_icon.png",
+  "date": "2025-01-24",
+  "time": "10:08:04",
+  "owner": "arsithra"
+}]

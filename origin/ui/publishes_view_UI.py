@@ -134,7 +134,7 @@ class MainPublishesViewUI(QtWidgets.QWidget):
         self.show_total_pages_le.setReadOnly(True)
 
         validator = QtGui.QIntValidator()
-        self.load_limit_le = QtWidgets.QLineEdit("30")
+        self.load_limit_le = QtWidgets.QLineEdit("20")
         self.load_limit_le.setValidator(validator)
         self.load_limit_le.setFixedSize(50, 20)
 

@@ -1,7 +1,6 @@
-from origin.dcc.publishers.XXgeometry_publish import XXGeometryPublish
+from origin.dcc.publishers.geometry_publish import GeometryPublish
 from origin.dcc.publishers.animation_publish import AnimationPublish
 from origin.dcc.publishers.camera_publish import CameraPublish
-from origin.dcc.publishers.geometry_publish import GeometryPublish
 from origin.dcc.publishers.animationrig_publish import AnimationRigPublish
 from origin.dcc.publishers.shot_sculpt_publish import ShotSculptPublish
 from origin.dcc.publishers.template_publish import TemplatePublish
@@ -19,7 +18,7 @@ def get_publish_type_class(publish_type):
         # "comp": CompPublish,
         # "look": LookPublish,
         "template": TemplatePublish,
-        "geometry": XXGeometryPublish,
+        "geometry": GeometryPublish,
         # "usd_assembly": USDAssemblyPublish,
         # "img_seq": ImageSequencePublish,
         "camera": CameraPublish,

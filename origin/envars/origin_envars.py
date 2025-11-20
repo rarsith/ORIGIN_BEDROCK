@@ -1,6 +1,9 @@
 import os
+from pathlib import Path
 from typing import Optional
 from pydantic import BaseModel
+
+from origin.common_utils.json_utils import save_json
 from origin.database.entities.operators import Project, Asset, Task, DBAsset, Group, AssetBreakdown, \
     AssetBreakdownVersion, AssetStack, AssetStackVersion, DBAssetVersion
 from origin.database.mongo import CollectionOperators
@@ -56,6 +59,17 @@ class ContextHandler:
     def snapshot_session(self) -> dict:
         context_data = self.session_context.dict(by_alias=True)
         return context_data
+
+    def session_to_disk(self):
+        session_file = "last_session.json"
+
+        origin_root = Path(os.getenv("ORIGIN_ROOT"))
+        session_file_path = origin_root / Path("origin/config/sessions") / session_file
+
+        session_data = self.snapshot_session()
+        get_root_path = os.path.split(session_file_path)[0]
+
+        save_json(get_root_path, data=session_data, target_file=session_file)
 
     # Getters and setters for session context properties
     @property
@@ -254,9 +268,17 @@ class ContextHandler:
         self.session_context.asset_breakdown_id = ".".join([self.entity_id, "breakdown"])
 
     def resolve_to_full_context(self):
-        origin_context = ".".join(
-            filter(None,
-                   [self.show_name, self.origin_path_hierarchy, self.entity_name, self.task_name, self.db_asset_id]))
+        if self.entity_type == "group":
+            origin_context = ".".join(filter(None, [self.show_name,
+                                                    self.origin_path_hierarchy,
+                                                    ]))
+        else:
+            origin_context = ".".join(filter(None, [self.show_name,
+                                                    self.origin_path_hierarchy,
+                                                    self.entity_name,
+                                                    self.task_name
+                                                    ]))
+
         return origin_context
 
     def resolve_to_task_type_context(self):

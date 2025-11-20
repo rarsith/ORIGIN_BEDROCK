@@ -15,7 +15,8 @@ class PreviewOptions(QtWidgets.QDialog):
     def create_widgets(self):
         self.preview_options_lb = QtWidgets.QLabel("Preview Options")
         self.playblast_chk = QtWidgets.QRadioButton("Playblast")
-        self.render_chk = QtWidgets.QRadioButton("Render Turntable")
+        self.playblast_chk.setChecked(True)
+        self.render_chk = QtWidgets.QRadioButton("Render")
         self.no_preview_chk = QtWidgets.QRadioButton("No Preview")
 
 
@@ -43,9 +44,9 @@ class PreviewOptions(QtWidgets.QDialog):
     def get_selected_options(self):
         checked_widgets = self.get_checked()
         wdg_names = [name.text().lower() for name in checked_widgets]
-        if len(wdg_names) != 0:
-            return {"review_medium": wdg_names[0]}
-        return {"review_medium": ''}
+        # if len(wdg_names) != 0:
+        return {"review_medium": wdg_names[0]}
+        # return {"review_medium": 'no preview'}
 
 
 if __name__ == "__main__":

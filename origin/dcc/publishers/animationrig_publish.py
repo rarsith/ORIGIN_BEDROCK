@@ -13,18 +13,19 @@ class AnimationRigPublish:
         self.context_handler: ContextHandler = self.publishing_options["context_object"]
         self.dcc = os.getenv("DCC")
 
-        self.rigging_publisher: AnimationRigExporter = self.get_publisher_class(dcc=self.dcc)
+        self.rigging_publisher = None
 
     def get_publisher_class(self, dcc):
         classes = {
-            "maya": MayaAnimationRigExporter(objects_names=["main|rig"], context=self.context_handler),
-
+            "maya": MayaAnimationRigExporter(options=self.publishing_options),
         }
         if dcc in list(classes.keys()):
             return classes[dcc]
 
     def export_file_types(self):
         exported_data = {}
+
+        self.rigging_publisher = self.get_publisher_class(dcc=self.dcc)
 
         collected_data = self.rigging_publisher.export("master")
         exported_data.update(collected_data)
@@ -36,9 +37,7 @@ class AnimationRigPublish:
         return processed_reviews
 
     def publish(self):
-        data_components = self.export_file_types()
-        self.exported_results["data"] = data_components
-
-        reviewable_components = self.process_review_media()
+        self.export_file_types()
+        self.process_review_media()
 
         return self.exported_results

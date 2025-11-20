@@ -1,5 +1,5 @@
 from origin.dcc.maya.batch.tasks.abc.batch_task import BatchTask
-from origin.dcc.maya.exporters.XXgeometry import MayaGeometryExporter
+from origin.dcc.maya.exporters.geometry import MayaGeometryExporter
 from origin.dcc.maya.exporters.maya_make_playblast import MayaMakePlayblast
 
 

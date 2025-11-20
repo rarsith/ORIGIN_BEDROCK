@@ -3,7 +3,7 @@ import maya.cmds as cmds
 from origin.envars.origin_envars import ContextHandler
 
 def clone_environment():
-    from origin.dcc.maya import context_env
+    from origin.dcc import context_env
     importlib.reload(context_env)
 
     NEW_CONTEXT = context_env.get_context_env()

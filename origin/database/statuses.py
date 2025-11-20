@@ -31,8 +31,10 @@ class DbVersionStatuses:
     def list_all(self):
         return list(self.__dict__.values())
 
-
+    def list_publish_statuses(self):
+        return [self.wip, self.pending_rev]
 
 if __name__ == "__main__":
     cc = DbTaskStatuses()
-    print (str(cc.list_all()))
+    print(str(cc.list_all()))
+

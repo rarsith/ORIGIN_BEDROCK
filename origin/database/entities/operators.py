@@ -19,7 +19,7 @@ def get_entity_class(item_type):
         return Task
 
 
-def get_file_component_class(component_type):
+def get_file_component_class(component_type, custom_label=None):
     components_file_types = {
         "origin_scene": OriginComponent,
         "origin_meta": OrigiMetaComponent,
@@ -41,8 +41,14 @@ def get_file_component_class(component_type):
         "wav": AudioComponent,
         "texture": SourceTextureComponent,
         "jpg_seq": JPGImageSequenceComponent,
+        "playblast_template": PlayblastTemplateFileComponent,
     }
-    return components_file_types.get(component_type)
+    if component_type in components_file_types.keys():
+        return components_file_types.get(component_type)
+    else:
+        custom_component = CustomFileComponent()
+        custom_component.label = custom_label if custom_label is not None else "custom_label"
+        return custom_component
 
 
 def get_db_asset_class(publish_type):
@@ -518,37 +524,37 @@ class ProjectOperations(EntityOperations):
 
 
 class Task(EntityBaseModel):
-    TASK_TYPE: ClassVar[str] = None
+    TASK_TYPE: ClassVar[str] = "task_type"
     task_type: Optional[str] = None
 
-    ARTIST: ClassVar[str] = None
+    ARTIST: ClassVar[str] = "artist"
     artist: Optional[str] = None
 
-    IMPORTS_FROM: ClassVar[dict] = None
+    IMPORTS_FROM: ClassVar[dict] = "imports_from"
     imports_from: Optional[dict] = None
 
-    BID_DAYS: ClassVar[str] = None
+    BID_DAYS: ClassVar[str] = "bid_days"
     bid_days: Optional[str] = None
 
-    END_DATE: ClassVar[str] = None
+    END_DATE: ClassVar[str] = "end_date"
     end_date: Optional[str] = None
 
-    MILESTONES: ClassVar[dict] = None
+    MILESTONES: ClassVar[dict] = "milestones"
     milestones: Optional[dict] = None
 
-    START_DATE: ClassVar[str] = None
+    START_DATE: ClassVar[str] = "start_date"
     start_date: Optional[str] = None
 
-    WORKED_DAYS: ClassVar[str] = None
+    WORKED_DAYS: ClassVar[str] = "worked_days"
     worked_days: Optional[str] = None
 
-    PRIORITY: ClassVar[str] = None
+    PRIORITY: ClassVar[str] = "priority"
     priority: Optional[str] = None
 
-    DESCRIPTION: ClassVar[str] = None
+    DESCRIPTION: ClassVar[str] = "description"
     description: Optional[str] = None
 
-    PREVIOUS_ARTISTS: ClassVar[list] = None
+    PREVIOUS_ARTISTS: ClassVar[list] = "previous_artists"
     previous_artists: Optional[list] = None
 
     def operations(self):
@@ -1101,6 +1107,18 @@ class JPGImageSequenceComponent(DBAssetFileComponent):
     type: Optional[str] = "jpg__img_seq__component"
     label: Optional[str] = "source_jpg"
     file_extension: Optional[str] = "jpg"
+
+
+class CustomFileComponent(DBAssetFileComponent):
+    type: Optional[str] = "custom__file_component"
+    label: Optional[str] = ""
+    file_extension: Optional[str] = "custom_extension"
+
+
+class PlayblastTemplateFileComponent(DBAssetFileComponent):
+    type: Optional[str] = "playblast_template__component"
+    label: Optional[str] = "playblast_template"
+    file_extension: Optional[str] = "template"
 
 
 class TaskPublish:

@@ -12,6 +12,8 @@ class CreateTaskUI(QtWidgets.QDialog):
         super(CreateTaskUI, self).__init__(parent)
 
         self.setWindowTitle("Create Task")
+        self.setMinimumWidth(250)
+        self.setMinimumHeight(150)
 
         self.context_handler = context
 
@@ -32,8 +34,10 @@ class CreateTaskUI(QtWidgets.QDialog):
 
         self.task_type_cb = QtWidgets.QComboBox()
         self.task_type_cb.addItems(TaskTypes().all_types())
+        self.task_type_cb.setCurrentIndex(0)
 
         self.task_name_le = QtWidgets.QLineEdit()
+        self.task_name_le.setText(self.task_type_cb.currentText())
 
         self.create_btn = QtWidgets.QPushButton("Create")
         self.create_and_close_btn = QtWidgets.QPushButton("Create and Close")
@@ -42,8 +46,8 @@ class CreateTaskUI(QtWidgets.QDialog):
     def create_layout(self):
         form_layout = QtWidgets.QFormLayout()
         form_layout.addRow("Entry Path: ", self.show_name_le)
-        form_layout.addRow("Task Name:", self.task_name_le)
         form_layout.addRow("Task Type:", self.task_type_cb)
+        form_layout.addRow("Task Name:", self.task_name_le)
 
         buttons_layout = QtWidgets.QHBoxLayout()
         buttons_layout.addStretch()
@@ -56,11 +60,13 @@ class CreateTaskUI(QtWidgets.QDialog):
         main_layout.addLayout(buttons_layout)
 
     def create_connections(self):
-        self.task_type_cb.setCurrentIndex(0)
-
+        self.task_type_cb.currentIndexChanged.connect(self.autofill_task_name)
         self.create_btn.clicked.connect(self.db_commit)
         self.create_and_close_btn.clicked.connect(self.db_commit_close)
         self.cancel_btn.clicked.connect(self.close)
+
+    def autofill_task_name(self):
+        self.task_name_le.setText(self.task_type_cb.currentText())
 
     def db_commit_close(self):
         self.db_commit()

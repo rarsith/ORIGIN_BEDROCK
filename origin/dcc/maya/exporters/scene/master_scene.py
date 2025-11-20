@@ -11,12 +11,12 @@ class MayaMasterSceneExporter:
     origin_scene_file = "master"
     version_string = "version_string"
 
-    def __init__(self, context: ContextHandler, object_transform=None, selection: bool = False):
+    def __init__(self, options, context: ContextHandler, object_transform=None):
+        self.options = options
         self.object_transform = object_transform
-        self.selection = selection
         self.context_handler = context
         self.path_handler = None
-        self.db_publisher = DBPublisher(context=self.context_handler)
+        self.db_publisher = DBPublisher(options=self.options)
 
     def set_output_path(self, file_format):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)
@@ -28,7 +28,7 @@ class MayaMasterSceneExporter:
         file_path_path = self.set_output_path(file_format=self.origin_scene_file)
         full_path = f"{file_path_path}.mb"
 
-        if self.selection:
+        if self.object_transform is not None:
             if cmds.objExists(self.object_transform):
                 cmds.select(self.object_transform, replace=True)
 

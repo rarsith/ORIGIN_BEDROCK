@@ -10,6 +10,8 @@ class CreateGroupUI(QtWidgets.QDialog):
         super(CreateGroupUI, self).__init__(parent)
 
         self.setWindowTitle("Create Group")
+        self.setMinimumWidth(250)
+        self.setMinimumHeight(150)
 
         self.user_data = None
 

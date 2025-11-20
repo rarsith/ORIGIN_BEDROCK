@@ -10,7 +10,7 @@ from origin.paths.output_paths import OriginOSPathHandler
 
 
 def clone_environment():
-    from origin.dcc.maya import context_env
+    from origin.dcc import context_env
     importlib.reload(context_env)
 
     NEW_CONTEXT = context_env.get_context_env()

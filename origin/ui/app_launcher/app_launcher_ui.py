@@ -72,7 +72,7 @@ class AppLauncher(QtWidgets.QWidget):
         self.launch_app_btn = QtWidgets.QPushButton("Start App")
         self.launch_app_btn.setMinimumHeight(30)
 
-        self.add_app_btn = QtWidgets.QPushButton("Applications Setting...")
+        self.add_app_btn = QtWidgets.QPushButton("Applications Settings...")
 
     def create_layout(self):
         main_layout = QtWidgets.QVBoxLayout(self)

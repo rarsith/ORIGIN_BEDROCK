@@ -1,8 +1,7 @@
 import sys
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtCore
 from origin.ui.style.icons import OriginIcons
 from origin.ui.style import buttons_styles as btns
-
 
 
 class SlotComponentsViewerBuild(QtWidgets.QTableWidget):
@@ -15,13 +14,13 @@ class SlotComponentsViewerBuild(QtWidgets.QTableWidget):
         self.setColumnCount(2)
         # self.setRowCount(0)
         self.setShowGrid(False)
-
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
-        self.setColumnWidth(0, 380)
+        self.setColumnWidth(0, 450)
 
         self.setSortingEnabled(True)
         for row in range(self.rowCount()):
-            self.setRowHeight(row, 90)
+            self.setRowHeight(row, 200)
 
         self.verticalScrollBar().setVisible(False)
         self.horizontalScrollBar().setVisible(False)

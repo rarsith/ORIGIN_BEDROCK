@@ -72,7 +72,6 @@ class DeleteEmptyStreamsUI(QtWidgets.QDialog):
 
     def populate_streams(self):
         stack_streams = self.get_stack_streams()
-        print(stack_streams)
         self.stream_name_lw.clear()
         if stack_streams:
             for stream in stack_streams:

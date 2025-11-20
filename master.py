@@ -4,6 +4,8 @@ import sys
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtGui import QIcon
 
+from origin.config.sessions.session_manager import SessionManager
+from origin.envars.origin_envars import ContextHandler
 from origin.ui.publishes_view_core import MainPublishesViewCore
 from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
 from origin.ui.task_viewer_core import TaskViewerCore
@@ -23,6 +25,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         super(OriginControlCenterUI, self).__init__(parent)
 
         self.setWindowTitle(self.WINDOW_TITLE)
+        self.current_context = None
 
         self.setMinimumHeight(850)
         self.setMinimumWidth(1800)
@@ -31,6 +34,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
 
         self.create_layout()
         self.create_connections()
+        self.load_last_session()
 
     def create_widgets(self):
         self.sanity_checker_wdg = SanityChecker()
@@ -41,11 +45,47 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.entity_details_viewer_wdg = PropertiesViewer()
         self.entity_details_viewer_wdg.set_thumbnail_icon(icon_path=thumbnail_path)
 
+        self.context_viewer = QtWidgets.QLabel()
+        self.context_viewer.setMaximumHeight(20)
+        self.context_viewer.setStyleSheet("background-color: #868071; color: #0d0d0d; font-size: 12px; font-weight: bold;")
+        # self.context_viewer.setText(self.show_view_twd.show_select_cb.currentText())
+
         self.middle_tabmenu_tab = QtWidgets.QTabWidget()
         self.middle_tabmenu_tab.addTab(self.tasks_view_lwd, "Tasks")
         self.middle_tabmenu_tab.addTab(self.versions_view_tvw, "Publishes")
 
         self.refresh_btn = QtWidgets.QPushButton("Refresh")
+
+    def load_last_session(self):
+        session = SessionManager()
+        last_session = session.get_last_session()
+        self.context_viewer.setText(last_session["show_name"])
+        self.show_view_twd.show_select_cb.setCurrentText(last_session["show_name"])
+
+    def save_last_session(self):
+        session = SessionManager()
+        session.save_last_session(session=self.show_view_twd.show_select_cb.currentText())
+
+    def closeEvent(self, event):
+        self.save_last_session()
+
+    def current_context_receiver(self, context: ContextHandler):
+        self.current_context = context.resolve_to_full_context()
+        self.context_viewer.setText(self.current_context)
+        return self.current_context
+
+    def update_context_label(self):
+        current_show = self.show_view_twd.show_select_cb.currentText()
+        self.context_viewer.setText(current_show)
+
+    def update_window_name(self, name):
+        if "." in name:
+            name_elements = name.split(".")
+            compose_name = "--".join(name_elements)
+            self.setWindowTitle(f"ORIGIN - {compose_name}")
+
+        else:
+            self.setWindowTitle(f"ORIGIN - {name}")
 
     def create_layout(self):
         sanity_checker_widget = QtWidgets.QWidget()
@@ -89,6 +129,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         button_layout.addWidget(self.refresh_btn)
 
         main_layout = QtWidgets.QVBoxLayout(self)
+        main_layout.addWidget(self.context_viewer)
         main_layout.addLayout(views_layout)
         main_layout.setContentsMargins(2, 2, 2, 2)
         main_layout.setSpacing(0)
@@ -97,6 +138,8 @@ class OriginControlCenterUI(QtWidgets.QWidget):
     def create_connections(self):
 
         self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.populate_main_publishes)
+        self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.save_last_session)
+        self.show_view_twd.show_select_cb.currentIndexChanged.connect(self.update_context_label)
 
         self.show_view_twd.project_tree_viewer_wdg.itemSelectionChanged.connect(self.populate_task_viewer)
         self.show_view_twd.project_tree_viewer_wdg.itemClicked.connect(self.populate_task_viewer)
@@ -110,6 +153,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.show_view_twd.current_context.connect(self.entity_details_viewer_wdg.properties_wdg.context_receiver)
         self.show_view_twd.current_context.connect(self.tasks_view_lwd.context_receiver)
         self.show_view_twd.current_context.connect(self.versions_view_tvw.context_receiver)
+        self.show_view_twd.current_context.connect(self.current_context_receiver)
 
         self.versions_view_tvw.selected_version.connect(self.entity_details_viewer_wdg.components_wdg.context_receiver)
         self.versions_view_tvw.selected_version.connect(self.entity_details_viewer_wdg.stack_slots_wdg.context_receiver)
@@ -120,6 +164,7 @@ class OriginControlCenterUI(QtWidgets.QWidget):
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.launcher_tw.populate_widget)
         self.tasks_view_lwd.current_context.connect(self.launcher_tw.context_receiver)
         self.tasks_view_lwd.current_context.connect(self.entity_details_viewer_wdg.versions_wdg.context_receiver)
+        self.tasks_view_lwd.current_context.connect(self.current_context_receiver)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.clear_launch_app_wdg)
         self.tasks_view_lwd.task_viewer_wdg.itemSelectionChanged.connect(self.populate_task_versions)
 
@@ -277,7 +322,7 @@ class MainUI(QtWidgets.QMainWindow):
         super(MainUI, self).__init__(parent)
 
         self.central_widget = OriginControlCenterUI()
-        self.setWindowTitle("ORIGIN")
+        self.setWindowTitle("Origin Control Center")
         self.setWindowIcon(QIcon("path/to/your/icon.png"))
         self.setCentralWidget(self.central_widget)
         # self.show()

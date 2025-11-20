@@ -67,6 +67,7 @@ class VersionLoaderContextMenuWidget(QtWidgets.QWidget):
 
         self.main_widget = main_widget
         self.init_loader = None
+        self.dcc = os.getenv("DCC")
 
         self.context_menu()
         self.main_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -88,7 +89,7 @@ class VersionLoaderContextMenuWidget(QtWidgets.QWidget):
                         absolute_path = os.path.join(origin_projects_root, file_path)
 
                     if os.path.exists(absolute_path):
-                        loader = get_loader_class("maya")
+                        loader = get_loader_class(self.dcc)
                         init_loader = loader(file_path=absolute_path)
                         file_extension, file_ops = init_loader.get_file_types_ops()
 
@@ -107,7 +108,7 @@ class VersionLoaderContextMenuWidget(QtWidgets.QWidget):
         action = self.sender()
         if action:
             file_data = action.data()
-            loader = get_loader_class("maya")
+            loader = get_loader_class(self.dcc)
             init_loader = loader(file_path=file_data[1])
             init_loader.execute_file_ops(operation=file_data[0])
 
@@ -580,6 +581,20 @@ class LoaderMainUI(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.central_widget)
         self.show()
+
+    def set_style(self):
+        origin_dev_root = os.getenv("ORIGIN_ROOT")
+
+        qss_style_file = os.path.normpath(
+            os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
+
+        with open(qss_style_file, "r") as f:
+            _style = f.read()
+            self.central_widget.setStyleSheet(_style)
+
+        app_font = self.central_widget.font()
+        app_font.setPointSize(7)
+        self.central_widget.setFont(app_font)
 
 
 if __name__ == "__main__":

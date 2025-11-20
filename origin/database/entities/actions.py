@@ -423,6 +423,37 @@ class Create:
         else:
             return db_asset
 
+    def db_asset_custom_file_component(self,
+                                       visibility: bool,
+                                       file_ext: str,
+                                       parent_id: str = None,
+                                       file_path: str = None,
+                                       db_insert: bool = True,
+                                       component_parent_id: str = None,
+                                       label=None
+                                       ) -> dict:
+
+        db_asset = DbConstructors(context=self.context_handler).db_asset_custom_file_component(visibility=visibility,
+                                                                                               file_ext=file_ext,
+                                                                                               parent_id=parent_id,
+                                                                                               file_path=file_path,
+                                                                                               component_parent_id=component_parent_id,
+                                                                                               label=label
+                                                                                               )
+
+        if db_insert:
+            try:
+                inserted_data = self.db_publish_collection.insert_one(db_asset)
+
+                print(f"----> Created File Components with ID: {inserted_data.inserted_id}")
+                return inserted_data.inserted_id
+
+            except Exception as e:
+                print(f"Error {e}, Nothing Done!")
+
+        else:
+            return db_asset
+
     def work_session(self, name, entity_id, version, parent_id):
         created_id, save_data = DbConstructors().work_session_construct(name=name,
                                                                         entity_id=entity_id,
@@ -440,14 +471,20 @@ class Create:
         app_name_display = app_name.capitalize()
         app_db_asset = DbConstructors().db_asset_application(name=app_name_display, app_icon=app_icon)
 
-        try:
-            inserted_data = self.db_applications_collection.insert_one(app_db_asset)
+        doc_exists = self.db_applications_collection.find_one({"_id": app_db_asset["_id"]})
 
-            print(f"Created App Entry with ID: {inserted_data.inserted_id}")
-            return inserted_data.inserted_id
+        if not doc_exists:
+            try:
+                inserted_data = self.db_applications_collection.insert_one(app_db_asset)
 
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
+                print(f"Created App Entry with ID: {inserted_data.inserted_id}")
+                return inserted_data.inserted_id
+
+            except Exception as e:
+                print(f"Error {e}, Nothing Done!")
+
+        else:
+            return app_db_asset["_id"]
 
     def application_version_entry(self, parent_id=None,
                                   version_id=None,
@@ -470,15 +507,15 @@ if __name__ == "__main__":
                       'project_control': 'The_Rock__CONTROL',
                       'origin_path_hierarchy': 'assets.chr',
                       'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafe',
+                      'entity_id': 'The_Rock.assets.chr.tafer',
                       'asset_breakdown_id': 'The_Rock.assets.chr.tafer.breakdown',
                       'entity_type': 'asset',
-                      # 'task_name': "modeling",
-                      # 'task_type': "modeling",
-                      # 'task_id': "The_Rock.assets.props.knife.modeling",
-                      # 'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
-                      # 'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
-                      # 'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
+                      'task_name': "modeling",
+                      'task_type': "modeling",
+                      'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
+                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
+                      'stack_id': 'The_Rock.assets.chr.tafer.tafer_main.asset_stack',
                       }
 
     context_class = ContextHandler()

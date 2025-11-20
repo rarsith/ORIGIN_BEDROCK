@@ -1,27 +1,66 @@
+import os
 from pathlib import Path
 from typing import Literal
 
 import maya.cmds as cmds
 from origin.dcc.abc.camera_exporter import CameraExporter
+from origin.dcc.maya.exporters.alembic.alembic import MayaAlembicExporter
+from origin.dcc.maya.exporters.scene.master_scene import MayaMasterSceneExporter
+from origin.dcc.maya.exporters.usd.usd import MayaUSDExporter
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
 
 
-class MayaCameraExporter(CameraExporter):
+class MayaCameraExporter:
     alembic_file = "abc"
     usd_file = "usd"
     origin_scene_file = "master"
     version_string = "version_string"
 
-    def __init__(self, camera_name, context: ContextHandler, start_frame=None, end_frame=None):
-        self.context_handler = context
+    def __init__(self, options, camera_name, src_file_path=None, start_frame=None, end_frame=None):
+        self.options = options
+
+        self.context_handler = self.options["context_object"]
+
+        if isinstance(self.context_handler, dict):
+            self.context_handler = ContextHandler()
+            self.context_handler.load_session(self.options["context_object"])
+
         self.camera_name = camera_name
+
+        self.src_file_path = src_file_path
+
+        if self.src_file_path is None:
+            self.src_file_path = self.options["master_scene"]
+
         self.start_frame = start_frame
         self.end_frame = end_frame
         self.camera_transform = None
         self.camera_shape = None
         self.path_handler = None
-        self.get_camera_nodes()
+
+        self.master_file_exporter = None
+        self.alembic_file_exporter = None
+        self.obj_file_exporter = None
+        self.usd_file_exporter = None
+
+        self.exported_results = {}
+        os.environ["ANIM_BAKED"] = "0"
+
+    def open_master_file(self):
+        if self.src_file_path is not None:
+            cmds.file(self.src_file_path, open=True, force=True)
+            self.get_camera_nodes()
+            # cmds.file(self.src_file_path,
+            #           i=True,
+            #           typ="mayaBinary",
+            #           ignoreVersion=True,
+            #           ra=True,
+            #           mergeNamespacesOnClash=False,
+            #           namespace="turntable_camera",
+            #           pr=True,
+            #           importTimeRange="combine",
+            #           )
 
     def set_output_path(self, file_format):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)
@@ -29,30 +68,22 @@ class MayaCameraExporter(CameraExporter):
                                                         create_dir=True)) / self.path_handler.output_file_name
         return full_path
 
-    def save_master_file(self):
-        file_path_path = self.set_output_path(file_format=self.origin_scene_file)
-        full_path = f"{file_path_path}.mb"
-        # cmds.file(rename=full_path)
-        # cmds.file(save=True, type='mayaBinary')
-        cmds.select(self.camera_transform, replace=True)
+    def export_master_scene(self):
+        self.master_file_exporter = MayaMasterSceneExporter(options=self.options,
+                                                            context=self.context_handler,
+                                                            object_transform=self.camera_name)
 
-        cmds.file(
-            full_path,
-            force=True,
-            options="v=0;",
-            typ="mayaBinary",
-            pr=True,
-            es=True)
-
-        return {self.origin_scene_file: self.path_handler.convert_path_to_unix(full_path)}
+        exported_results = self.master_file_exporter.execute()
+        self.exported_results.update(exported_results)
 
     def get_camera_nodes(self):
         # Get the transform and shape node of the camera
         if cmds.objExists(self.camera_name):
+            print("CAMERA NAME: ", self.camera_name)
             self.camera_transform = self.camera_name
             self.camera_shape = cmds.listRelatives(self.camera_transform, shapes=True)[0]
         else:
-            raise ValueError("Invalid camera name")
+            raise ValueError(f"Invalid camera name: {self.camera_name} from maya scene {self.src_file_path}")
 
     def set_camera_specs(self, focal_length=None, filmback=None, resolution_gate=None, cam_motion_blur=False):
         print("Setting Camera Specs")
@@ -77,7 +108,6 @@ class MayaCameraExporter(CameraExporter):
 
     def bake_animation(self):
         # Bake animation if camera is animated and frame range is provided
-
         if self.start_frame and self.end_frame:
             temp_locator = cmds.spaceLocator()
 
@@ -127,84 +157,48 @@ class MayaCameraExporter(CameraExporter):
             cmds.delete(temp_locator)
             cmds.select(cl=True)
 
+            os.environ["ANIM_BAKED"] = "1"
+
     def export_alembic(self):
-        # Export the camera to Alembic
-        start_frame = self.start_frame if self.start_frame else cmds.playbackOptions(query=True, minTime=True)
-        end_frame = self.end_frame if self.end_frame else cmds.playbackOptions(query=True, maxTime=True)
+        self.alembic_file_exporter = MayaAlembicExporter(options=self.options,
+                                                         context=self.context_handler,
+                                                         object_transform=self.camera_name,
+                                                         frame_range=(self.start_frame, self.end_frame))
 
-        full_path = self.set_output_path(file_format=self.alembic_file)
-        alembic_file_path = f"{full_path}.abc"
-
-        abc_cmd = (f"-frameRange {start_frame} {end_frame} "
-                   f"-root {self.camera_transform} "
-                   "-stripNamespaces -worldSpace -writeVisibility "
-                   f"-file {alembic_file_path}")
-        cmds.AbcExport(j=abc_cmd)
-        return {self.alembic_file: self.path_handler.convert_path_to_unix(alembic_file_path)}
+        exported_results = self.alembic_file_exporter.execute()
+        self.exported_results.update(exported_results)
 
     def export_usd(self):
-        # Export the camera to USD
-        cmds.select(self.camera_transform)
-        usd_options = ["",
-                       "exportUVs=0",
-                       "exportSkin=none",
-                       "exportBlendShapes=0",
-                       "exportDisplayColor=0",
-                       "filterTypes=nurbsCurve",
-                       "exportColorSets=0",
-                       "exportComponentTags=0",
-                       "defaultMeshScheme=none",
-                       "animation=1",
-                       "eulerFilter=1",
-                       "staticSingleSample=0",
-                       "frameStride=1",
-                       "frameSample=0.0",
-                       "defaultUSDFormat=usdc",
-                       "parentScope=camera",
-                       "exportDisplayColor=0"
-                       "convertMaterialsTo=[]",
-                       "exportInstances=1",
-                       "exportVisibility=1",
-                       "exportSkels=none",
-                       "mergeTransformAndShape=1",
-                       "stripNamespaces=0",
-                       "worldspace=1"]
+        self.usd_file_exporter = MayaUSDExporter(options=self.options,
+                                                 context=self.context_handler,
+                                                 object_transform=self.camera_name,
+                                                 frame_range=(self.start_frame, self.end_frame))
+        exported_results = self.usd_file_exporter.execute()
+        self.exported_results.update(exported_results)
 
-        if self.start_frame and self.end_frame:
-            additional_options = [f"startTime={self.start_frame}", f"endTime={self.end_frame}"]
-            for usd_option in additional_options:
-                usd_options.append(usd_option)
-
-        usd_combined_options = ";".join(usd_options)
-
-        full_path = self.set_output_path(file_format=self.usd_file)
-        usd_file_path = f"{full_path}.usd"
-
-        cmds.file(usd_file_path, force=True, options=usd_combined_options, type="USD Export", exportSelected=True)
-        return {self.usd_file: self.path_handler.convert_path_to_unix(usd_file_path)}
-
-    def export_camera(self, file_format: Literal["abc", "master", "usd"]):
+    def export_camera(self, files_formats: list = None):
         print("Selecting Exporter")
-        """
-        file_type should be one of the predefined class variables:
-            - MayaCameraExporter.alembic_file
-            - MayaCameraExporter.usd_file
-            - MayaCameraExporter.origin_scene_file
-            """
-        if file_format == self.origin_scene_file:
-            return self.save_master_file()
+        files = {self.alembic_file: self.export_alembic,
+                 self.usd_file: self.export_usd
+                 }
 
-        if file_format == self.alembic_file:
-            return self.export_alembic()
+        if files_formats is None:
+            files_formats = [self.alembic_file, self.usd_file]
 
-        if file_format == self.usd_file:
-            return self.export_usd()
+        if files_formats is not None:
+            for file_type in files_formats:
+                if file_type in files:
+                    files[file_type]()
+        return self.exported_results
 
-    def run_export(self, file_format, focal_length=None, filmback=None, resolution_gate=None, cam_motion_blur=False):
-        print("Running Camera EXPORT")
-        # Set the camera specifications
+    def run_export(self, focal_length=None, filmback=None, resolution_gate=None, cam_motion_blur=False):
+        self.open_master_file()
         self.set_camera_specs(focal_length=focal_length, filmback=filmback, resolution_gate=resolution_gate)
 
-        # Bake animation if it's an animated camera
-        self.bake_animation()
-        return self.export_camera(file_format)
+        if os.getenv("ANIM_BAKED") == "0":
+            self.bake_animation()
+
+        self.export_master_scene()
+        self.export_camera()
+
+        return self.exported_results

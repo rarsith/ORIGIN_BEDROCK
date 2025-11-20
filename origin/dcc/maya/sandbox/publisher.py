@@ -2,7 +2,7 @@ import importlib
 import maya.OpenMayaUI as omui
 from shiboken2 import wrapInstance
 from PySide2 import QtWidgets, QtCore
-from origin.dcc.maya.context_env import CURRENT_SESSION
+from origin.dcc.context_env import CURRENT_SESSION
 
 from origin.ui.publish import origin_publisher
 importlib.reload(origin_publisher)
@@ -12,7 +12,6 @@ def get_maya_main_window():
     return wrapInstance(int(main_window_ptr), QtWidgets.QMainWindow)
     
 if __name__ == "__main__":
-    import sys
 
     # curr_stream = "lidar_pop"
 

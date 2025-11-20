@@ -75,6 +75,7 @@ class MayaMakePlayblast:
         cmds.modelEditor(panel, e=True, hud=False)  # No HUD
         cmds.modelEditor(panel, e=True, polymeshes=True)
 
+        cmds.setAttr("hardwareRenderingGlobals.renderMode", 4)
         cmds.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
         cmds.setAttr("hardwareRenderingGlobals.ssaoAmount", 1.0)  # Adjust strength
         cmds.setAttr("hardwareRenderingGlobals.ssaoRadius", 32.0)  # Adjust radius
@@ -166,11 +167,17 @@ class MayaMakePlayblast:
 
     def execute(self):
         captured_frames = self.run_playblast()
+        used_template_version = {"playblast_template": self.options["review_options"]["template_asset_ver_id"]}
 
-        self.db_publisher = DBPublisher(context=self.context_handler)
+        self.db_publisher = DBPublisher(options=self.options)
         self.db_publisher.create_db_file_components(
             db_asset_version_id=self.context_handler.db_asset_version_id,
             published_data=captured_frames,
+            component_parent_id=self.context_handler.db_asset_version_id)
+
+        self.db_publisher.create_db_custom_file_components(
+            db_asset_version_id=self.context_handler.db_asset_version_id,
+            published_data=used_template_version,
             component_parent_id=self.context_handler.db_asset_version_id)
 
         return captured_frames

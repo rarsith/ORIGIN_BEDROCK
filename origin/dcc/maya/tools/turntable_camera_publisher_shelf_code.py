@@ -1,5 +1,4 @@
 import os
-import sys
 import importlib
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
@@ -11,7 +10,7 @@ importlib.reload(origin_publisher)
 
 
 def clone_environment():
-    from origin.dcc.maya import context_env
+    from origin.dcc import context_env
     importlib.reload(context_env)
 
     NEW_CONTEXT = context_env.get_context_env()

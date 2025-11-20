@@ -1,5 +1,6 @@
 from origin.envars.origin_envars import ContextHandler
 
+
 class MayaPublisher:
     def __init__(self, publish_options):
         self.publishing_options = publish_options

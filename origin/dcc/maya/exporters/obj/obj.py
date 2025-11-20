@@ -9,11 +9,13 @@ import maya.cmds as cmds
 
 class MayaOBJExporter:
     obj_file = "obj"
-    def __init__(self, object_transform: list, context: ContextHandler):
+
+    def __init__(self, options, object_transform: str, context: ContextHandler):
+        self.options = options
         self.object_transform = object_transform
         self.context_handler = context
         self.path_handler = None
-        self.db_publisher = DBPublisher(context=self.context_handler)
+        self.db_publisher = DBPublisher(options=self.options)
 
     def set_output_path(self, file_format):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)

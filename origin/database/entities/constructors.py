@@ -1,6 +1,7 @@
 from origin.common_utils.date_time import DateTime
 from origin.common_utils.users import Users
 from origin.database.mongo_connection import MongoConnection
+from origin.database.priorities import DbPriorities
 from origin.envars.origin_envars import ContextHandler
 from origin.database.schemas.actions import EntityDefaultSchemas
 from origin.common_utils import version_increment as vup
@@ -15,7 +16,7 @@ from origin.database.entities.operators import (DBAssetVersion,
                                                 DBAssetFileComponent, AssetBreakdown, AssetBreakdownVersion, AssetStack,
                                                 AssetStackVersion, DCCBaseModel, DCCVersion)
 from origin.database.mongo import CollectionOperators, DBSet
-from origin.database.statuses import DbVersionStatuses
+from origin.database.statuses import DbVersionStatuses, DbTaskStatuses
 
 
 class DbConstructors:
@@ -109,6 +110,8 @@ class DbConstructors:
 
     @staticmethod
     def task_construct(name, entity_id, task_type, parent_id):
+        creation_status = DbTaskStatuses.not_started
+        creation_priority = DbPriorities.normal
 
         document = Task(
 
@@ -119,9 +122,10 @@ class DbConstructors:
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
-            status="",
+            status=creation_status,
 
             task_type=task_type,
+            priority=creation_priority,
             artist="None",
             imports_from={},
             bid_days="",
@@ -207,10 +211,10 @@ class DbConstructors:
         db_asset_class = get_db_asset_class(publish_type)
         compiled_id = ".".join([self.context_handler.entity_id, publish_type, parent_name])
 
-        try:
-            parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=compiled_id)
-        except:
-            pass
+        # try:
+        parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=compiled_id)
+        # except:
+        #     pass
 
         document = db_asset_class(
             _id=compiled_id,
@@ -297,7 +301,8 @@ class DbConstructors:
         compiled_id = ".".join([parent_id, "breakdown"])
         compiled_name = "__".join([parent_name, "breakdown"])
 
-        parent_doc_data = self.context_handler.database_handler().get_db_document_by_id(db_collection=self.context_handler.show_name, doc_id=parent_id)
+        parent_doc_data = self.context_handler.database_handler().get_db_document_by_id(
+            db_collection=self.context_handler.show_name, doc_id=parent_id)
         parent_doc = Asset(**parent_doc_data)
 
         document = AssetBreakdown(
@@ -592,6 +597,57 @@ class DbConstructors:
 
         return db_asset_file_doc
 
+    def db_asset_custom_file_component(self,
+                                       visibility: bool,
+                                       file_ext: str,
+                                       parent_id: str,
+                                       file_path: str,
+                                       component_parent_id: str = None,
+                                       label=None
+
+                                       ) -> dict:
+        from origin.common_utils.generate_uuid import generate_uuid
+
+        gen_uuid = generate_uuid()
+        entity_id = ".".join([parent_id, gen_uuid])
+
+        data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
+        parent_data = data_ops.entity_document(doc_id=parent_id)
+        parent_doc = DBAssetVersion(**parent_data)
+
+        parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
+
+        if component_parent_id is not None:
+            component_parent_data = data_ops.entity_document(doc_id=component_parent_id)
+            component_parent_doc = DBAssetVersion(**component_parent_data)
+            component_parent_doc.operations().add_component(component_id=entity_id)
+
+        document = DBAssetFileComponent(
+            _id=entity_id,
+            name='',
+            active=True,
+            type="db_asset_file_component",
+            parent=parent_id,
+            children=[],
+            origin_db_path=parent_id,
+            status="DONE",
+
+            label=label,
+            file_extension=file_ext,
+            file_path=file_path,
+            visible=visibility,
+            master_task_type=self.context_handler.task_type,
+            db_asset_type="db_asset__file_component",
+
+            date=DateTime().curr_date,
+            time=DateTime().curr_time,
+            owner=Users().curr_user(),
+        )
+
+        db_asset_file_doc = document.dict(by_alias=True)
+
+        return db_asset_file_doc
+
     def db_asset_application(self, name, app_icon):
         compiled_id = ".".join([name, "application"])
 
@@ -612,7 +668,8 @@ class DbConstructors:
 
         return application_doc
 
-    def db_asset_version_application(self, parent_id=None, active=None, version_id=None, exec_path=None, exec_python=None, envars=None):
+    def db_asset_version_application(self, parent_id=None, active=None, version_id=None, exec_path=None,
+                                     exec_python=None, envars=None):
         applications__db = MongoConnection().origin_setup_database()
 
         document = DCCVersion(

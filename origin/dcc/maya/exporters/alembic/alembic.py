@@ -11,7 +11,8 @@ class MayaAlembicExporter:
     alembic_file = "abc"
 
     def __init__(self,
-                 object_transform: list,
+                 options,
+                 object_transform: str,
                  context: ContextHandler,
                  frame_range: tuple = (1001, 1001),
                  uv_write: bool = True,
@@ -19,6 +20,8 @@ class MayaAlembicExporter:
                  write_uv_sets: bool = True,
                  write_visibility: bool = False,
                  data_format: str = "ogawa"):
+
+        self.options = options
 
         self.object_transform = object_transform
         self.frame_range = frame_range
@@ -31,7 +34,7 @@ class MayaAlembicExporter:
         self.object_shape = None
         self.context_handler = context
         self.path_handler = None
-        self.db_publisher = DBPublisher(context=self.context_handler)
+        self.db_publisher = DBPublisher(options=self.options)
 
     def set_output_path(self, file_format):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)
@@ -40,7 +43,6 @@ class MayaAlembicExporter:
         return full_path
 
     def run_export(self):
-
         full_path = self.set_output_path(file_format=self.alembic_file)
         alembic_file_path = f"{full_path}.abc"
 
@@ -56,14 +58,14 @@ class MayaAlembicExporter:
 
         export_command += f" -dataFormat {self.data_format}"
 
-        for obj in self.object_transform:
-            if "|" in obj:
-                get_root = obj.split("|", 1)[-1]
-            else:
-                get_root = obj
-            export_command += f" -root {get_root}"
+        if "|" in self.object_transform:
+            get_root = self.object_transform.rsplit("|", 1)[1]
+        else:
+            get_root = self.object_transform
 
+        export_command += f" -root {get_root}"
         export_command += f" -file {alembic_file_path}"
+
         cmds.AbcExport(j=export_command)
 
         return {self.alembic_file: self.path_handler.convert_path_to_unix(alembic_file_path)}

@@ -1,7 +1,7 @@
 import os
 
 from origin.envars.origin_envars import ContextHandler
-from origin.dcc.maya.exporters.geometry import (MayaGeometryExporter)
+from origin.dcc.maya.exporters.OLD_geometry import (MayaGeometryExporter)
 from origin.dcc.blender.exporters.geometry import BlenderGeometryExporter
 from origin.dcc.abc.geometry_exporter import GeometryExporter
 

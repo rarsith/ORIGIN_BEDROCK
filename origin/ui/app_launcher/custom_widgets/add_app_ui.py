@@ -72,6 +72,6 @@ if __name__ == "__main__":
 
     APP_CONFIG_FILE = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\ui\origin_globals_ui\settings\applications004.json"
 
-    create_asset = AddAppUI(config_file_path=APP_CONFIG_FILE)
+    create_asset = AddAppUI()
     create_asset.show()
     sys.exit(app.exec_())

@@ -1,13 +1,9 @@
 from PySide2 import QtWidgets
 
-from origin.common_utils import dict_utils
-from origin.database.publisher.db_publisher import DBPublisher
-from origin.dcc.maya.batch.maya_batch import MayaBatchScript
-from origin.dcc.save_session import master_scene_operations_class
-from origin.dcc.task_type_publisher import PublisherType
+from origin.dcc.maya.batch.maya_batch import BatchProcessing
+from origin.dcc.save_session import scene_session_operations_class
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
-from origin.database.entities.actions import Create
 from origin.paths.output_paths import OriginOSPathHandler
 
 
@@ -27,7 +23,7 @@ class Publish(QtWidgets.QWidget):
         self.comment_ptx = QtWidgets.QPlainTextEdit()
         self.pub_status_lb = QtWidgets.QLabel("Publish with Status:")
         self.status_wdg = QtWidgets.QComboBox()
-        self.status_wdg.addItems(DbVersionStatuses().list_all())
+        self.status_wdg.addItems(DbVersionStatuses().list_publish_statuses())
         self.previous_comments_ptx = QtWidgets.QPlainTextEdit()
 
     def create_layout(self):
@@ -54,30 +50,13 @@ class Publish(QtWidgets.QWidget):
     def publish(self, options):
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
-        self.context_handler: ContextHandler = options["context_object"]
 
-        self.db_publisher = DBPublisher(context=self.context_handler)
-        db_asset_id = self.db_publisher.create_db_asset(parent=self.context_handler.db_asset_stream_id,
-                                                        publish_type=options["publish_type"])
+        current_scene = scene_session_operations_class()
+        master_scene_path = current_scene.save_current_file()
+        options["master_scene"] = master_scene_path
 
-        self.context_handler.db_asset_id = db_asset_id
-
-        db_asset_version_id = self.db_publisher.create_db_asset_version(options=options)
-
-        self.context_handler.db_asset_version_id = db_asset_version_id
-
-        options["context_object"] = self.context_handler
-
-        current_scene = master_scene_operations_class(context=options["context_object"])
-        master_scene_path = current_scene.export_current_file()
-
-        options["master_scene"] = master_scene_path["master"]
-
-        publisher_type = MayaBatchScript(options=options, task="publish")
+        publisher_type = BatchProcessing(options=options, task="publish")
         publisher_type.run()
-
-        self.db_publisher.create_asset_breakdown_version(options=options)
-        self.db_publisher.create_stack_version()
 
 
 if __name__ == "__main__":

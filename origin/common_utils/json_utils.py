@@ -1,6 +1,7 @@
 import os
 import json
 from functools import reduce
+from pathlib import Path
 
 
 def open_json(source_file) -> dict:
@@ -24,6 +25,20 @@ def write_json(target_path, target_file, data, file_extension=".json"):
     with open(os.path.join(target_path, target_file+file_extension), 'w') as outfile:
         outfile.write(json_object)
 
+
+def save_json(target_path, target_file, data):
+    """Write json file to target path."""
+
+    json_object = json.dumps(data, indent=4)
+
+    if not os.path.exists(target_path):
+        try:
+            os.makedirs(target_path)
+        except Exception as e:
+            print(e)
+            raise
+    with open(os.path.join(target_path, target_file), 'w') as outfile:
+        outfile.write(json_object)
 
 def read_dictionary(source_data, attribute_to_read):
     """Read dictionary and return value by key."""

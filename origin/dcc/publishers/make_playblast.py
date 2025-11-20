@@ -16,7 +16,7 @@ class MakePlayblast:
     def get_playblast_class(self, dcc):
         classes = {
             "maya": MayaMakePlayblast(options=self.publishing_options)
-            # "blender": BlenderBatchScrit(context=self.context_handler),
+            # "blender": BlenderBatchScript(context=self.context_handler),
         }
         if dcc in list(classes.keys()):
             return classes[dcc]
