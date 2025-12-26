@@ -24,7 +24,7 @@ class Merge(GafferScene.SceneNode):
         self["__subtree"] = GafferScene.SubTree()
         self["__subtree"]["enabled"].setInput(self["enabled"])
         self["__subtree"]['root'].setValue('/group')
-        self["__subtree"]['in'].setInput(self["__group0"]['out'])
+        self["__subtree"]['in'].setInput(self["__group0"]['out '])
 
         self["out"].setInput(self["__subtree"]["out"])
 

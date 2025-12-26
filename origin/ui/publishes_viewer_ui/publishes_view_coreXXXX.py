@@ -1,19 +1,18 @@
 import os
-from pprint import pprint
 from typing import List
 
 from PySide2 import QtWidgets, QtGui, QtCore
 from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
-from origin.ui.publishes_view_UI import MainPublishesViewUI
+from origin.ui.publishes_viewer_ui.publishes_view_UI import MainPublishesViewUI
 from origin.ui.status_widgets.publish_status_wdg import PublishStatusWidget
 from origin.database.entities.actions import Set, Create
 from origin.database.statuses import DbVersionStatuses
 
+
 origin_dev_root = os.getenv("ORIGIN_ROOT")
 img_path = os.path.normpath(os.path.join(origin_dev_root, "origin/icons/play_icon_vsmall.png"))
 thumbnail_path = os.path.normpath(os.path.join(origin_dev_root, "origin/dcc/icons/movie_pic.png"))
-
 
 class PublishThumbnailViewer(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -41,12 +40,11 @@ class MainPublishesViewCore(MainPublishesViewUI):
     changes_to_database = []
     paginated_ids = []
 
+
     def __init__(self, parent=None):
         super(MainPublishesViewCore, self).__init__(parent)
 
         self.context_handler = None
-        self.publishes_docs = None
-        self.total_pages = 0
         self.create_connections()
 
     def create_connections(self):
@@ -64,7 +62,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
         self.refresh_btn.clicked.connect(self.populate_widget)
         self.save_changes_btn.clicked.connect(self.commit_changes)
-        # self.save_changes_btn.clicked.connect(self.resolve_entity_stack)
+        self.save_changes_btn.clicked.connect(self.resolve_entity_stack)
 
     def context_receiver(self, context):
         self.context_handler = context
@@ -77,9 +75,11 @@ class MainPublishesViewCore(MainPublishesViewUI):
         limit_val = self.load_limit_le.text()
         return int(limit_val)
 
-    def get_current_page(self):
-        curr_page_val = self.show_current_page_le.text()
-        return int(curr_page_val)
+    def set_total_pages_cnt(self):
+        pass
+
+    def deselect_all(self):
+        self.publish_view_tw.clearSelection()
 
     def commit_changes(self):
         db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
@@ -88,10 +88,20 @@ class MainPublishesViewCore(MainPublishesViewUI):
         self.changes_to_database.clear()
         self.check_changes()
 
+    def set_date_from_string(self, date: str):
+        if date:
+            year, month, day = map(int, date.split("-"))
+            qdate = QtCore.QDate(year, month, day)
+            return qdate
+
+    def set_date_as_string(self, date_widget):
+        # date = date_widget.date()
+        return date_widget.toString("yyyy-MM-dd")
+
     def publish_widget_construct(self, root_item, publish_data):
         publish_item = QtWidgets.QTreeWidgetItem(root_item)
 
-        self.publish_thumbnail_small = PublishThumbnailViewer(self.publish_view_tw)
+        self.publish_thumbnail_small = PublishThumbnailViewer()
         self.publish_thumbnail_small.set_thumbnail(icon_path=thumbnail_path,
                                                    thumbnail_width=30,
                                                    thumbnail_height=15)
@@ -100,7 +110,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         self.get_version = publish_data["version"]
 
         self.get_status = publish_data["status"]
-        self.status_cb = PublishStatusWidget(self.publish_view_tw)
+        self.status_cb = PublishStatusWidget()
         self.status_cb.setCurrentText(self.get_status)
 
         db_asset_version_type = (publish_data["db_asset_type"]).split("__")[1]
@@ -137,7 +147,7 @@ class MainPublishesViewCore(MainPublishesViewUI):
         publish_item.setText(8, self.get_description)
         publish_item.setData(9, 1, self.published_id)
         publish_item.setText(10, self.published_parent)
-        publish_item.setData(10, 1, publish_data["db_asset_type"])
+        publish_item.setData(10,  1, publish_data["db_asset_type"])
         publish_item.setText(11, self.published_has_notes)
 
         return publish_item
@@ -162,85 +172,74 @@ class MainPublishesViewCore(MainPublishesViewUI):
 
     def populate_widget(self):
         self.changes_to_database.clear()
-        self.publish_view_tw.clear()
+        self.get_publishes()
 
-        self.get_publishes(page_size=self.get_limit_load(),
-                           page_number=self.get_current_page())
-
-        pub_items_wdg = self.buffered_widget_items(self.publishes_docs)
-
-        self.show_total_pages_le.setText(str(self.total_pages))
+        self.show_total_pages_le.setText(str(len(self.paginated_ids)))
 
         self.show_current_page_le.setText("1")
+        current_page = self.show_current_page_le.text()
 
-        has_items = len(pub_items_wdg) > 0
-        if len(pub_items_wdg) != 0:
-            try:
-                self.publish_view_tw.setUpdatesEnabled(False)
-                self.publish_view_tw.addTopLevelItems(pub_items_wdg)
-                self.publish_view_tw.setUpdatesEnabled(True)
-            except Exception as e:
-                print(f"Error adding items: {e}")
-
-            self.go_to_next_page_btn.setEnabled(has_items)
-            self.go_to_prev_page_btn.setEnabled(has_items)
-            self.go_to_first_page_btn.setEnabled(has_items)
-            self.go_to_last_page_btn.setEnabled(has_items)
-            self.show_current_page_le.setEnabled(has_items)
-            self.show_total_pages_le.setEnabled(has_items)
-            self.load_limit_le.setEnabled(has_items)
+        if len(self.paginated_ids) != 0:
+            current_ids = self.paginated_ids[int(current_page) - 1]
+            self.publish_view_tw.clear()
+            published_doc_buff = self.stored_buffer(current_ids)
+            self.publish_view_tw.setUpdatesEnabled(False)
+            self.publish_view_tw.addTopLevelItems(published_doc_buff)
+            self.publish_view_tw.setUpdatesEnabled(True)
+            self.go_to_next_page_btn.setEnabled(True)
+            self.go_to_prev_page_btn.setEnabled(True)
+            self.go_to_first_page_btn.setEnabled(True)
+            self.go_to_last_page_btn.setEnabled(True)
+            self.show_current_page_le.setEnabled(True)
+            self.show_total_pages_le.setEnabled(True)
+            self.load_limit_le.setEnabled(True)
         else:
             self.publish_view_tw.clear()
-            self.go_to_next_page_btn.setEnabled(has_items)
-            self.go_to_prev_page_btn.setEnabled(has_items)
-            self.go_to_first_page_btn.setEnabled(has_items)
-            self.go_to_last_page_btn.setEnabled(has_items)
-            self.show_current_page_le.setEnabled(has_items)
-            self.show_total_pages_le.setEnabled(has_items)
-            self.load_limit_le.setEnabled(has_items)
+            self.go_to_next_page_btn.setEnabled(False)
+            self.go_to_prev_page_btn.setEnabled(False)
+            self.go_to_first_page_btn.setEnabled(False)
+            self.go_to_last_page_btn.setEnabled(False)
+            self.show_current_page_le.setEnabled(False)
+            self.show_total_pages_le.setEnabled(False)
+            self.load_limit_le.setEnabled(False)
 
-    def populate_widget_from_page(self, page_number):
+    def populate_widget_from_page(self):
         self.changes_to_database.clear()
-        self.publish_view_tw.clear()
+        self.show_total_pages_le.setText(str(len(self.paginated_ids)))
+        current_page = self.show_current_page_le.text()
 
-        self.get_publishes(page_size=self.get_limit_load(),
-                           page_number=page_number)
+        if len(self.paginated_ids) != 0:
+            current_ids = self.paginated_ids[int(current_page) - 1]
+            self.publish_view_tw.clear()
+            published_doc_buff = self.stored_buffer(current_ids)
+            self.publish_view_tw.setUpdatesEnabled(False)
+            self.publish_view_tw.addTopLevelItems(published_doc_buff)
+            self.publish_view_tw.setUpdatesEnabled(True)
+            self.go_to_next_page_btn.setEnabled(True)
+            self.go_to_prev_page_btn.setEnabled(True)
+            self.go_to_first_page_btn.setEnabled(True)
+            self.go_to_last_page_btn.setEnabled(True)
+            self.show_current_page_le.setEnabled(True)
+            self.show_total_pages_le.setEnabled(True)
+            self.load_limit_le.setEnabled(True)
 
-        pub_items_wdg = self.buffered_widget_items(self.publishes_docs)
-
-        self.show_total_pages_le.setText(str(self.total_pages))
-
-        has_items = len(pub_items_wdg) > 0
-        if len(pub_items_wdg) != 0:
-            try:
-                self.publish_view_tw.setUpdatesEnabled(False)
-                self.publish_view_tw.addTopLevelItems(pub_items_wdg)
-                self.publish_view_tw.setUpdatesEnabled(True)
-            except Exception as e:
-                print(f"Error adding items: {e}")
-
-            self.go_to_next_page_btn.setEnabled(has_items)
-            self.go_to_prev_page_btn.setEnabled(has_items)
-            self.go_to_first_page_btn.setEnabled(has_items)
-            self.go_to_last_page_btn.setEnabled(has_items)
-            self.show_current_page_le.setEnabled(has_items)
-            self.show_total_pages_le.setEnabled(has_items)
-            self.load_limit_le.setEnabled(has_items)
         else:
             self.publish_view_tw.clear()
-            self.go_to_next_page_btn.setEnabled(has_items)
-            self.go_to_prev_page_btn.setEnabled(has_items)
-            self.go_to_first_page_btn.setEnabled(has_items)
-            self.go_to_last_page_btn.setEnabled(has_items)
-            self.show_current_page_le.setEnabled(has_items)
-            self.show_total_pages_le.setEnabled(has_items)
-            self.load_limit_le.setEnabled(has_items)
+            self.go_to_next_page_btn.setEnabled(False)
+            self.go_to_prev_page_btn.setEnabled(False)
+            self.go_to_first_page_btn.setEnabled(False)
+            self.go_to_last_page_btn.setEnabled(False)
+            self.show_current_page_le.setEnabled(False)
+            self.show_total_pages_le.setEnabled(False)
+            self.load_limit_le.setEnabled(False)
 
-    def buffered_widget_items(self, doc_list):
+    def stored_buffer(self, doc_id_list):
         buffer = []
-        for doc in doc_list:
+        for doc_id in doc_id_list:
+            fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
+            published_doc = fetch_ent.entity_document(doc_id["_id"])
             root_item = self.publish_view_tw.invisibleRootItem()
-            row_item = self.publish_widget_construct(root_item=root_item, publish_data=doc)
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=published_doc)
             buffer.append(row_item)
         return buffer
 
@@ -251,58 +250,93 @@ class MainPublishesViewCore(MainPublishesViewUI):
                 extra_filters.append(extra_filter)
         return extra_filters
 
-    def get_publishes(self, page_number, page_size):
+    def get_publishes(self):
+        # extra_filters = self.resolve_extra_filters(default_filter=[{"type": "publish"}])
         extra_filters = [{"type": ["publish", "db_asset__stack_version"]}]
 
         if self.context_handler.task_id is not None:
             extra_filters = self.resolve_extra_filters(default_filter=[{"type": ["publish", "db_asset__stack_version"]},
                                                                        {"parent_task_id": self.context_handler.task_id}])
 
+        get_limit_value = self.get_limit_load()
         fetch_ent = CollectionOperators(db_collection=self.context_handler.project_publishes)
-        db_extraction = fetch_ent.pagination_entities_attr_value_starts_with(attr_field="_id",
-                                                                             val_starts_with=self.context_handler.resolve_to_base_context(),
-                                                                             extra_filters=extra_filters,
-                                                                             page_number=page_number,
-                                                                             page_size=page_size,
-                                                                             ids_only=False
-                                                                             )
+        publishes_docs = fetch_ent.entities_attr_value_starts_with(attr_field="_id",
+                                                                   val_starts_with=self.context_handler.resolve_to_base_context(),
+                                                                   extra_filters=extra_filters,
+                                                                   ids_only=True
+                                                                   )
 
-        total_count = db_extraction[0]['total_count'][0]['count'] if db_extraction[0]['total_count'] else 0
-        self.total_pages = (total_count + page_size - 1) // page_size
+        self.paginate_publishes(target_list=publishes_docs, page_size=get_limit_value)
+        return self.paginated_ids
 
-        self.publishes_docs = db_extraction[0]["pages_results"]
+    def buffer_pub_items(self, doc_list):
+        buffer = []
+        for pub_doc in doc_list:
+            root_item = self.publish_view_tw.invisibleRootItem()
+            row_item = self.publish_widget_construct(root_item=root_item, publish_data=pub_doc)
+            buffer.append(row_item)
+        return buffer
+
+    def paginate_pub_items(self, target_list, page_size):
+        if len(target_list) != 0:
+            self.paginated_ids = []
+            for i in range(0, len(target_list), page_size):
+                self.paginated_ids.append(target_list[i:i + page_size])
+        else:
+            self.paginated_ids = []
+
+    def paginate_publishes(self, target_list, page_size):
+        if len(target_list) != 0:
+            self.paginated_ids = []
+            for i in range(0, len(target_list), page_size):
+                self.paginated_ids.append(target_list[i:i + page_size])
+        else:
+            self.paginated_ids = []
+
+    def XXpaginate_publishes(self, target_list, page_size):
+        if len(target_list) != 0:
+            self.paginated_ids = []
+            for i in range(0, len(target_list), page_size):
+                end_index = min(i + page_size, len(target_list))
+                self.paginated_ids.append((i, end_index))
+
+            print("paginated idx:  ", self.paginated_ids)
+
+        else:
+            self.paginated_ids = []
+
+    def sort_documentsX(self, doc_list, by_field, revr=False):
+        sorted_list = sorted(doc_list, key=lambda x: x[by_field], reverse=revr)
+        return sorted_list
 
     def go_to_next_page(self):
         current_page = self.show_current_page_le.text()
         next_page = int(current_page) + 1
-        self.populate_widget_from_page(page_number=next_page)
-        if next_page == self.total_pages:
-            self.show_current_page_le.setText(str(self.total_pages))
-            self.go_to_next_page_btn.setEnabled(False)
-            self.go_to_last_page_btn.setEnabled(False)
-
+        total_pages = len(self.paginated_ids)
+        if next_page >= total_pages:
+            self.show_current_page_le.setText(str(total_pages))
+            self.populate_widget_from_page()
         else:
             self.show_current_page_le.setText(str(next_page))
+            self.populate_widget_from_page()
 
     def go_to_previous_page(self):
         current_page = self.show_current_page_le.text()
         previous_page = int(current_page) - 1
         if previous_page != 0:
             self.show_current_page_le.setText(str(previous_page))
-            self.populate_widget_from_page(page_number=previous_page)
-
         else:
-            self.go_to_prev_page_btn.setEnabled(False)
-            self.go_to_first_page_btn.setEnabled(False)
             self.show_current_page_le.setText("1")
+        self.populate_widget_from_page()
 
     def go_to_first_page(self):
         self.show_current_page_le.setText("1")
-        self.populate_widget_from_page(page_number=1)
+        self.populate_widget_from_page()
 
     def go_to_last_page(self):
-        self.show_current_page_le.setText(str(self.total_pages))
-        self.populate_widget_from_page(page_number=self.total_pages)
+        total_pages = len(self.paginated_ids)
+        self.show_current_page_le.setText(str(total_pages))
+        self.populate_widget_from_page()
 
     def get_current_selected_publish(self):
         get_selected_publish = self.publish_view_tw.selectedItems()
@@ -324,36 +358,55 @@ if __name__ == "__main__":
     import sys
     import random
 
-    qss_style_file = "../../origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"
-
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',
                       'project_work': 'The_Rock__WORK',
                       'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.props',
-                      'entity_name': 'knife',
-                      'entity_id': 'The_Rock.assets.props.knife',
-                      'asset_breakdown_id': 'The_Rock.assets.props.knife.breakdown',
+                      'origin_path_hierarchy': 'assets.chr',
+                      'entity_name': 'tafer',
                       'entity_type': 'asset',
+                      'entity_id': 'The_Rock.assets.chr.tafer',}
                       # 'task_name': "modeling",
                       # 'task_type': "modeling",
-                      # 'task_id': "The_Rock.assets.props.knife.modeling",
-                      # 'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
-                      # 'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
-                      # 'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
-                      }
+                      # 'task_id': "The_Rock.assets.chr.tafer.modeling",
+                      # 'db_asset_id': 'The_Rock.assets.chr.tafer.modeling.main'}
+
+    # from origin.database import DbVersionStatuses
+
+
+    def randomize_pub_statuses(widget: MainPublishesViewCore):
+        pubs_ids = widget.get_publishes()
+
+        buffer_all_ids = []
+        for item_lists in pubs_ids:
+            for id_dict in item_lists:
+                buffer_all_ids.append(id_dict["_id"])
+
+        commands_list = []
+        for buff in buffer_all_ids:
+            commands_list.append({buff: {"status": random.choice(pub_statuses)}})
+
+        Set().publishes().multiple_ops(commands_list)
+
+        print("All DONE!")
+
+
+    db_path = ["assets", "characters"]
+
+
+    # Set().publishes().multiple_ops(self.changes_to_database)
+
+    # pub_statuses = DbVersionStatuses().list_all()
 
     app = QtWidgets.QApplication(sys.argv)
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
 
     context = ContextHandler()
     context.load_session(session_data=context_sample)
 
     test_dialog = MainPublishesViewCore()
     test_dialog.context_receiver(context)
+
+    # randomize_pub_statuses(widget=test_dialog)
 
     test_dialog.populate_widget()
 

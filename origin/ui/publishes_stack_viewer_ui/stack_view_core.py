@@ -1,12 +1,10 @@
 import os
-from typing import List
 
 from PySide2 import QtWidgets, QtGui, QtCore
 from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
-from origin.ui.stack_view_UI import StackViewUI
+from origin.ui.publishes_stack_viewer_ui.stack_view_UI import StackViewUI
 from origin.ui.status_widgets.publish_status_wdg import PublishStatusWidget
-from origin.database.entities.actions import Set
 
 origin_dev_root = os.getenv("ORIGIN_ROOT")
 img_path = os.path.normpath(os.path.join(origin_dev_root, "origin/icons/play_icon_vsmall.png"))
@@ -190,7 +188,6 @@ class StackViewCore(StackViewUI):
 
 if __name__ == "__main__":
     import sys
-    import random
 
     context_sample = {'show_name': 'The_Rock',
                       'project_publishes': 'The_Rock__PUBLISHES',

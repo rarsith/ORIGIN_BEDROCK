@@ -1,12 +1,11 @@
 from PySide2 import QtWidgets
 
 from origin.ui.entity_properties_ui.custom_widgets.entity_properties_editor_UI import EntryPropertiesEditorUI
-from origin.ui.entity_properties_ui.custom_widgets.odb_links_ui import ButtonsWidget
 from origin.ui.entity_properties_ui.custom_widgets.odb_notes_ui import NotesWidget
 from origin.ui.entity_properties_ui.custom_widgets.component_viewer_core import SlotComponentsViewerCore
 from origin.ui.entity_properties_ui.custom_widgets.representation_viewer_wdg import RepresentationViewer
-from origin.ui.publishes_view_core import MainPublishesViewCore
-from origin.ui.stack_view_core import StackViewCore
+from origin.ui.publishes_viewer_ui.publishes_view_core import MainPublishesViewCore
+from origin.ui.publishes_stack_viewer_ui.stack_view_core import StackViewCore
 
 icon_path = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\dcc\icons\mvoie.png"
 

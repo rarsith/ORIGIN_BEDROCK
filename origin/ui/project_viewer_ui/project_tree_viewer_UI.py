@@ -49,6 +49,7 @@ class ProjectTreeViewerUI(QtWidgets.QWidget):
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addLayout(select_proj_layout)
         main_layout.addWidget(self.project_tree_viewer_wdg)
+        main_layout.setContentsMargins(0,0,0,0)
 
 
 

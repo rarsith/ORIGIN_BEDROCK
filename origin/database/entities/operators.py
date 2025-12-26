@@ -723,6 +723,29 @@ class DBAssetOperations(EntityOperations):
         else:
             return None
 
+    def get_current_version(self, docs: list[dict]) -> dict:
+        best = None
+
+        for doc in docs:
+            if doc.get("status") not in {"CLIENT APPROVED", "WIP"}:
+                continue
+            if "date" not in doc or "time" not in doc:
+                continue
+
+            if best is None:
+                best = doc
+                continue
+
+            if best["status"] != "CLIENT APPROVED" and doc["status"] == "CLIENT APPROVED":
+                best = doc
+                continue
+
+            if doc["status"] == best["status"]:
+                if (doc["date"], doc["time"]) > (best["date"], best["time"]):
+                    best = doc
+
+        return best
+
     def get_next_version(self):
         version_string, version = vup.version_up(self.entity.version_cnt)
         return version_string, version
@@ -734,8 +757,8 @@ class DBAssetOperations(EntityOperations):
 
 
 class AssetBreakdown(DBAsset):
-    type: Optional[str] = "db_asset_breakdown"
-    db_asset_type: Optional[str] = "db_asset_breakdown"
+    type: Optional[str] = "db_asset__breakdown"
+    db_asset_type: Optional[str] = "db_asset__breakdown"
 
 
 class StackSlot(EntityBaseModel):

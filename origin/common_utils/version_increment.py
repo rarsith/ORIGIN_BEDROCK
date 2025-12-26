@@ -23,6 +23,7 @@ def version_increment(versions_list, prefix_symbol='v'):
 
 
 def version_up(current_version: int, prefix_symbol='v'):
+
     next_version = current_version + 1
     version_string = "{0}{1:04d}".format(prefix_symbol, int(next_version))
     return version_string, next_version

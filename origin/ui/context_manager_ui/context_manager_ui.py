@@ -1,12 +1,11 @@
 import os
-import pprint
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
-from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
-from origin.ui.task_viewer_core import TaskViewerCore
+from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeViewerCore
+from origin.ui.task_viewer_ui.task_viewer_core import TaskViewerCore
 
 
 class ContextManager(QtWidgets.QWidget):

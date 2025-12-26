@@ -1,14 +1,13 @@
 import os.path
-from typing import List
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
 from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
 from origin.ui.loaders_ui.color_settings import match_color_scheme
-from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
-from origin.ui.stream_viewer_UI import StreamViewerUI
-from origin.ui.task_viewer_core import TaskViewerCore
+from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeViewerCore
+from origin.ui.stream_viewer_ui.stream_viewer_UI import StreamViewerUI
+from origin.ui.task_viewer_ui.task_viewer_core import TaskViewerCore
 from origin.database.entities.registries import registry
 from origin.dcc.dispachers.loaders import get_loader_class
 

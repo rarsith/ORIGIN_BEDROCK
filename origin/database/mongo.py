@@ -479,6 +479,23 @@ class CollectionOperators:
         except Exception as e:
             print(__file__, e)
 
+    def get_current_version(self, asset_versions_ids=None, ids_only=False):
+        pipe = OriginDBPipelines()
+        pipe.add_match_attribute("status", "WIP")
+        pipe.add_match_attribute("status", "APPROVED")
+        pipeline = pipe.create_pipeline()
+
+        if ids_only:
+            pipe.ids_only(only_id=ids_only)
+
+        try:
+            if self.db_collection is not None:
+                results = list(self.db_collection.aggregate(pipeline))
+                return results
+
+        except Exception as e:
+            print(__file__, e)
+
     def get_all_file_components(self, db_asset_version, published_by: str = None):
         pipe = OriginDBPipelines()
         pipe.add_attr_value_startswith(db_asset_version.ID, db_asset_version.id)

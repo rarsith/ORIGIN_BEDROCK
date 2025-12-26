@@ -6,12 +6,12 @@ from PySide2.QtGui import QIcon
 
 from origin.config.sessions.session_manager import SessionManager
 from origin.envars.origin_envars import ContextHandler
-from origin.ui.publishes_view_core import MainPublishesViewCore
-from origin.ui.project_tree_viewer_core import ProjectTreeViewerCore
-from origin.ui.task_viewer_core import TaskViewerCore
+from origin.ui.publishes_viewer_ui.publishes_view_core import MainPublishesViewCore
+from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeViewerCore
+from origin.ui.task_viewer_ui.task_viewer_core import TaskViewerCore
 from origin.ui.entity_properties_ui.properties_viewer import PropertiesViewer
 from origin.ui.app_launcher.app_launcher_ui import AppLauncher
-from origin.ui.sanity_checker_wdg import SanityChecker
+from origin.ui.sanity_checker_ui.sanity_checker_wdg import SanityChecker
 
 
 origin_dev_root = os.getenv("ORIGIN_ROOT")

@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 
 from origin.envars.origin_envars import ContextHandler
-from origin.ui.project_tree_viewer_UI import ProjectTreeViewerUI
+from origin.ui.project_viewer_ui.project_tree_viewer_UI import ProjectTreeViewerUI
 from origin.database.entities.operators import get_entity_class, Projects, Group, Project
 
 from origin.ui.creators_ui.create_asset_ui import CreateAssetUI
@@ -312,6 +312,29 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         """Assignment manager menu."""
         self.ui = assignment_manager_core.AssignmentManagerMainUI()
         self.ui.show()
+
+    def expand_tree_from_context(self):
+        parts = self.context_handler.entity_id.split(".")
+        parent = None
+
+        for part in parts:
+            if parent:
+                items = [parent.child(i) for i in range(parent.childCount())]
+            else:
+                items = [self.project_tree_viewer_wdg.topLevelItem(i) for i in range(self.project_tree_viewer_wdg.topLevelItemCount())]
+
+            for item in items:
+                if item.text(0) == part:
+                    item.setExpanded(True)
+                    self.project_tree_viewer_wdg.setUpdatesEnabled(False)
+                    stored_data = item.data(0, QtCore.Qt.UserRole)
+                    self.project_tree_viewer_wdg.setUpdatesEnabled(True)
+                    if stored_data.type == "asset":
+                        self.project_tree_viewer_wdg.setCurrentItem(item)
+                        item.setSelected(True)
+
+                    parent = item
+                    break
 
 
 if __name__ == '__main__':

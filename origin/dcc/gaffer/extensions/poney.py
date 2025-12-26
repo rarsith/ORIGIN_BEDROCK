@@ -14,7 +14,7 @@ def __iWantAPony( menu ) :
         script.addChild( read )
 
         duplicate = GafferScene.Duplicate( "Herd" )
-        duplicate["target"].setValue( "/cow" )
+        duplicate["target"].setValue( "/geo" )
         duplicate["copies"].setValue( 7 )
         duplicate["transform"]["translate"]["x"].setValue( 16 )
         duplicate["transform"]["rotate"]["y"].setValue( 45 )

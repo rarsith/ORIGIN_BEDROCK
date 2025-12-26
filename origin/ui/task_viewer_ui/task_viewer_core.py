@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtGui, QtCore
 from origin.envars.origin_envars import ContextHandler
-from origin.ui.task_viewer_UI import TaskViewerUI
+from origin.ui.task_viewer_ui.task_viewer_UI import TaskViewerUI
 from origin.ui.status_widgets.task_status_wdg import TaskStatusWidget
 from origin.ui.status_widgets.task_priority_wdg import TaskPriorityWidget
 from origin.database.entities.operators import (Task)

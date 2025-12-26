@@ -1,0 +1,1 @@
+pyreverse -o png -p ORIGIN_BEDROCK "C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin" --rankdir=LR

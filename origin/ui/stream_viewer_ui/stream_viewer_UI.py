@@ -53,7 +53,8 @@ class StreamViewerUI(QtWidgets.QWidget):
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addWidget(self.stack_stream_lw)
         main_layout.addLayout(buttons_layout)
-        main_layout.setStretch(1, 1)
+        main_layout.setContentsMargins(0,0,0,0)
+        # main_layout.setStretch(1, 1)
 
     def context_receiver(self, context: ContextHandler):
         self.context_handler = context
@@ -96,6 +97,7 @@ class StreamViewerUI(QtWidgets.QWidget):
             self.context_handler.db_asset_stream_id = None
             self.current_context.emit(self.context_handler)
 
+
     def create_stack_stream(self):
         self.ui = CreateStreamUI(context=self.context_handler)
         self.ui.show()
@@ -130,7 +132,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     test_dialog = StreamViewerUI(context=context_obj)
-    test_dialog.populate_streams()
+    test_dialog.populate_widget()
 
     test_dialog.show()
     sys.exit(app.exec_())
