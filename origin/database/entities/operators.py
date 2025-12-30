@@ -1,9 +1,7 @@
-from typing import List, Tuple
+from pydantic import BaseModel, Field
+from typing import List, Tuple, Optional, ClassVar
 
 from origin.database.collections.connections import ProjectCollections
-
-from pydantic import BaseModel, Field
-from typing import Optional, ClassVar
 from origin.database.mongo import DBSet, DBAdd, CollectionOperators, FindInCollection, DBRemove
 from origin.common_utils import version_increment as vup
 
@@ -252,32 +250,38 @@ class DCCVersionOperations:
 
 
 class PublishOptions(BaseModel):
-    PARENT_DB_ASSET_ID: ClassVar[str] = "parent_db_asset_id"
-    parent_db_asset_id: Optional[str] = None
+    PUBLISH_TYPE: ClassVar[str] = "publish_type"
+    publish_type: Optional[str] = None
 
-    PARENT_DB_ASSET_TYPE: ClassVar[str] = "parent_db_asset_type"
-    parent_db_asset_type: Optional[str] = None
+    DB_ASSET_STREAM_ID: ClassVar[str] = "db_asset_stream_id"
+    db_asset_stream_id: Optional[str] = None
+
+    CONTEXT_OBJECT: ClassVar[str] = "context_object"
+    context_object: Optional[str] = None
+
+    DB_ASSET_OC: ClassVar[str] = "db_asset_qc"
+    db_asset_qc: Optional[str] = None
+
+    USER_FILE_FORMATS: ClassVar[str] = "user_file_formats"
+    user_file_formats: Optional[str] = None
 
     PERSISTENT_FILE_FORMATS: ClassVar[str] = "persistent_file_formats"
     persistent_file_formats: Optional[str] = None
 
-    QUALITY_CHECKS: ClassVar[str] = "quality_checks"
-    quality_checks: Optional[str] = None
+    MATERIAL_COLLECTIONS: ClassVar[str] = "material_collections"
+    material_collections: Optional[str] = None
 
-    OPTIONAL_FILE_FORMATS: ClassVar[list] = "optional_file_formats"
-    optional_file_formats: Optional[list] = None
+    INJECT_TEXTURES_PATH: ClassVar[str] = "inject_textures_path"
+    inject_textures_path: Optional[str] = None
 
-    COLLECTIONS: ClassVar[dict] = "collections"
-    collections: Optional[dict] = None
+    STACK_DB_ASSET_ID: ClassVar[str] = "stack_db_asset_id"
+    stack_db_asset_id: Optional[str] = None
 
-    REVIEW_OPTIONS: ClassVar[list] = "review_options"
-    review_options: Optional[list] = None
+    REVIEW_MEDIUM: ClassVar[str] = "review_medium"
+    review_medium: Optional[str] = None
 
-    ADDITIONAL_OPERATIONS: ClassVar[list] = "additional_operations"
-    additional_operations: Optional[list] = None
-
-    STACK_STREAM_ID: ClassVar[str] = "stack_stream_id"
-    stack_stream_id: Optional[str] = None
+    REVIEW_OPTIONS: ClassVar[str] = "review_options"
+    review_options: Optional[str] = None
 
     PUBLISH_COMMENT_ID: ClassVar[str] = "publish_comment_id"
     publish_comment_id: Optional[str] = None
@@ -285,8 +289,73 @@ class PublishOptions(BaseModel):
     PUBLISH_STATUS: ClassVar[str] = "publish_status"
     publish_status: Optional[str] = None
 
-    PUBLISH_TYPE: ClassVar[str] = "publish_type"
-    publish_type: Optional[str] = None
+
+class PublishTypes(BaseModel):
+    GEOMETRY: ClassVar[str] = "geometry"
+    geometry: Optional[str] = None
+
+    CAMERA: ClassVar[str] = "camera"
+    camera: Optional[str] = None
+
+    TURNTABLE_CAMERA: ClassVar[str] = "turntable_camera"
+    turntable_camera: Optional[str] = None
+
+    TEXTURE_SET: ClassVar[str] = "texture_set"
+    texture_set: Optional[str] = None
+
+    TEXTURE: ClassVar[str] = "texture"
+    texture: Optional[str] = None
+
+    RIG_MODULE: ClassVar[str] = "rig_module"
+    rig_module: Optional[str] = None
+
+    ANIMATION_RIG: ClassVar[str] = "animation_rig"
+    animation_rig: Optional[str] = None
+
+    GROOM: ClassVar[str] = "groom"
+    groom: Optional[str] = None
+
+    LOOK: ClassVar[str] = "look"
+    look: Optional[str] = None
+
+    FX_CACHE: ClassVar[str] = "fx_cache"
+    fx_cache: Optional[str] = None
+
+    SCENE: ClassVar[str] = "scene"
+    scene: Optional[str] = None
+
+    HDA: ClassVar[str] = "hda"
+    hda: Optional[str] = None
+
+    EDITORIAL: ClassVar[str] = "editorial"
+    editorial: Optional[str] = None
+
+    RENDER: ClassVar[str] = "render"
+    render: Optional[str] = None
+
+    COMP: ClassVar[str] = "comp"
+    comp: Optional[str] = None
+
+    TEMPLATE: ClassVar[str] = "template"
+    template: Optional[str] = None
+
+    USD_ASSEMBLY: ClassVar[str] = "usd_assembly"
+    usd_assembly: Optional[str] = None
+
+    IMG_SEQ: ClassVar[str] = "img_seq"
+    img_seq: Optional[str] = None
+
+    ANIMATION: ClassVar[str] = "animation"
+    animation: Optional[str] = None
+
+    IMAGE: ClassVar[str] = "image"
+    image: Optional[str] = None
+
+    REFERENCE: ClassVar[str] = "reference"
+    reference: Optional[str] = None
+
+    ASSET_STACK: ClassVar[str] = "asset_stack"
+    asset_stack: Optional[str] = None
 
 
 class EntityBaseModel(BaseModel):

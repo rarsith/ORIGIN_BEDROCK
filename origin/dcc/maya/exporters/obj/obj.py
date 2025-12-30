@@ -10,7 +10,11 @@ import maya.cmds as cmds
 class MayaOBJExporter:
     obj_file = "obj"
 
-    def __init__(self, options, object_transform: str, context: ContextHandler):
+    def __init__(self,
+                 options,
+                 object_transform: str,
+                 context: ContextHandler):
+
         self.options = options
         self.object_transform = object_transform
         self.context_handler = context
@@ -26,7 +30,9 @@ class MayaOBJExporter:
     def run_export(self):
         full_path = self.set_output_path(file_format=self.obj_file)
         obj_file_path = f"{full_path}.obj"
+
         cmds.select(self.object_transform, r=True)
+
         obj_export_options = ["groups=0", "ptgroups=0", "materials=0", "smoothing=0", "normals=0"]
         export_options_str = ";".join(obj_export_options)
 

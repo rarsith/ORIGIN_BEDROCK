@@ -122,12 +122,7 @@ class CreateAssetUI(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    try:
-        create_asset.close()
-        create_asset.deleteLater()
-    except:
-        pass
-    create_asset = CreateAssetUI()
-    create_asset.show()
-    sys.exit(app.exec_())
+    from origin.ui.tests.manual_cotext import test_ui
+    test_ui(main_widget=CreateAssetUI)
+
+

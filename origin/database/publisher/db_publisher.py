@@ -5,14 +5,17 @@ from origin.paths.output_paths import OriginOSPathHandler
 
 
 class DBPublisher:
-    def __init__(self, options):
-        self.options = options
+    def __init__(self, options=None):
+
         self.context_handler = ContextHandler()
 
-        if isinstance(self.options["context_object"], dict):
-            self.context_handler.load_session(self.options["context_object"])
-        else:
-            self.context_handler = self.options["context_object"]
+        if options is not None:
+            self.options = options
+
+            if isinstance(self.options["context_object"], dict):
+                self.context_handler.load_session(self.options["context_object"])
+            else:
+                self.context_handler = self.options["context_object"]
 
     def create_db_asset(self, context, parent, publish_type):
         create_entity = Create(context=context)

@@ -4,7 +4,6 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
-      <excludeFolder url="file://$MODULE_DIR$/origin/dcc/maya/template_scenes" />
       <excludeFolder url="file://$MODULE_DIR$/origin/python_shared" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (ORIGIN_BEDROCK)" jdkType="Python SDK" />

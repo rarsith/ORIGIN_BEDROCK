@@ -4,10 +4,10 @@ rem \---- Codebase Root
 set "ORIGIN_ROOT=C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK"
 
 rem \---- Maya Installation
-set "MAYA=D:\Program Files\Autodesk\Maya2025"
+set "APP=D:\Program Files\Autodesk\Maya2025"
 
 rem \---- Maya Executable
-set "MAYABIN=%MAYA%\bin"
+set "APP_BIN=%APP%\bin"
 
 set "USD_INSTALL_DIR=%MAYA%\USD"
 set "PATH=%USD_INSTALL_DIR%\bin;%MAYABIN%;%PATH%"

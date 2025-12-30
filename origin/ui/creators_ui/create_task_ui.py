@@ -81,29 +81,5 @@ class CreateTaskUI(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'New_State',
-                      'project_publishes': 'New_State__PUBLISHES',
-                      'project_work': 'New_State__WORK',
-                      'project_control': 'New_State__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr.red_hulk',
-                      'entity_name': 'red_hulk',
-                      'db_asset_id': 'New_State.assets.chr.red_hulk.red_hulk.modeling.helmet',
-                      'entity_type': 'asset',
-                      'entity_id': 'New_State.assets.chr.red_hulk',
-                      'task_name': "modeling",
-                      'task_type': "modeling"}
-
-    context_obj = ContextHandler()
-    context_obj.load_session(session_data=context_sample)
-
-
-
-    app = QtWidgets.QApplication(sys.argv)
-    try:
-        create_asset.close()
-        create_asset.deleteLater()
-    except:
-        pass
-    create_asset = CreateTaskUI(context=context_obj)
-    create_asset.show()
-    sys.exit(app.exec_())
+    from origin.ui.tests.manual_cotext import test_ui
+    test_ui(main_widget=CreateTaskUI)

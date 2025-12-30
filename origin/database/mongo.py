@@ -479,14 +479,45 @@ class CollectionOperators:
         except Exception as e:
             print(__file__, e)
 
-    def get_current_version(self, asset_versions_ids=None, ids_only=False):
-        pipe = OriginDBPipelines()
-        pipe.add_match_attribute("status", "WIP")
-        pipe.add_match_attribute("status", "APPROVED")
-        pipeline = pipe.create_pipeline()
+    def get_current_version(self, limit: int = 1, **filters):
+        # {"name": {"$regex": f"^{prefix}"} can be used as a key argument in the filters
+        # example: name={"$regex": f"^{prefix}"}
 
-        if ids_only:
-            pipe.ids_only(only_id=ids_only)
+        match_attr = {
+            "status": {"$in": ["CLIENT APPROVED", "WIP"]},
+            **filters
+        }
+
+        pipeline = [
+            {
+                "$match": match_attr
+            },
+            {
+                "$addFields": {
+                    "statusPriority": {
+                        "$cond": [
+                            {"$eq": ["$status", "CLIENT APPROVED"]},
+                            1,
+                            0
+                        ]
+                    }
+                }
+            },
+
+            {"$addFields": {
+                "datetime": {
+                    "$dateFromString": {"dateString": {"$concat": ["$date", "T", "$time"]}}}}},
+
+            {
+                "$sort": {
+                    "statusPriority": -1,
+                    "datetime": -1
+                }
+            },
+            {
+                "$limit": limit
+            }
+        ]
 
         try:
             if self.db_collection is not None:

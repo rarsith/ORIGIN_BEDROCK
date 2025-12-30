@@ -77,6 +77,7 @@ class StreamViewerUI(QtWidgets.QWidget):
 
         curr_asset_type = self.context_handler.entity_type
         stack_steams = asset_doc.stack_streams
+        print(stack_steams)
 
         if curr_asset_type != "group":
             if stack_steams is None:

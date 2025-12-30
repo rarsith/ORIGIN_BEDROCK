@@ -259,47 +259,5 @@ class ContextManagerMainUI(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    import sys
-
-    origin_dev_root = os.getenv("ORIGIN_ROOT")
-    qss_style_file = os.path.normpath(
-        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
-
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.props',
-                      'entity_name': 'rock',
-                      'entity_id': 'The_Rock.assets.props.rock',
-                      'asset_breakdown_id': 'The_Rock.assets.props.rock.breakdown',
-                      'entity_type': 'asset',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "The_Rock.assets.props.rock.modeling",
-                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.rock_main',
-                      'db_asset_stream_id': 'The_Rock.assets.props.knife.rock_main',
-                      'stack_id': 'The_Rock.assets.props.knife.rock_main.asset_stack',
-                      }
-
-    def update_envar(env_dict):
-        for key, value in env_dict.items():
-            os.environ[key] = value
-
-    update_envar(context_sample)
-
-    # context_obj = ContextHandler()
-    # context_obj.load_session(session_data=context_sample)
-
-    app = QtWidgets.QApplication(sys.argv)
-    font = app.instance().setFont(QtGui.QFont())
-
-    test_dialog = ContextManagerMainUI()
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        test_dialog.setStyleSheet(_style)
-
-    # test_dialog.populate_widget()
-    test_dialog.show()
-    sys.exit(app.exec_())
+    from origin.ui.tests.manual_cotext import test_ui
+    test_ui(main_widget=ContextManagerMainUI)

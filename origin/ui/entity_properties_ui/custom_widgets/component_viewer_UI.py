@@ -67,7 +67,6 @@ class SlotComponentsViewerUI(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    test_dialog = SlotComponentsViewerUI()
-    test_dialog.show()
-    sys.exit(app.exec_())
+    from origin.ui.tests.manual_cotext import test_ui
+
+    test_ui(main_widget=SlotComponentsViewerUI)

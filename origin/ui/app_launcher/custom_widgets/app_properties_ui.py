@@ -222,10 +222,7 @@ class AppProperties(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
-    import sys
+    from origin.ui.tests.manual_cotext import test_ui
+    test_ui(main_widget=AppProperties)
 
-    app = QtWidgets.QApplication(sys.argv)
 
-    test_dialog = AppProperties()
-    test_dialog.show()
-    sys.exit(app.exec_())

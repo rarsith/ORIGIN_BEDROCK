@@ -28,7 +28,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.current_step = 0
 
-        self.collected_options = {"publish_type": self.publish_type}
+        self.publish_options.publish_type = self.publish_type
 
         self.create_widgets()
         self.create_layout()
@@ -79,7 +79,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         for widget in self.widgets:
             if hasattr(widget, "reinitialize"):
-                widget.reinitialize(pub_options=self.collected_options)
+                widget.reinitialize(pub_options=self.publish_options.__dict__)
             self.widget_container.addWidget(widget)
         self.widget_container.setCurrentIndex(0)
 

@@ -1,7 +1,6 @@
 import os
 
 from origin.dcc.maya.exporters.template import MayaPlayblastTemplateExporter
-from origin.dcc.abc.template_exporter import TemplateExporter
 from origin.envars.origin_envars import ContextHandler
 
 

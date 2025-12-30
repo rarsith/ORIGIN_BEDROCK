@@ -55,9 +55,14 @@ class Publish(QtWidgets.QWidget):
         master_scene_path = current_scene.save_current_file()
         options["master_scene"] = master_scene_path
 
+        print("REACHED BATCH")
+
         publisher_type = BatchProcessing(options=options, task="publish")
         publisher_type.run()
 
+        print("REACHED END BATCH")
 
 if __name__ == "__main__":
-   pass
+    from origin.ui.tests.manual_cotext import test_ui
+
+    test_ui(main_widget=Publish)

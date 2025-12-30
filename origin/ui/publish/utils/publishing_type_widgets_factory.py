@@ -1,3 +1,4 @@
+from origin.database.entities.operators import PublishTypes
 from origin.envars.origin_envars import ContextHandler
 from origin.ui.publish.publisher.publisher import Publish
 from origin.ui.publish.quality_checks.quality_checks import QcGhost
@@ -10,10 +11,9 @@ from origin.ui.stack_management.asset_stack_manager_ui import AssetStackManager
 
 
 def get_publish_type(context: ContextHandler, pub_type):
-    context_handler = context
 
     pub_types = {
-        "geometry": [
+        PublishTypes.GEOMETRY: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -24,7 +24,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "camera": [
+        PublishTypes.CAMERA: [
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
@@ -32,14 +32,14 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "turntable_camera": [
+        PublishTypes.TURNTABLE_CAMERA: [
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
             Publish(context=context)
         ],
 
-        "texture_set": [
+        PublishTypes.TEXTURE_SET: [
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
@@ -47,17 +47,17 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "texture": [
+        PublishTypes.TEXTURE: [
             QcGhost(),
             Publish(context=context)
         ],
 
-        "rig_module": [
+        PublishTypes.RIG_MODULE: [
             QcGhost(),
             Publish(context=context)
         ],
 
-        "animation_rig": [
+        PublishTypes.ANIMATION_RIG: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -66,7 +66,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "groom": [
+        PublishTypes.GROOM: [
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
@@ -74,7 +74,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "look": [
+        PublishTypes.LOOK: [
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
@@ -82,7 +82,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "fx_cache": [
+        PublishTypes.FX_CACHE: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -91,7 +91,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "scene": [
+        PublishTypes.SCENE: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -100,7 +100,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "hda": [
+        PublishTypes.HDA: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -109,23 +109,14 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "editorial": [
+        PublishTypes.EDITORIAL: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
             Publish(context=context)
         ],
 
-        "render": [
-            EntryStackStream(context=context),
-            QcGhost(),
-            FileTypes(),
-            AssetStackManager(),
-            PreviewOptions(),
-            Publish(context=context)
-        ],
-
-        "comp": [
+        PublishTypes.RENDER: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -134,15 +125,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "template": [
-            EntryStackStream(context=context),
-            QcGhost(),
-            AssetStackManager(),
-            PreviewOptions(),
-            Publish(context=context)
-        ],
-
-        "usd_assembly": [
+        PublishTypes.COMP: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -151,7 +134,15 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "img_seq": [
+        PublishTypes.TEMPLATE: [
+            EntryStackStream(context=context),
+            QcGhost(),
+            AssetStackManager(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
+
+        PublishTypes.USD_ASSEMBLY: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -160,7 +151,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "animation": [
+        PublishTypes.IMG_SEQ: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -169,7 +160,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "image": [
+        PublishTypes.ANIMATION: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -178,7 +169,7 @@ def get_publish_type(context: ContextHandler, pub_type):
             Publish(context=context)
         ],
 
-        "reference": [
+        PublishTypes.IMAGE: [
             EntryStackStream(context=context),
             QcGhost(),
             FileTypes(),
@@ -186,6 +177,20 @@ def get_publish_type(context: ContextHandler, pub_type):
             PreviewOptions(),
             Publish(context=context)
         ],
+
+        PublishTypes.REFERENCE: [
+            EntryStackStream(context=context),
+            QcGhost(),
+            FileTypes(),
+            AssetStackManager(),
+            PreviewOptions(),
+            Publish(context=context)
+        ],
+
+        PublishTypes.ASSET_STACK: [
+            PreviewOptions(),
+            Publish(context=context)
+        ]
     }
 
     if pub_type in list(pub_types.keys()):
@@ -227,5 +232,5 @@ if __name__ == "__main__":
     con = ContextHandler()
     con.load_session(context_sample)
 
-    typeso = get_publish_type(context=con, pub_type="geometry")
+    typeso = get_publish_type(context=con, pub_type=PublishTypes.GEOMETRY)
     print(typeso)

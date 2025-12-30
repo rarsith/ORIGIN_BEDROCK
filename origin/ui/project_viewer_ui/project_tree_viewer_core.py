@@ -314,37 +314,35 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.ui.show()
 
     def expand_tree_from_context(self):
-        parts = self.context_handler.entity_id.split(".")
-        parent = None
+        if self.context_handler.show_name is not None:
+            parts = self.context_handler.entity_id.split(".")
+            parent = None
 
-        for part in parts:
-            if parent:
-                items = [parent.child(i) for i in range(parent.childCount())]
-            else:
-                items = [self.project_tree_viewer_wdg.topLevelItem(i) for i in range(self.project_tree_viewer_wdg.topLevelItemCount())]
+            for part in parts:
+                if parent:
+                    items = [parent.child(i) for i in range(parent.childCount())]
+                else:
+                    items = [self.project_tree_viewer_wdg.topLevelItem(i) for i in range(self.project_tree_viewer_wdg.topLevelItemCount())]
 
-            for item in items:
-                if item.text(0) == part:
-                    item.setExpanded(True)
-                    self.project_tree_viewer_wdg.setUpdatesEnabled(False)
-                    stored_data = item.data(0, QtCore.Qt.UserRole)
-                    self.project_tree_viewer_wdg.setUpdatesEnabled(True)
-                    if stored_data.type == "asset":
-                        self.project_tree_viewer_wdg.setCurrentItem(item)
-                        item.setSelected(True)
+                for item in items:
+                    if item.text(0) == part:
+                        item.setExpanded(True)
+                        self.project_tree_viewer_wdg.setUpdatesEnabled(False)
+                        stored_data = item.data(0, QtCore.Qt.UserRole)
+                        self.project_tree_viewer_wdg.setUpdatesEnabled(True)
+                        if stored_data.type == "asset":
+                            self.project_tree_viewer_wdg.setCurrentItem(item)
+                            item.setSelected(True)
 
-                    parent = item
-                    break
+                        parent = item
+                        break
 
 
 if __name__ == '__main__':
     import sys
+    from origin.ui.tests.manual_cotext import test_ui
 
-    app = QtWidgets.QApplication(sys.argv)
-    font = app.instance().setFont(QtGui.QFont())
+    app, ui = test_ui(main_widget=ProjectTreeViewerCore, run_app=False)
+    ui.set_show_to("The_Rock")
 
-    test_dialog = ProjectTreeViewerCore()
-    test_dialog.set_show_to("The_Rock")
-    # test_dialog.isolate_to_context(asset_id)
-    test_dialog.show()
     sys.exit(app.exec_())

@@ -246,25 +246,5 @@ class AppLauncherMainUI(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    import sys
-    import os
-
-    origin_dev_root = os.getenv("ORIGIN_ROOT")
-    qss_style_file = os.path.normpath(
-        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
-
-    app = QtWidgets.QApplication.instance()
-    if app is None:
-        app = QtWidgets.QApplication(sys.argv)
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
-
-    font = app.font()
-    font.setPointSize(7)
-    app.setFont(font)
-
-    test_dialog = AppLauncherMainUI()
-    test_dialog.show()
-    sys.exit(app.exec_())
+    from origin.ui.tests.manual_cotext import test_ui
+    test_ui(main_widget=AppLauncherMainUI)

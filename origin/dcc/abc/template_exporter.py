@@ -12,7 +12,7 @@ class TemplateExporter(ABC):
         pass
 
     @abstractmethod
-    def save_maya_scene(self):
+    def save_scene(self):
         pass
 
     @abstractmethod

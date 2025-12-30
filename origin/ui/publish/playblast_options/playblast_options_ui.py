@@ -52,6 +52,8 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
 
         if dcc is not None:
             self.dcc = dcc
+        else:
+            self.dcc = "maya"
 
         self.context_handler = context
 
@@ -62,6 +64,8 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
                                  self.dcc,
                                  "playblast"
                                  ])
+        print ( "ID ROOT:  ", self.id_root )
+
         self.create_widgets()
         self.create_layout()
         self.create_connections()
@@ -337,38 +341,8 @@ class PlayblastOptionsUI(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     import sys
+    from origin.ui.tests.manual_cotext import test_ui
 
-    origin_dev_root = os.getenv("ORIGIN_ROOT")
-    qss_style_file = os.path.normpath(
-        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
+    app, ui = test_ui(main_widget=PlayblastOptionsUI, run_app=False, dcc="maya")
 
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'entity_type': 'asset',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling",
-                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer',
-                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
-                      }
-
-    context_obj = ContextHandler()
-    context_obj.load_session(session_data=context_sample)
-
-    app = QtWidgets.QApplication.instance()
-    if app is None:
-        app = QtWidgets.QApplication(sys.argv)
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
-
-    test_dialog = PlayblastOptionsUI(context=context_obj, dcc='maya')
-
-    test_dialog.show()
     sys.exit(app.exec_())

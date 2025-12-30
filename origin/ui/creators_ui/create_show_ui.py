@@ -100,9 +100,7 @@ class CreateShowUI(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+    from origin.ui.tests.manual_cotext import test_ui
 
-    create_shot = CreateShowUI()
-    create_shot.show()
+    test_ui(main_widget=CreateShowUI)
 
-    sys.exit(app.exec_())

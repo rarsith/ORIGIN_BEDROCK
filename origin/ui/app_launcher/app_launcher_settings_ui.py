@@ -90,10 +90,5 @@ class AppLauncherSettings(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    test_dialog = AppLauncherSettings()
-    test_dialog.show()
-    sys.exit(app.exec_())
+    from origin.ui.tests.manual_cotext import test_ui
+    test_ui(main_widget=AppLauncherSettings)

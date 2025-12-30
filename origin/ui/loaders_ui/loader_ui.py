@@ -597,39 +597,6 @@ class LoaderMainUI(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    import sys
+    from origin.ui.tests.manual_cotext import test_ui
 
-    origin_dev_root = os.getenv("ORIGIN_ROOT")
-    qss_style_file = os.path.normpath(
-        os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
-
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'entity_type': 'asset',}
-    # 'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer',
-    # 'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer',
-
-    # 'task_name': "modeling",
-    # 'task_type': "modeling",
-    # 'task_id': "The_Rock.assets.chr.tafer.modeling"}
-
-    context_obj = ContextHandler()
-    context_obj.load_session(session_data=context_sample)
-
-    app = QtWidgets.QApplication(sys.argv)
-    font = app.instance().setFont(QtGui.QFont())
-
-    test_dialog = LoaderMainUI(context=context_obj)
-
-    with open(qss_style_file, "r") as f:
-        _style = f.read()
-        test_dialog.setStyleSheet(_style)
-
-    # test_dialog.populate_widget()
-    test_dialog.show()
-    sys.exit(app.exec_())
+    test_ui(main_widget=LoaderMainUI)
