@@ -11,7 +11,7 @@ class CreateStreamUI(QtWidgets.QDialog):
     def __init__(self, context: ContextHandler, parent=None):
         super(CreateStreamUI, self).__init__(parent)
 
-        self.setWindowTitle("Create Asset")
+        self.setWindowTitle("Create Asset Stream")
 
         self.context_handler = context
 
@@ -63,13 +63,15 @@ class CreateStreamUI(QtWidgets.QDialog):
 
     def db_commit(self):
         asset_class = extract_asset_class(context=self.context_handler)
+
         stream_name = self.stream_name_le.text()
-        db_asset_id = Create(context=self.context_handler).db_asset_stream(parent=self.context_handler.entity_id,
+        stream_db_asset_id = Create(context=self.context_handler).db_asset_stream(parent=self.context_handler.entity_id,
                                                                            name=stream_name)
 
-        stream_stack_db_asset = Create(context=self.context_handler).asset_stack(parent_id=db_asset_id)
+        stream_stack_db_asset = Create(context=self.context_handler).asset_stack(parent_id=stream_db_asset_id)
+        asset_class.operations().add_stack_stream(data=stream_db_asset_id)
 
-        asset_class.operations().add_stack_stream(data=db_asset_id)
+        stream_breakdown = Create(context=self.context_handler).asset_breakdown(parent_id=stream_stack_db_asset)
 
         self.stream_name_le.clear()
 

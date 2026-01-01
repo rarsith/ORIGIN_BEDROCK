@@ -182,7 +182,7 @@ class DbConstructors:
             _id=entity_id,
             name=name,
             active=True,
-            type="db_asset_stream",
+            type="db_asset__stream",
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
@@ -298,18 +298,22 @@ class DbConstructors:
 
     def asset_breakdown_construct(self, parent_id):
         parent_name = parent_id.rsplit(".", 1)[1]
-        compiled_id = ".".join([parent_id, "breakdown"])
+        parent_name_split = parent_id.rsplit(".", 1)[0]
+        compiled_id = ".".join([parent_name_split, "breakdown"])
         compiled_name = "__".join([parent_name, "breakdown"])
 
         parent_doc_data = self.context_handler.database_handler().get_db_document_by_id(
-            db_collection=self.context_handler.show_name, doc_id=parent_id)
+                                                                                        db_collection=self.context_handler.project_publishes,
+                                                                                        doc_id=parent_id
+                                                                                        )
+
         parent_doc = Asset(**parent_doc_data)
 
         document = AssetBreakdown(
             _id=compiled_id,
             name=compiled_name,
             active=True,
-            type="breakdown",
+            type="db_asset__breakdown",
             parent=parent_id,
             children=[],
             origin_db_path=parent_id,
@@ -323,12 +327,12 @@ class DbConstructors:
 
         db_asset_breakdown_doc = document.model_dump(by_alias=True)
 
-        parent_doc.operations().set_asset_breakdown(breakdown_id=compiled_id)
+        parent_doc.operations().set_stream_breakdown(breakdown_id=compiled_id)
 
         return db_asset_breakdown_doc
 
     def asset_breakdown_version_construct(self, input_data: dict):
-        compiled_parent_id = ".".join([self.context_handler.entity_id, "breakdown"])
+        compiled_parent_id = ".".join([self.context_handler.db_asset_stream_id, "breakdown"])
         data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
         parent_data = data_ops.entity_document(doc_id=compiled_parent_id)
         parent_doc = DBAsset(**parent_data)
@@ -337,8 +341,8 @@ class DbConstructors:
         parent_doc.operations().update_version_count(1)
 
         set_display_name = "_".join(
-            [self.context_handler.entity_name,
-             "_breakdown",
+            [self.context_handler.db_asset_stream_id,
+             "__breakdown",
              f"_{version_string}"])
 
         entity_id = ".".join([compiled_parent_id, version_string])
@@ -405,6 +409,7 @@ class DbConstructors:
         data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
         all_breakdown_slots = self.context_handler.database_handler().get_asset_breakdown_latest_version()
         context_slots = all_breakdown_slots.data
+        print(context_slots)
 
         breakdown_data = []
         stack_resolved_data = {}
@@ -412,7 +417,7 @@ class DbConstructors:
 
             for db_stream in context_slots:
                 stack_resolved_data[db_stream] = {}
-                for slot, db_asset_id in context_slots[db_stream]["db_assets"].items():
+                for slot, db_asset_id in context_slots["db_assets"].items():
                     stack_resolved_data[db_stream][slot] = ""
 
                     db_asset_db_doc = data_ops.entity_document(doc_id=db_asset_id)
@@ -496,7 +501,7 @@ class DbConstructors:
         else:
             return False
 
-    def asset_stack_version_construct(self, status, breakdown_version_id=None):
+    def asset_stack_version_construct(self, status, input_slots: dict = None):
         compiled_parent_id = ".".join([self.context_handler.db_asset_stream_id, "asset_stack"])
         data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
         parent_data = data_ops.entity_document(doc_id=compiled_parent_id)
@@ -514,10 +519,12 @@ class DbConstructors:
         entity_id = ".".join([compiled_parent_id, version_string])
         parent_doc.operations().add_child(db_collection=self.context_handler.project_publishes, child_id=entity_id)
 
-        input_data = self.compile_stack_input_data()
+        if input_slots is None:
+            input_data = self.compile_stack_input_data()
+        else:
+            input_data = input_slots
 
         document = AssetStackVersion(
-
             _id=entity_id,
             name=entity_id,
             active=True,
@@ -689,27 +696,28 @@ class DbConstructors:
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.props',
-                      'entity_name': 'knife',
-                      'entity_id': 'The_Rock.assets.props.knife',
-                      'asset_breakdown_id': 'The_Rock.assets.props.knife.breakdown',
+    context_sample = {'show_name': 'Black_Rock',
+                      'project_publishes': 'Black_Rock__PUBLISHES',
+                      'project_work': 'Black_Rock__WORK',
+                      'project_control': 'Black_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.characters',
+                      'entity_name': 'tafar',
+                      'entity_id': 'Black_Rock.assets.characters.tafar',
+                      'asset_breakdown_id': 'Black_Rock.assets.characters.tafar.tafar_MAIN.breakdown',
                       'entity_type': 'asset',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "The_Rock.assets.props.knife.modeling",
-                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.knife_main',
-                      'db_asset_stream_id': 'The_Rock.assets.props.knife.knife_main',
-                      'stack_id': 'The_Rock.assets.props.knife.knife_main.asset_stack',
+                      'task_id': "Black_Rock.assets.characters.tafar.modeling",
+                      'db_asset_id': 'Black_Rock.assets.characters.tafar.geometry.tafar_MAIN',
+                      'db_asset_stream_id': 'Black_Rock.assets.characters.tafar.tafar_MAIN',
+                      'stack_id': 'Black_Rock.assets.characters.tafar.tafar_MAIN.asset_stack',
                       }
 
     context_class = ContextHandler()
     context_class.load_session(session_data=context_sample)
 
     xx = DbConstructors(context=context_class)
-    xx.compile_entity_stack_input_data()
+    zzz = xx.asset_breakdown_construct(parent_id="Green_Rock.assets.characters.tafar.tafar_WWWW.asset_stack")
+    print(zzz)
     # doc_data =
     # print(doc_data)

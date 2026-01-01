@@ -66,7 +66,12 @@ class CreateShowUI(QtWidgets.QDialog):
         sequences_id = db_create.group(name="sequences", parent=context_handler.show_name)
         rnd_seq_id = db_create.group(name="RND", parent=sequences_id)
         rnd_shot_id = db_create.asset(name="0100", parent=rnd_seq_id)
-        rnd_shot_breakdown_id = db_create.asset_breakdown(parent_id=rnd_shot_id)
+        rnd_shot_breakdown_id = db_create.db_asset_stream(parent=rnd_shot_id, name="0100")  # asset_breakdown(parent_id=rnd_shot_id)
+
+        characters_cat_id = db_create.group(name="characters", parent=assets_id)
+        props_cat_id = db_create.group(name="props", parent=assets_id)
+        environments_cat_id = db_create.group(name="environments", parent=assets_id)
+        vehicles_cat_id = db_create.group(name="vehicles", parent=assets_id)
 
         templates_id = db_create.group(name="templates", parent=context_handler.show_name)
         lists_id = db_create.group(name="Lists", parent=context_handler.show_name)
@@ -75,10 +80,10 @@ class CreateShowUI(QtWidgets.QDialog):
 
         dataops_id = db_create.group(name="data_ops", parent=context_handler.show_name)
         incoming_id = db_create.asset(name="incoming", parent=dataops_id)
-        incoming_breakdown_id = db_create.asset_breakdown(parent_id=incoming_id)
+        incoming_breakdown_id = db_create.db_asset_stream(parent=incoming_id, name="incoming")
 
         outgoing_id = db_create.asset(name="outgoing", parent=dataops_id)
-        outgoing_breakdown_id = db_create.asset_breakdown(parent_id=outgoing_id)
+        outgoing_breakdown_id = db_create.db_asset_stream(parent=outgoing_id, name="outgoing")
 
         maya_templates = db_create.group(name="maya", parent=templates_id)
         gaffer_templates = db_create.group(name="gaffer", parent=templates_id)
@@ -86,13 +91,10 @@ class CreateShowUI(QtWidgets.QDialog):
         video_templates = db_create.group(name="video", parent=templates_id)
 
         maya_playblast_id = db_create.asset(name="playblast", parent=maya_templates)
-        maya_playblast_breakdown = db_create.asset_breakdown(parent_id=maya_playblast_id)
+        maya_playblast_breakdown = db_create.db_asset_stream(parent=maya_playblast_id, name="playblast")
         playblast_task = db_create.task(name="template", parent=maya_playblast_id, task_type="template")
 
-        characters_cat_id = db_create.group(name="characters", parent=assets_id)
-        props_cat_id = db_create.group(name="props", parent=assets_id)
-        environments_cat_id = db_create.group(name="environments", parent=assets_id)
-        vehicles_cat_id = db_create.group(name="vehicles", parent=assets_id)
+
 
 
         self.show_name_le.clear()

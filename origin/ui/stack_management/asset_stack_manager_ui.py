@@ -166,20 +166,26 @@ if __name__ == "__main__":
     qss_style_file = os.path.normpath(
         os.path.join(origin_dev_root, "origin/ui/style/stylesheets/dark_orange/dark_orange_style.qss"))
 
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'entity_type': 'asset',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling",
-                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer',
-                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
-                      }
+    context_sample = {'asset_breakdown_id': None,
+'asset_breakdown_version_id': 'Black_Rock.assets.characters.tafar.tafar_BLACK.breakdown.v0003',
+'db_asset_id': 'Black_Rock.assets.characters.tafar.geometry.tafar_BLACK',
+'db_asset_stream_id': 'Black_Rock.assets.characters.tafar.tafar_BLACK',
+'db_asset_type': None,
+'db_asset_version_id': 'Black_Rock.assets.characters.tafar.geometry.tafar_BLACK.v0003',
+'entity_id': 'Black_Rock.assets.characters.tafar',
+'entity_name': 'tafar',
+'entity_type': 'asset',
+'origin_path_hierarchy': 'assets.characters',
+'project_control': 'Black_Rock__CONTROL',
+'project_publishes': 'Black_Rock__PUBLISHES',
+'project_work': 'Black_Rock__WORK',
+'publish_id': None,
+'show_name': 'Black_Rock',
+'stack_id': 'Black_Rock.assets.characters.tafar.tafar_BLACK.asset_stack',
+'stack_version_id': None,
+'task_id': 'Black_Rock.assets.characters.tafar.modeling',
+'task_name': 'modeling',
+'task_type': 'modeling'}
 
     context_obj = ContextHandler()
     context_obj.load_session(session_data=context_sample)

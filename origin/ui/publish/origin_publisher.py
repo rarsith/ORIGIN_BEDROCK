@@ -1,5 +1,6 @@
 import inspect
 import os
+import pprint
 
 from PySide2 import QtWidgets
 
@@ -147,7 +148,7 @@ class OriginPublisher(QtWidgets.QDialog):
         widget_selected_options = widget.get_selected_options()
         if widget_selected_options is not None:
             self.collected_options.update(widget.get_selected_options())
-            print(self.collected_options)
+            pprint.pprint(self.collected_options)
             return widget_selected_options
         else:
             return widget_selected_options

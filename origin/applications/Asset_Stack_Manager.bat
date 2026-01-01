@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+set DCC=origin_standalone
+
 REM === CONFIG ===
 set APP_DIR=%ORIGIN_ROOT%\origin\applications
 set PYTHON_EXE=%ORIGIN_ROOT%\venv\Scripts\python.exe

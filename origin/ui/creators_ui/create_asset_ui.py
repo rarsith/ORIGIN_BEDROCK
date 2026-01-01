@@ -116,7 +116,7 @@ class CreateAssetUI(QtWidgets.QDialog):
                 options_config[sel_option]()
         tasks_template.create_build_tasks()
 
-        Create(context=self.context_handler).asset_breakdown(parent_id=created_asset_id)
+
 
         self.asset_name_le.clear()
 

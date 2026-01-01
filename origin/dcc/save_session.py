@@ -23,8 +23,8 @@ def scene_session_operations_class():
     dcc = os.getenv("DCC", "standalone").lower()
 
     dcc_classes = {
-        "standalone": DummySessionOps,
-        "maya": optional_import("origin.dcc.maya.save_session.MayaSaveSession", fallback=DummySessionOps),
+        "origin_standalone": DummySessionOps,
+        "maya": optional_import("origin.dcc.maya.files_handler.save_session.MayaSaveSession", fallback=DummySessionOps),
         "houdini": optional_import("origin.dcc.houdini.save_session.HoudiniSaveSession", fallback=DummySessionOps),
         "blender": optional_import("origin.dcc.blender.save_session.BlenderSaveSession", fallback=DummySessionOps),
     }

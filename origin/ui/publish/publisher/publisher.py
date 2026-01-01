@@ -1,7 +1,10 @@
+import os
+import pprint
+
 from PySide2 import QtWidgets
 
-from origin.dcc.maya.batch.maya_batch import BatchProcessing
-from origin.dcc.save_session import scene_session_operations_class
+
+
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
@@ -48,21 +51,27 @@ class Publish(QtWidgets.QWidget):
         return {"pub_comment": get_comment_text, "pub_status": get_publishing_status}
 
     def publish(self, options):
+        dcc = os.getenv("DCC")
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
 
-        current_scene = scene_session_operations_class()
-        master_scene_path = current_scene.save_current_file()
-        options["master_scene"] = master_scene_path
+        if dcc != "origin_standalone":
+            from origin.dcc.batch_processing import BatchProcessing
+            from origin.dcc.save_session import scene_session_operations_class
 
-        print("REACHED BATCH")
+            current_scene = scene_session_operations_class()
+            master_scene_path = current_scene.save_current_file()
+            options["master_scene"] = master_scene_path
 
-        publisher_type = BatchProcessing(options=options, task="publish")
-        publisher_type.run()
+            publisher_type = BatchProcessing(options=options, task="publish")
+            publisher_type.run()
 
-        print("REACHED END BATCH")
+        else:
+            print (f"{dcc.upper()} detected. Skipping Batch Processing.")
+
+
+
 
 if __name__ == "__main__":
     from origin.ui.tests.manual_cotext import test_ui
-
     test_ui(main_widget=Publish)

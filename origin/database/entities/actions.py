@@ -328,15 +328,22 @@ class Create:
         else:
             return save_data["_id"]
 
-    def asset_stack_version(self, status, db_asset_stream_id=None):
+    #### CHECK THIS FOR CORRECTION #####
+    def asset_stack_version(self, status, db_asset_stream_id=None, slots: dict = None):
         if db_asset_stream_id is not None:
             if "__" in db_asset_stream_id:
                 rebuilt_id = db_asset_stream_id.replace("__", ".")
                 self.context_handler.db_asset_stream_id = rebuilt_id
+                print("REBUILT DB ASSET STREAM ID", rebuilt_id)
+
             else:
                 self.context_handler.db_asset_stream_id = db_asset_stream_id
+                print("PROVIDED DB ASSET STREAM ID", db_asset_stream_id)
+
+
         else:
             stack_data_current = DbConstructors(context=self.context_handler).stack_same_data_check()
+            print("STACK DATA CURRENT:  ", stack_data_current)
 
             if not stack_data_current:
                 save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(status=status)
@@ -353,6 +360,22 @@ class Create:
 
             else:
                 print("No Stack Update Needed! Continuing!")
+
+    def asset_stack_version_slots(self, status, slots: dict = None):
+        compiled_asset_stream_id = slots["geometry"]
+
+        save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(status=status, input_slots=slots)
+
+        doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+        if not doc_exists:
+            try:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+                return inserted_data.inserted_id
+
+            except Exception as e:
+                print(f"Error {e}, Nothing Done!")
+        else:
+            return save_data["_id"]
 
     def db_asset(self, parent, publish_type):
         db_asset = DbConstructors(context=self.context_handler).db_asset_construct(parent_id=parent,
@@ -501,24 +524,24 @@ class Create:
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.chr',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'asset_breakdown_id': 'The_Rock.assets.chr.tafer.breakdown',
+    context_sample = {'show_name': 'Black_Rock',
+                      'project_publishes': 'Black_Rock__PUBLISHES',
+                      'project_work': 'Black_Rock__WORK',
+                      'project_control': 'Black_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.characters',
+                      'entity_name': 'tafar',
+                      'entity_id': 'Black_Rock.assets.characters.tafar',
+                      'asset_breakdown_id': 'Black_Rock.assets.characters.tafar.tafar_MAIN.breakdown',
                       'entity_type': 'asset',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling",
-                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
-                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
-                      'stack_id': 'The_Rock.assets.chr.tafer.tafer_main.asset_stack',
+                      'task_id': "Black_Rock.assets.characters.tafar.modeling",
+                      'db_asset_id': 'Black_Rock.assets.characters.tafar.geometry.tafar_MAIN',
+                      'db_asset_stream_id': 'Black_Rock.assets.characters.tafar.tafar_MAIN',
+                      'stack_id': 'Black_Rock.assets.characters.tafar.tafar_MAIN.asset_stack',
                       }
 
     context_class = ContextHandler()
     context_class.load_session(session_data=context_sample)
 
-    Create(context=context_class).asset_stack_version_update(status="WIP")
+    Create(context=context_class).asset_stack_version(status="WIP")

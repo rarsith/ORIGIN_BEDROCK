@@ -1,4 +1,5 @@
 import os
+import pprint
 from pathlib import Path
 from typing import Optional
 from pydantic import BaseModel
@@ -441,17 +442,16 @@ class OriginDatabaseHandler:
             else:
                 return None
 
-    def get_asset_breakdown(self):
+    def get_stream_breakdown(self):
         if self.__context.asset_breakdown_id:
             breakdown_doc_data = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
                                                             doc_id=self.__context.asset_breakdown_id)
-
             return AssetBreakdown(**breakdown_doc_data)
         else:
             return None
 
     def get_asset_breakdown_latest_version(self):
-        breakdown_doc = self.get_asset_breakdown()
+        breakdown_doc = self.get_stream_breakdown()
         if breakdown_doc is not None:
             latest_version_doc_data = breakdown_doc.operations().get_latest_version()
             if latest_version_doc_data is not None:
@@ -467,7 +467,7 @@ class OriginDatabaseHandler:
             breakdown_data = breakdown_latest_version.data
             asset_stream_id = self.__context.db_asset_stream_id
             clean_asset_stream_id = asset_stream_id.replace(".", "__")
-            context_slots = breakdown_data[clean_asset_stream_id]["db_assets"]
+            context_slots = breakdown_data["db_assets"]
             return context_slots
         else:
             return None

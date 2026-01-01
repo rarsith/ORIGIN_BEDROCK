@@ -1,4 +1,5 @@
 import os
+import pprint
 
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import Qt, QPoint
@@ -172,13 +173,15 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
         menu = QMenu()
         menu.addAction("Update to Current", lambda: self.update_slot_to_current(row_data["name"]))
         menu.addAction("Add Slot...", lambda: self.add_slot(row_data))
+        menu.addAction("Replace Slot...", lambda: self.add_slot(row_data))
+        menu.addAction("Reset Changes...", lambda: self.add_slot(row_data))
 
         # Show menu
         menu.exec_(global_pos)
 
     def update_slot_to_current(self, data):
-        for row, idx in data.items():
-            current_version_doc = self.get_current_version(doc_id=idx)
+        for row, db_doc_obj in data.items():
+            current_version_doc = self.get_current_version(db_doc_obj=db_doc_obj)
             self.populate_slot(row=row, version_doc=current_version_doc)
         # print(current_version_doc)
 
@@ -237,8 +240,10 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
         else:
             return None
 
-    def get_current_version(self, doc_id: str = None):
-        if doc_id is not None:
+    def get_current_version(self, db_doc_obj: str = None):
+        if db_doc_obj is not None:
+            doc_id = db_doc_obj.id
+
             version_parent = doc_id.rsplit(".", 1)[0]
             db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
             current_doc = db_ops.get_current_version(_id={"$regex": f"^{version_parent}"})
@@ -282,7 +287,7 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
         slot_name_item.setText(str(asset_version_name))
         self.stack_slots_loader_tw.setItem(row, 1, slot_name_item)
-        slot_name_item.setData(Qt.UserRole, asset_version_id)
+        slot_name_item.setData(Qt.UserRole, asset_doc)
 
         status_widget = QtWidgets.QLabel()
         status_widget.setText(asset_doc.status)
@@ -323,7 +328,7 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
                 slot_name_item.setText(str(asset_version_name))
                 self.stack_slots_loader_tw.setItem(row, 1, slot_name_item)
-                slot_name_item.setData(Qt.UserRole, asset_version)
+                slot_name_item.setData(Qt.UserRole, asset_doc)
 
                 status_widget = QtWidgets.QLabel()
                 status_widget.setText(asset_doc.status)
@@ -416,17 +421,26 @@ class AssetStackManagerUI(QtWidgets.QWidget):
         self.context_handler = context
         
     def publish(self):
+        gather_ui_data = {}
+
+        rows = self.stack_slots_viewer_wdg.stack_slots_loader_tw.rowCount()
+        for row in range(rows):
+            slot_name_item = self.stack_slots_viewer_wdg.stack_slots_loader_tw.item(row, 0)
+            version_id_item = self.stack_slots_viewer_wdg.stack_slots_loader_tw.item(row, 1)
+            version_id_data = version_id_item.data(Qt.UserRole)
+
+            version_id = version_id_data.id
+
+            gather_ui_data.update({slot_name_item.text(): version_id})
+        pprint.pprint(gather_ui_data)
+
         db_pub = DBPublisher()
-        db_pub.create_stack_version(context=self.context_handler)
+        db_pub.create_stack_version(context=self.context_handler, slots=gather_ui_data)
         #
         # window = OriginPublisher(context=self.context_handler, publish_type="asset_stack", parent=self)
-        # # try:
         # window.setGeometry(100, 100, 700, 300)
         # window.setWindowFlags(QtCore.Qt.Window)
         # window.show()
-
-        # except Exception as e:
-        #     print(f"Error occurred: {e}")
 
 class AssetStackManagerMain(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -438,6 +452,8 @@ class AssetStackManagerMain(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
+    os.environ["DCC"] = "origin_standalone"
+
     from origin.ui.tests.manual_cotext import test_ui
     test_ui(main_widget=AssetStackManagerUI)
 

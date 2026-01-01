@@ -1,12 +1,12 @@
 
 
-# from origin.dcc.blender.loaders.blender_file_handler import BlenderFileHandler
+# from origin.dcc.blender.files_handler.blender_file_handler import BlenderFileHandler
 
 def get_loader_class(dcc):
     dcc_loaders = {}
 
     if dcc == "maya":
-        from origin.dcc.maya.loaders.maya_file_handler import MayaFileHandler
+        from origin.dcc.maya.files_handler.files_loaders import MayaFileHandler
         dcc_loaders[dcc] = MayaFileHandler
 
     elif dcc == "gaffer":

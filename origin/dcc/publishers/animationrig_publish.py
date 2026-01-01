@@ -1,6 +1,6 @@
 import os
 
-from origin.dcc.maya.exporters.anim_rig import MayaAnimationRigExporter
+from origin.dcc.maya.publish.exporters.anim_rig import MayaAnimationRigExporter
 from origin.envars.origin_envars import ContextHandler
 
 

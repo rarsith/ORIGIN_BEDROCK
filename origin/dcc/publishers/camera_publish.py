@@ -2,7 +2,7 @@ import os
 
 from origin.dcc.abc.camera_exporter import CameraExporter
 from origin.dcc.blender.exporters.camera import BlenderCameraExporter
-from origin.dcc.maya.exporters.camera import MayaCameraExporter
+from origin.dcc.maya.publish.exporters.camera import MayaCameraExporter
 from origin.envars.origin_envars import ContextHandler
 
 

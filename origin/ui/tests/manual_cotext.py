@@ -9,21 +9,21 @@ from origin.envars.origin_envars import ContextHandler
 
 
 def _manual_test_context():
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.props',
-                      'entity_name': 'rock',
-                      'entity_id': 'The_Rock.assets.props.rock',
-                      'asset_breakdown_id': 'The_Rock.assets.props.rock.breakdown',
+    context_sample = {'show_name': 'New_Rock',
+                      'project_publishes': 'New_Rock__PUBLISHES',
+                      'project_work': 'New_Rock__WORK',
+                      'project_control': 'New_Rock__CONTROL',
+                      'origin_path_hierarchy': 'assets.characters',
+                      'entity_name': 'tafar',
+                      'entity_id': 'New_Rock.assets.characters.tafar',
+                      'asset_breakdown_id': 'New_Rock.assets.characters.tafar.breakdown',
                       'entity_type': 'asset',
                       'task_name': "modeling",
                       'task_type': "modeling",
-                      'task_id': "The_Rock.assets.props.rock.modeling",
-                      'db_asset_id': 'The_Rock.assets.props.knife.geometry.rock_main',
-                      'db_asset_stream_id': 'The_Rock.assets.props.knife.rock_main',
-                      'stack_id': 'The_Rock.assets.props.knife.rock_main.asset_stack',
+                      'task_id': "New_Rock.assets.characters.tafar.modeling",
+                      'db_asset_id': 'New_Rock.assets.characters.tafar.geometry.tafar_main',
+                      'db_asset_stream_id': 'New_Rock.assets.characters.tafar.tafar_main',
+                      'stack_id': 'New_Rock.assets.characters.tafar.tafar_main.asset_stack',
                       }
 
     context_obj = ContextHandler()

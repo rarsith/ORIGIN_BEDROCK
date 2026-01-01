@@ -1,5 +1,5 @@
 import os
-from origin.dcc.maya.exporters.maya_make_playblast import MayaMakePlayblast
+from origin.dcc.maya.publish.exporters.maya_make_playblast import MayaMakePlayblast
 from origin.envars.origin_envars import ContextHandler
 
 

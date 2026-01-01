@@ -480,8 +480,19 @@ class CollectionOperators:
             print(__file__, e)
 
     def get_current_version(self, limit: int = 1, **filters):
-        # {"name": {"$regex": f"^{prefix}"} can be used as a key argument in the filters
-        # example: name={"$regex": f"^{prefix}"}
+        """
+
+        Args:
+            limit:
+            **filters:
+
+            {"name": {"$regex": f"^{prefix}"} can be used as a key argument in the filters
+            example: name={"$regex": f"^{prefix}"}
+
+        Returns:
+
+        """
+        #
 
         match_attr = {
             "status": {"$in": ["CLIENT APPROVED", "WIP"]},

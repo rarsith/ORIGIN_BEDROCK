@@ -1,7 +1,7 @@
 import os
 import re
 
-from origin.dcc.maya.exporters.geometry import MayaGeometryExporter
+from origin.dcc.maya.publish.exporters.geometry import MayaGeometryExporter
 from origin.dcc.publishers.make_playblast import MakePlayblast
 from origin.envars.origin_envars import ContextHandler
 

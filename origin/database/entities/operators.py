@@ -533,8 +533,8 @@ class AssetOperations(EntityOperations):
                 stream_documents.append(streams_doc)
         return stream_documents
 
-    def set_asset_breakdown(self, breakdown_id):
-        DBSet(db_collection=self.entity.operations().parent_show(),
+    def set_stream_breakdown(self, breakdown_id):
+        DBSet(db_collection=self.entity.operations().project_publishes_collection(),
               entry_id=self.entity.id,
               attribute=self.entity.BREAKDOWN).attribute_value(data=breakdown_id)
 
