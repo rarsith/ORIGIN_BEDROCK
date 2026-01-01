@@ -178,7 +178,6 @@ class DbConstructors:
         set_display_name = "_".join([name, f"stream"])
 
         document = DBAsset(
-
             _id=entity_id,
             name=name,
             active=True,
@@ -409,7 +408,6 @@ class DbConstructors:
         data_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
         all_breakdown_slots = self.context_handler.database_handler().get_asset_breakdown_latest_version()
         context_slots = all_breakdown_slots.data
-        print(context_slots)
 
         breakdown_data = []
         stack_resolved_data = {}

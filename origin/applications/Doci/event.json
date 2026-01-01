@@ -1,0 +1,15 @@
+{
+  "origin_event": "publish",
+  "dcc": "maya",
+  "scene": "/path/to/scene.ma",
+  "tasks": [
+    {
+      "type": "export_character",
+      "name": "char_A"
+    },
+    {
+      "type": "export_character",
+      "name": "char_B"
+    }
+  ]
+}

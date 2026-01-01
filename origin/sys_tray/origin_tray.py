@@ -23,7 +23,6 @@ class BackgroundWorker(QObject):
     def run(self):
         self.set_root_envar()
 
-
     def set_root_envar(self):
         origin_dev_root = os.getenv("ORIGIN_ROOT")
         ORIGIN_PIPE_ROOT_PATH = Path(origin_dev_root)
@@ -131,6 +130,10 @@ class TrayApp:
         self.menu.addSeparator()
         self.menu.addAction(self.task_manager_action)
         self.menu.addSeparator()
+        self.menu.addAction(self.asset_stack_action)
+        self.menu.addAction(self.shot_stack_action)
+        self.menu.addAction(self.shot_editor_action)
+        self.menu.addSeparator()
         self.menu.addAction(self.statistics_action)
         self.menu.addSeparator()
         self.menu.addAction(self.setting_action)
@@ -147,6 +150,9 @@ class TrayApp:
         self.publisher_action = QAction("Publisher...")
         self.data_igest_action = QAction("Data Ingest...")
         self.task_manager_action = QAction("Task Manager...")
+        self.asset_stack_action = QAction("Asset Stack Manager...")
+        self.shot_stack_action = QAction("Shot Stack Manager...")
+        self.shot_editor_action = QAction("Shot Stack Editor...")
         self.statistics_action = QAction("Statistics...")
         self.setting_action = QAction("Settings...")
         self.check_runnig_env_action = QAction("Check Environment...")

@@ -139,4 +139,4 @@ class DBPublisher:
         if slots is None:
             Create(context=context).asset_stack_version(status="WIP")
         else:
-            Create(context=context).asset_stack_version_slots(status="WIP", slots=slots)
+            Create(context=context).asset_stack_version(status="WIP", slots=slots)

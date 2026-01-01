@@ -237,38 +237,6 @@ class Create:
         except Exception as e:
             print("{} Error! Nothing Created!".format(e))
 
-    def asset_breakdown(self, parent_id):
-        save_data = DbConstructors(context=self.context_handler).asset_breakdown_construct(parent_id=parent_id)
-
-        try:
-            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
-
-            if not doc_exists:
-                inserted_data = self.db_publish_collection.insert_one(save_data)
-
-                return inserted_data.inserted_id
-            else:
-                return save_data["_id"]
-
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
-
-    def asset_breakdown_version(self, data):
-        save_data = DbConstructors(context=self.context_handler).asset_breakdown_version_construct(input_data=data)
-
-        try:
-            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
-
-            if not doc_exists:
-                inserted_data = self.db_publish_collection.insert_one(save_data)
-
-                return inserted_data.inserted_id
-            else:
-                return save_data["_id"]
-
-        except Exception as e:
-            print(f"Error {e}, Nothing Done!")
-
     def task(self, name, parent, task_type):
         if parent is not None:
             create_id = ".".join([parent, name])
@@ -308,6 +276,38 @@ class Create:
         else:
             return db_asset["_id"]
 
+    def asset_breakdown(self, parent_id):
+        save_data = DbConstructors(context=self.context_handler).asset_breakdown_construct(parent_id=parent_id)
+
+        try:
+            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+
+            if not doc_exists:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                return inserted_data.inserted_id
+            else:
+                return save_data["_id"]
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
+    def asset_breakdown_version(self, data):
+        save_data = DbConstructors(context=self.context_handler).asset_breakdown_version_construct(input_data=data)
+
+        try:
+            doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+
+            if not doc_exists:
+                inserted_data = self.db_publish_collection.insert_one(save_data)
+
+                return inserted_data.inserted_id
+            else:
+                return save_data["_id"]
+
+        except Exception as e:
+            print(f"Error {e}, Nothing Done!")
+
     def asset_stack(self, parent_id):
         save_data = DbConstructors(context=self.context_handler).asset_stack_construct(parent_id=parent_id)
         doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
@@ -329,41 +329,39 @@ class Create:
             return save_data["_id"]
 
     #### CHECK THIS FOR CORRECTION #####
-    def asset_stack_version(self, status, db_asset_stream_id=None, slots: dict = None):
-        if db_asset_stream_id is not None:
-            if "__" in db_asset_stream_id:
-                rebuilt_id = db_asset_stream_id.replace("__", ".")
-                self.context_handler.db_asset_stream_id = rebuilt_id
-                print("REBUILT DB ASSET STREAM ID", rebuilt_id)
+    # def asset_stack_version(self, status, db_asset_stream_id=None, slots: dict = None):
+    #     if db_asset_stream_id is not None:
+    #         if "__" in db_asset_stream_id:
+    #             rebuilt_id = db_asset_stream_id.replace("__", ".")
+    #             self.context_handler.db_asset_stream_id = rebuilt_id
+    #             print("REBUILT DB ASSET STREAM ID", rebuilt_id)
+    #
+    #         else:
+    #             self.context_handler.db_asset_stream_id = db_asset_stream_id
+    #             print("PROVIDED DB ASSET STREAM ID", db_asset_stream_id)
+    #
+    #
+    #     else:
+    #         stack_data_current = DbConstructors(context=self.context_handler).stack_same_data_check()
+    #         print("STACK DATA CURRENT:  ", stack_data_current)
+    #
+    #         if not stack_data_current:
+    #             save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(status=status)
+    #             doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
+    #             if not doc_exists:
+    #                 try:
+    #                     inserted_data = self.db_publish_collection.insert_one(save_data)
+    #                     return inserted_data.inserted_id
+    #
+    #                 except Exception as e:
+    #                     print(f"Error {e}, Nothing Done!")
+    #             else:
+    #                 return save_data["_id"]
+    #
+    #         else:
+    #             print("No Stack Update Needed! Continuing!")
 
-            else:
-                self.context_handler.db_asset_stream_id = db_asset_stream_id
-                print("PROVIDED DB ASSET STREAM ID", db_asset_stream_id)
-
-
-        else:
-            stack_data_current = DbConstructors(context=self.context_handler).stack_same_data_check()
-            print("STACK DATA CURRENT:  ", stack_data_current)
-
-            if not stack_data_current:
-                save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(status=status)
-                doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})
-                if not doc_exists:
-                    try:
-                        inserted_data = self.db_publish_collection.insert_one(save_data)
-                        return inserted_data.inserted_id
-
-                    except Exception as e:
-                        print(f"Error {e}, Nothing Done!")
-                else:
-                    return save_data["_id"]
-
-            else:
-                print("No Stack Update Needed! Continuing!")
-
-    def asset_stack_version_slots(self, status, slots: dict = None):
-        compiled_asset_stream_id = slots["geometry"]
-
+    def asset_stack_version(self, status, slots: dict = None):
         save_data = DbConstructors(context=self.context_handler).asset_stack_version_construct(status=status, input_slots=slots)
 
         doc_exists = self.db_publish_collection.find_one({"_id": save_data["_id"]})

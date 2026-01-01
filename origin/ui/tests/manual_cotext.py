@@ -9,29 +9,51 @@ from origin.envars.origin_envars import ContextHandler
 
 
 def _manual_test_context():
-    context_sample = {'show_name': 'New_Rock',
-                      'project_publishes': 'New_Rock__PUBLISHES',
-                      'project_work': 'New_Rock__WORK',
-                      'project_control': 'New_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.characters',
-                      'entity_name': 'tafar',
-                      'entity_id': 'New_Rock.assets.characters.tafar',
-                      'asset_breakdown_id': 'New_Rock.assets.characters.tafar.breakdown',
-                      'entity_type': 'asset',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "New_Rock.assets.characters.tafar.modeling",
-                      'db_asset_id': 'New_Rock.assets.characters.tafar.geometry.tafar_main',
-                      'db_asset_stream_id': 'New_Rock.assets.characters.tafar.tafar_main',
-                      'stack_id': 'New_Rock.assets.characters.tafar.tafar_main.asset_stack',
-                      }
+    # context_sample = {'show_name': 'New_Rock',
+    #                   'project_publishes': 'New_Rock__PUBLISHES',
+    #                   'project_work': 'New_Rock__WORK',
+    #                   'project_control': 'New_Rock__CONTROL',
+    #                   'origin_path_hierarchy': 'assets.characters',
+    #                   'entity_name': 'tafar',
+    #                   'entity_id': 'New_Rock.assets.characters.tafar',
+    #                   'asset_breakdown_id': 'New_Rock.assets.characters.tafar.breakdown',
+    #                   'entity_type': 'asset',
+    #                   'task_name': "modeling",
+    #                   'task_type': "modeling",
+    #                   'task_id': "New_Rock.assets.characters.tafar.modeling",
+    #                   'db_asset_id': 'New_Rock.assets.characters.tafar.geometry.tafar_main',
+    #                   'db_asset_stream_id': 'New_Rock.assets.characters.tafar.tafar_main',
+    #                   'stack_id': 'New_Rock.assets.characters.tafar.tafar_main.asset_stack',
+    #                   }
+
+    context_sample =    {
+        'asset_breakdown_id': 'HOHO_Rock.assets.characters.tafar.tafar_MAIN.breakdown',
+        'asset_breakdown_version_id': None,
+        'db_asset_id': 'HOHO_Rock.assets.characters.tafar.geometry.tafar_MAIN',
+        'db_asset_stream_id': 'HOHO_Rock.assets.characters.tafar.tafar_MAIN',
+        'db_asset_type': '',
+        'db_asset_version_id': 'HOHO_Rock.assets.characters.tafar.geometry.tafar_MAIN.v0002',
+        'entity_id': 'HOHO_Rock.assets.characters.tafar',
+        'entity_name': 'tafar',
+        'entity_type': 'asset',
+        'origin_path_hierarchy': 'assets.characters',
+        'project_control': 'HOHO_Rock__CONTROL',
+        'project_publishes': 'HOHO_Rock__PUBLISHES',
+        'project_work': 'HOHO_Rock__WORK',
+        'publish_id': None,
+        'show_name': 'HOHO_Rock',
+        'stack_id': 'HOHO_Rock.assets.characters.tafar.tafar_MAIN.asset_stack',
+        'stack_version_id': None,
+        'task_id': 'HOHO_Rock.assets.characters.tafar.modeling',
+        'task_name': 'modeling',
+        'task_type': 'modeling'}
 
     context_obj = ContextHandler()
     context_obj.load_session(session_data=context_sample)
 
 
     for key, value in context_sample.items():
-        os.environ[key] = value
+        os.environ[key] = value if value is not None else ""
 
     return context_obj
 

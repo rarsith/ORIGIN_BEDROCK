@@ -4,7 +4,7 @@ setlocal
 set DCC=origin_standalone
 
 REM === CONFIG ===
-set APP_DIR=%ORIGIN_ROOT%\origin\applications
+set APP_DIR=%ORIGIN_ROOT%\origin\applications\Asset_Stack_Manager
 set PYTHON_EXE=%ORIGIN_ROOT%\venv\Scripts\python.exe
 set APP_SCRIPT=main.py
 
