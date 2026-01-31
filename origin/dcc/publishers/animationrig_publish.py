@@ -1,25 +1,22 @@
 import os
 
-from origin.dcc.maya.publish.exporters.anim_rig import MayaAnimationRigExporter
+from origin.dcc.publishers.handler.publisher_repository import get_dcc_exporter, PublisherType
 from origin.envars.origin_envars import ContextHandler
 
 
 class AnimationRigPublish:
-    def __init__(self, publish_options):
+    def __init__(self, options):
 
         self.exported_results = {"data": {}, "img_seq": {}, "quicktime": {}}
-        self.publishing_options = publish_options
-        self.context_handler: ContextHandler = self.publishing_options["context_object"]
+        self.options = options
+        self.context_handler: ContextHandler = self.options["context_object"]
         self.dcc = os.getenv("DCC")
 
         self.rigging_publisher = None
 
     def get_publisher_class(self, dcc):
-        classes = {
-            "maya": MayaAnimationRigExporter(options=self.publishing_options),
-        }
-        if dcc in list(classes.keys()):
-            return classes[dcc]
+        dcc_exporter = get_dcc_exporter(module_name=PublisherType.anim_rig, dcc=dcc)
+        return dcc_exporter(options=self.options)
 
     def export_file_types(self):
         exported_data = {}

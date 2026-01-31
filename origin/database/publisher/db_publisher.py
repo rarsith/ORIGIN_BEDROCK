@@ -89,29 +89,6 @@ class DBPublisher:
                                                          component_parent_id=component_parent_id,
                                                          label=file_component_type)
 
-    # def create_asset_breakdown_version(self, context: ContextHandler):
-    #     curr_breakdown_ver_doc = context.database_handler().get_asset_breakdown_latest_version()
-    #
-    #     asset_stream_id = context.db_asset_stream_id
-    #     asset_stream = asset_stream_id.replace(".", "__") if "." in asset_stream_id else asset_stream_id
-    #     stream_name = asset_stream.rsplit("__", 1)[1]
-    #
-    #     asset_breakdown = {asset_stream: {"db_assets": {self.options["publish_type"]: context.db_asset_id}}}
-    #
-    #     needs_update = False
-    #     if curr_breakdown_ver_doc is not None:
-    #         current_breakdown = curr_breakdown_ver_doc.data
-    #         if current_breakdown is not None:
-    #             needs_update = dict_utils.is_subset_dict(asset_breakdown, curr_breakdown_ver_doc.data)
-    #             if needs_update:
-    #                 merged_config = dict_utils.merge_dicts(asset_breakdown, curr_breakdown_ver_doc.data)
-    #                 Create(context=context).asset_breakdown_version(
-    #                     data=merged_config)
-    #
-    #     else:
-    #         db_breakdown_version_id = Create(context=context).asset_breakdown_version(data=asset_breakdown)
-    #         context.asset_breakdown_version_id = db_breakdown_version_id
-
     def create_asset_breakdown_version(self, context: ContextHandler):
         curr_breakdown_ver_doc = context.database_handler().get_asset_breakdown_latest_version()
 
@@ -131,12 +108,9 @@ class DBPublisher:
             db_breakdown_version_id = Create(context=context).asset_breakdown_version(data=asset_breakdown)
             context.asset_breakdown_version_id = db_breakdown_version_id
 
-
-    # def create_stack_version(self, context: ContextHandler):
-    #     Create(context=context).asset_stack_version(status="WIP")
-
     def create_stack_version(self, context: ContextHandler, slots: dict = None):
         if slots is None:
-            Create(context=context).asset_stack_version(status="WIP")
+            created_stack_id = Create(context=context).asset_stack_version(status="WIP")
         else:
-            Create(context=context).asset_stack_version(status="WIP", slots=slots)
+            created_stack_id = Create(context=context).asset_stack_version(status="WIP", slots=slots)
+        return created_stack_id

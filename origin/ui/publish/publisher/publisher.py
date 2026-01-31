@@ -1,13 +1,13 @@
+import copy
 import os
-import pprint
 
 from PySide2 import QtWidgets
-
-
 
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
+
+from origin.common_utils import json_utils
 
 
 class Publish(QtWidgets.QWidget):
@@ -45,33 +45,55 @@ class Publish(QtWidgets.QWidget):
     def populate_existing_comments(self):
         pass
 
+    def entity_properties(self):
+        entity_doc = self.context_handler.database_handler().get_asset_document()
+        entity_properties = entity_doc.definition
+        return entity_properties
+
     def get_selected_options(self):
         get_comment_text = self.comment_ptx.toPlainText()
         get_publishing_status = self.status_wdg.currentText()
-        return {"pub_comment": get_comment_text, "pub_status": get_publishing_status}
+        get_entity_properties = self.entity_properties()
+
+        return {
+            "pub_comment": get_comment_text,
+            "pub_status": get_publishing_status,
+            "entity_properties": get_entity_properties
+        }
 
     def publish(self, options):
-        dcc = os.getenv("DCC")
+        current_dcc = os.getenv("DCC")
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
 
-        if dcc != "origin_standalone":
-            from origin.dcc.batch_processing import BatchProcessing
-            from origin.dcc.save_session import scene_session_operations_class
+        if current_dcc != "origin_standalone":
+            from origin.dcc.common.batch_processing.batch_processing import BatchProcessing
+            from origin.dcc.common.utils.save_session import scene_session_operations_class
 
             current_scene = scene_session_operations_class()
             master_scene_path = current_scene.save_current_file()
             options["master_scene"] = master_scene_path
 
+            # side save for Doci to pick up - slow transition of the batch processes
+            doci_pub_options = copy.deepcopy(options)
+            serialized_context = self.context_handler.snapshot_session()
+            doci_pub_options['context_object'] = serialized_context
+            json_doci = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\applications\Doci\jobs\incoming"
+            json_file = "incoming.json"
+            json_utils.save_json(target_path=json_doci, target_file=json_file, data=doci_pub_options)
+
+
+            # continue with existing options --> to be deprecated
             publisher_type = BatchProcessing(options=options, task="publish")
             publisher_type.run()
 
         else:
-            print (f"{dcc.upper()} detected. Skipping Batch Processing.")
+            print (f"{current_dcc.upper()} detected. Skipping Batch Processing.")
 
 
 
 
 if __name__ == "__main__":
-    from origin.ui.tests.manual_cotext import test_ui
-    test_ui(main_widget=Publish)
+    pass
+    # from origin.ui.tests.manual_cotext import test_ui
+    # test_ui(main_widget=Publish)

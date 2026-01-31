@@ -1,0 +1,6 @@
+{
+  "publish_scene": "X:/projects/Small_Rock/assets/characters/hulk/modeling/publishes/data/geometry__hulk__hulk_MAIN/characters__hulk__hulk_MAIN__v0002/origin_scene/characters__hulk__hulk_MAIN__v0002.mb",
+  "turntable_scene": "X:/projects/Small_Rock/templates/maya/playblast/template/work_arsithra/workspace/maya__playblast__playblast_main__v0003.mb",
+  "camera_scene": "X:/projects/Small_Rock/assets/characters/hulk/modeling/publishes/data/turntable_camera__hulk__hulk_MAIN/characters__hulk__hulk_MAIN__v0003/alembic/characters__hulk__hulk_MAIN__v0003.abc",
+  "output_dir": "X:/projects/Small_Rock/temp/origin_geo_publish"
+}

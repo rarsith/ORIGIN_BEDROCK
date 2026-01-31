@@ -435,9 +435,10 @@ class AssetStackManagerUI(QtWidgets.QWidget):
         pprint.pprint(gather_ui_data)
 
         db_pub = DBPublisher()
-        db_pub.create_stack_version(context=self.context_handler, slots=gather_ui_data)
+        new_stack_id = db_pub.create_stack_version(context=self.context_handler, slots=gather_ui_data)
+        print(f"NEW STACK {new_stack_id}")
         #
-        # window = OriginPublisher(context=self.context_handler, publish_type="asset_stack", parent=self)
+        window = OriginPublisher(context=self.context_handler, publish_type="asset_stack", parent=self)
         # window.setGeometry(100, 100, 700, 300)
         # window.setWindowFlags(QtCore.Qt.Window)
         # window.show()

@@ -1,0 +1,9 @@
+pydantic
+pymongo
+dnspython
+watchdog
+typing_extensions
+platformdirs
+tomli
+tomlkit
+tzdata

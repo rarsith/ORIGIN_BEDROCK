@@ -1,5 +1,5 @@
 import os
-from origin.dcc.maya.publish.exporters.maya_make_playblast import MayaMakePlayblast
+from origin.dcc.extensions.maya.publish.exporters.maya_make_playblast import MayaMakePlayblast
 from origin.envars.origin_envars import ContextHandler
 
 
@@ -11,9 +11,9 @@ class MakePlayblast:
             self.context_handler: ContextHandler = self.publishing_options["context_object"]
 
         self.dcc = os.getenv("DCC")
-        self.make_playblast_class = self.get_playblast_class(dcc=self.dcc)
+        self.make_playblast_class = self.get_publisher_class(dcc=self.dcc)
 
-    def get_playblast_class(self, dcc):
+    def get_publisher_class(self, dcc):
         classes = {
             "maya": MayaMakePlayblast(options=self.publishing_options)
             # "blender": BlenderBatchScript(context=self.context_handler),
@@ -22,7 +22,7 @@ class MakePlayblast:
             return classes[dcc]
 
     def execute(self):
-        self.make_playblast_class = self.get_playblast_class(dcc=self.dcc)
+        self.make_playblast_class = self.get_publisher_class(dcc=self.dcc)
         self.make_playblast_class.execute()
 
         return self.exported_results

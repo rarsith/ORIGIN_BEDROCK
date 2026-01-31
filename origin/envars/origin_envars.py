@@ -58,7 +58,7 @@ class ContextHandler:
         self.session_context.entity_id = session_data['entity_id']
 
     def snapshot_session(self) -> dict:
-        context_data = self.session_context.dict(by_alias=True)
+        context_data = self.session_context.model_dump(by_alias=True)
         return context_data
 
     def session_to_disk(self):
@@ -515,5 +515,5 @@ if __name__ == "__main__":
 
     con_han = ContextHandler()
     con_han.load_session(context_sample)
-    xx = con_han.resolve_origin_path_hierarchy()
-    print(xx[-1])
+    xx = con_han.snapshot_session()
+    print(xx)

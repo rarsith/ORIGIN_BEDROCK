@@ -1,26 +1,27 @@
 import os
 
-from origin.dcc.abc.camera_exporter import CameraExporter
-from origin.dcc.blender.exporters.camera import BlenderCameraExporter
-from origin.dcc.maya.publish.exporters.camera import MayaCameraExporter
+from origin.dcc.common.abc.camera_exporter import CameraExporter
+from origin.dcc.extensions.blender.exporters.camera import BlenderCameraExporter
+from origin.dcc.extensions.maya.publish.exporters.camera import MayaCameraExporter
 from origin.envars.origin_envars import ContextHandler
+from origin.dcc.publishers.handler.publisher_repository import get_dcc_exporter, PublisherType
 
 
 class CameraPublish:
-    def __init__(self, publish_options):
+    def __init__(self, options):
         self.exported_results = {"data": {}, "img_seq": {}, "quicktime": {}}
-        self.publishing_options = publish_options
-        self.context_handler: ContextHandler = self.publishing_options["context_object"]
+        self.options = options
+        self.context_handler: ContextHandler = self.options["context_object"]
         self.dcc = os.getenv("DCC")
 
-        self.camera_publisher: CameraExporter = self.get_camera_publisher_class(dcc=self.dcc)
+        self.camera_publisher: CameraExporter = self.get_publisher_class(dcc=self.dcc)
 
     def entity_properties(self):
         entity_doc = self.context_handler.database_handler().get_asset_document()
         entity_properties = entity_doc.definition
         return entity_properties
 
-    def get_camera_publisher_class(self, dcc):
+    def get_publisher_class(self, dcc):
         entity_properties = self.entity_properties()
         camera_classes = {
             "maya": MayaCameraExporter(camera_name="shot_cam",

@@ -6,6 +6,20 @@ from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.operators import get_file_component_class
 
 
+class SavingRootBranch:
+    publishes_root = "publishes"
+    user_work_root = "work"
+
+    branch_pub_data = "data"
+    branch_pub_images = "images"
+    branch_pub_quicktime = "quicktime"
+
+    branch_user_exchange = "exchange"
+    branch_user_scene_files = "scene_files"
+    branch_user_workspace = "workspace"
+    branch_user_caches = "caches"
+
+
 class OriginOSPathHandler:
     publishes_root = "publishes"
     user_work_root = "work"
@@ -22,6 +36,10 @@ class OriginOSPathHandler:
     def __init__(self, context: ContextHandler = None, file_format=None):
         self.__context_handler = context
         self.origin_projects_root = Path(os.getenv("ORIGIN_PROJECTS_ROOT"))
+
+        if isinstance(self.__context_handler, dict):
+            self.__context_handler = ContextHandler()
+            self.__context_handler.load_session(context)
 
         if self.__context_handler is not None:
             self.__origin_path_elements = self.__context_handler.resolve_origin_path_hierarchy()
@@ -197,43 +215,71 @@ class OriginOSPathHandler:
 
 
 if __name__ == "__main__":
-    context_sample = {'show_name': 'The_Rock',
-                      'project_publishes': 'The_Rock__PUBLISHES',
-                      'project_work': 'The_Rock__WORK',
-                      'project_control': 'The_Rock__CONTROL',
-                      'origin_path_hierarchy': 'assets.props',
-                      'entity_name': 'tafer',
-                      'entity_id': 'The_Rock.assets.chr.tafer',
-                      'asset_breakdown_id': 'The_Rock.assets.chr.tafer.breakdown',
-                      'entity_type': 'asset',
-                      'task_name': "modeling",
-                      'task_type': "modeling",
-                      'task_id': "The_Rock.assets.chr.tafer.modeling",
-                      'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
-                      'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
-                      'stack_id': 'The_Rock.assets.chr.tafer.tafer_main.asset_stack',
-                      }
+    # context_sample = {'show_name': 'The_Rock',
+    #                   'project_publishes': 'The_Rock__PUBLISHES',
+    #                   'project_work': 'The_Rock__WORK',
+    #                   'project_control': 'The_Rock__CONTROL',
+    #                   'origin_path_hierarchy': 'assets.props',
+    #                   'entity_name': 'tafer',
+    #                   'entity_id': 'The_Rock.assets.chr.tafer',
+    #                   'asset_breakdown_id': 'The_Rock.assets.chr.tafer.breakdown',
+    #                   'entity_type': 'asset',
+    #                   'task_name': "modeling",
+    #                   'task_type': "modeling",
+    #                   'task_id': "The_Rock.assets.chr.tafer.modeling",
+    #                   'db_asset_id': 'The_Rock.assets.chr.tafer.geometry.tafer_main',
+    #                   'db_asset_stream_id': 'The_Rock.assets.chr.tafer.tafer_main',
+    #                   'stack_id': 'The_Rock.assets.chr.tafer.tafer_main.asset_stack',
+    #                   }
 
-    context_obj = ContextHandler()
-    context_obj.load_session(session_data=context_sample)
+    context_object = {
+    "asset_breakdown_id": None,
+    "asset_breakdown_version_id": None,
+    "db_asset_id": None,
+    "db_asset_stream_id": "Small_Rock.assets.characters.tafar.tafar_MAIN",
+    "db_asset_type": None,
+    "db_asset_version_id": None,
+    "entity_id": "Small_Rock.assets.characters.tafar",
+    "entity_name": "tafar",
+    "entity_type": "asset",
+    "origin_path_hierarchy": "assets.characters",
+    "project_control": "Small_Rock__CONTROL",
+    "project_publishes": "Small_Rock__PUBLISHES",
+    "project_work": "Small_Rock__WORK",
+    "publish_id": None,
+    "show_name": "Small_Rock",
+    "stack_id": "Small_Rock.assets.characters.tafar.tafar_MAIN.asset_stack",
+    "stack_version_id": None,
+    "task_id": "Small_Rock.assets.characters.tafar.modeling",
+    "task_name": "modeling",
+    "task_type": "modeling"
+}
 
-    app = OriginOSPathHandler(context=context_obj, file_format="obj")
-    x_path_items = app.get_publish_quicktime_path()
-    x_to_unix = app.convert_path_to_unix(x_path_items)
-    print("UNIX:  ", x_to_unix)
+    # context_obj = ContextHandler()
+    # context_obj.load_session(session_data=context_sample)
 
-    y_path_items = app.get_publish_images_path()
-    z_path_items = app.get_publish_data_path()
-    a_path_items = app.get_user_caches_path()
-    b_path_items = app.get_user_scene_files()
-    c_path_items = app.get_user_exchange()
-    rel_unix = app.resolve_to_relative(c_path_items, as_unix=True)
-    print("RELATIVE: ", rel_unix)
-    # compile_path = app.compose_path(x_path_items)
-    print(x_path_items)
-    print(y_path_items)
-    print(z_path_items)
+    app = OriginOSPathHandler(context=context_object, file_format="master")
+    # app = OriginOSPathHandler(context=context_object, file_format="master")
+    ss = app.__compile_server_db_asset_version_dir_name()
+    print(ss)
 
-    print(a_path_items)
-    print(b_path_items)
-    print(c_path_items)
+
+    # x_path_items = app.get_publish_quicktime_path()
+    # x_to_unix = app.convert_path_to_unix(x_path_items)
+    # print("UNIX:  ", x_to_unix)
+    #
+    # y_path_items = app.get_publish_images_path()
+    # z_path_items = app.get_publish_data_path()
+    # a_path_items = app.get_user_caches_path()
+    # b_path_items = app.get_user_scene_files()
+    # c_path_items = app.get_user_exchange()
+    # rel_unix = app.resolve_to_relative(c_path_items, as_unix=True)
+    # print("RELATIVE: ", rel_unix)
+    # # compile_path = app.compose_path(x_path_items)
+    # print(x_path_items)
+    # print(y_path_items)
+    # print(z_path_items)
+    #
+    # print(a_path_items)
+    # print(b_path_items)
+    # print(c_path_items)

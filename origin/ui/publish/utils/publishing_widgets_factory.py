@@ -30,6 +30,7 @@ def get_publish_type(context: ContextHandler):
             EntryStackStream(context=context),
             QcGhost(),
             AssetStackManager(),
+            InjectDisplacement(),
             PreviewOptions(),
             Publish(context=context)
         ],

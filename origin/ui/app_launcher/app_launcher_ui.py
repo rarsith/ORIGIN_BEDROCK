@@ -159,6 +159,9 @@ class AppLauncher(QtWidgets.QWidget):
         else:
             self.clear_app_widget()
 
+    # def app_environment(self, app_exec):
+
+
     def launch_async_app(self):
         import os
         import subprocess

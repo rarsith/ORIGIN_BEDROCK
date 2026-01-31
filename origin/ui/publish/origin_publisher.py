@@ -11,7 +11,7 @@ from origin.ui.publish.utils.publishing_type_widgets_factory import get_publish_
 
 
 class OriginPublisher(QtWidgets.QDialog):
-    def __init__(self, context: ContextHandler, publish_type=None, parent=None):
+    def __init__(self, context: ContextHandler, publish_type=None, parent=None, user_options=None):
         super(OriginPublisher, self).__init__(parent)
 
         self.setWindowTitle("Publish")
@@ -21,6 +21,7 @@ class OriginPublisher(QtWidgets.QDialog):
 
         self.context_handler = context
         self.publish_type = publish_type
+        self.user_options = user_options
 
         self.publish_options = PublishOptions()
 
@@ -153,16 +154,28 @@ class OriginPublisher(QtWidgets.QDialog):
         else:
             return widget_selected_options
 
+    def entity_properties(self):
+        entity_doc = self.context_handler.database_handler().get_asset_document()
+        entity_properties = entity_doc.definition
+        return entity_properties
+
     def start_publishing(self):
         final_widget = self.widgets[-1]
+
+        if self.user_options is not None:
+            self.collected_options.update(self.user_options)
+            pprint.pprint(self.user_options)
+
         final_widget.publish(self.collected_options)
         self.close()
 
-        QtWidgets.QMessageBox.information(self, "Publishing",
-                                          "Publishing process started with options: " + str(self.collected_options))
+        # formatted_options = pprint.pformat(self.collected_options)
+        # QtWidgets.QMessageBox.information(self, "Publishing",
+        #                                   "Publishing process started with options: " + str(formatted_options))
 
 
 if __name__ == "__main__":
+
     import os
     import sys
     from origin.ui.tests.manual_cotext import test_ui

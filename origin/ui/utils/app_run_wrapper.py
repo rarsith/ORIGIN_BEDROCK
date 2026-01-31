@@ -10,7 +10,7 @@ from origin.envars.origin_envars import ContextHandler
 
 
 def clone_environment():
-    from origin.dcc import context_env
+    from origin.dcc.common.utils import context_env
     importlib.reload(context_env)
 
     NEW_CONTEXT = context_env.get_context_env()
@@ -52,7 +52,8 @@ def _window_icon():
 
     return window_icon_file
 
-def execute_app(main_widget, run_app=True, **kwargs):
+
+def execute_app(main_widget, run_app=True, widget_size=[300, 800], **kwargs):
     app = _general_app()
     context_obj = clone_environment()
     window_icon_file = _window_icon()
@@ -66,7 +67,8 @@ def execute_app(main_widget, run_app=True, **kwargs):
             kwargs[k] = v
 
     test_dialog = main_widget(**kwargs)
-
+    test_dialog.setMinimumWidth(widget_size[0])
+    test_dialog.setMinimumHeight(widget_size[1])
     test_dialog.setWindowIcon(QIcon(window_icon_file))
     test_dialog.show()
 

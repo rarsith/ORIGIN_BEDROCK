@@ -1,6 +1,6 @@
 import os.path
 
-from PySide2 import QtWidgets, QtGui, QtCore
+from PySide2 import QtWidgets, QtCore
 
 from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
@@ -9,7 +9,7 @@ from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeView
 from origin.ui.stream_viewer_ui.stream_viewer_UI import StreamViewerUI
 from origin.ui.task_viewer_ui.task_viewer_core import TaskViewerCore
 from origin.database.entities.registries import registry
-from origin.dcc.dispachers.loaders import get_loader_class
+from origin.dcc.common.dispachers.loaders import get_loader_class
 
 
 class VersionThumbnail(QtWidgets.QLabel):

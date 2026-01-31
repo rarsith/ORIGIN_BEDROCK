@@ -1,0 +1,74 @@
+{
+    "publish_type": "geometry",
+    "db_asset_stream_id": "Small_Rock.assets.characters.red_hulk.red_hulk_MAIN",
+    "context_object": {
+        "show_name": "Small_Rock",
+        "project_publishes": "Small_Rock__PUBLISHES",
+        "project_work": "Small_Rock__WORK",
+        "project_control": "Small_Rock__CONTROL",
+        "origin_path_hierarchy": "assets.characters",
+        "entity_name": "red_hulk",
+        "entity_type": "asset",
+        "entity_id": "Small_Rock.assets.characters.red_hulk",
+        "task_name": "modeling",
+        "task_type": "modeling",
+        "task_id": "Small_Rock.assets.characters.red_hulk.modeling",
+        "publish_id": null,
+        "db_asset_stream_id": "Small_Rock.assets.characters.red_hulk.red_hulk_MAIN",
+        "db_asset_id": null,
+        "db_asset_type": null,
+        "db_asset_version_id": null,
+        "asset_breakdown_id": null,
+        "asset_breakdown_version_id": null,
+        "stack_id": "Small_Rock.assets.characters.red_hulk.red_hulk_MAIN.asset_stack",
+        "stack_version_id": null
+    },
+    "db_asset_qc": "OK",
+    "user_file_formats": [
+        "abc",
+        "usd",
+        "obj"
+    ],
+    "persistent_file_formats": [
+        "master"
+    ],
+    "material_collections": {},
+    "inject_textures_path": null,
+    "stack_db_asset_id": "Small_Rock.assets.characters.red_hulk.red_hulk_MAIN.asset_stack",
+    "review_medium": "playblast",
+    "review_options": {
+        "frame_range": [
+            1001,
+            1101
+        ],
+        "resolution": [
+            1920,
+            1080
+        ],
+        "resolution_percentage": 1,
+        "template_asset_ver_id": "X:/projects/Small_Rock/templates/maya/playblast/template/publishes/data/template__playblast__playblast_main/maya__playblast__playblast_main__v0003/origin_scene/maya__playblast__playblast_main__v0003.mb",
+        "camera_asset_ver_id": "X:/projects/Small_Rock/assets/characters/red_hulk/modeling/publishes/data/turntable_camera__red_hulk__red_hulk_MAIN/characters__red_hulk__red_hulk_MAIN__v0004/alembic/characters__red_hulk__red_hulk_MAIN__v0004.abc"
+    },
+    "pub_comment": "",
+    "pub_status": "WIP",
+    "entity_properties": {
+        "asset_lod": "hero",
+        "assembly": false,
+        "full_range_in": 970,
+        "full_range_out": 1150,
+        "frame_in": 1001,
+        "frame_out": 1100,
+        "handles_head": 8,
+        "handles_tail": 8,
+        "preroll": 20,
+        "shot_type": "vfx",
+        "cut_in": 1009,
+        "cut_out": 1108,
+        "frame_rate": 24,
+        "motion_blur_high": 0.25,
+        "motion_blur_low": -0.25,
+        "res_x": 1920,
+        "res_y": 1080
+    },
+    "master_scene": "X:/projects/Small_Rock/assets/characters/red_hulk/modeling/work_arsithra/scene_files/test__v0008.mb"
+}
