@@ -6,7 +6,7 @@ from PySide2.QtCore import Qt, QPoint
 from PySide2.QtGui import QIcon, QFont, QBrush, QColor
 from PySide2.QtWidgets import QVBoxLayout, QTableWidgetItem, QMenu
 
-from origin.database.entities.operators import Project, Asset, Projects, AssetBreakdown
+from origin.database.entities.operators import Project, Asset, Projects, AssetBreakdown, DBAssetVersion
 from origin.database.mongo import CollectionOperators
 from origin.database.publisher.db_publisher import DBPublisher
 from origin.envars.origin_envars import ContextHandler
@@ -61,7 +61,7 @@ class StreamsLoaderUI(QtWidgets.QWidget):
         self.context_handler = context
 
     def populate_widget(self):
-        stack_streams = self.get_stack_streams()
+        stack_streams = self.context_handler.database_handler().get_asset_streams()
         self.stack_stream_lw.clear()
 
         if stack_streams:
@@ -70,23 +70,6 @@ class StreamsLoaderUI(QtWidgets.QWidget):
                 list_item = QtWidgets.QListWidgetItem(stream_name)
                 self.stack_stream_lw.addItem(list_item)
                 list_item.setData(QtCore.Qt.UserRole, stream)
-
-    def get_stack_streams(self):
-        db_ops = CollectionOperators(db_collection=self.context_handler.show_name)
-        entity_doc = db_ops.entity_document(doc_id=self.context_handler.entity_id)
-        if entity_doc is not None:
-            asset_doc = Asset(**entity_doc)
-
-            curr_asset_type = self.context_handler.entity_type
-            stack_steams = asset_doc.stack_streams
-
-            if curr_asset_type != "group":
-                if stack_steams is None:
-                    return {}
-                if len(stack_steams) == 0:
-                    return {}
-                else:
-                    return stack_steams
 
     def update_context(self):
         selected_item = self.stack_stream_lw.selectedItems()
@@ -181,16 +164,13 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
     def update_slot_to_current(self, data):
         for row, db_doc_obj in data.items():
-            # current_version_doc = self.get_current_version(db_doc_obj=db_doc_obj)
-            current_version_doc = self.context_handler.database_handler().get_current_db_asset_version(db_doc_obj=db_doc_obj)
+            current_version_doc = self.context_handler.database_handler().get_current_db_asset_version(db_doc_obj=db_doc_obj.id)
             self.populate_slot(row=row, version_doc=current_version_doc)
-        # print(current_version_doc)
 
     def add_slot(self, data):
         print(data)
 
     def get_stack_slots(self):
-        # extract_version = self.get_current_version_doc()
         extract_version = self.context_handler.database_handler().get_current_stack_version()
 
         if extract_version is not None:
@@ -209,6 +189,35 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
         else:
             return None
+
+    def update_info_label(self):
+        extract_version = self.context_handler.database_handler().get_current_stack_version()
+
+        if extract_version is not None:
+            self.stack_version_lb.setText(extract_version['name'])
+            self.stack_version_lb.setStyleSheet("""
+                    font-weight: bold;
+                    font-size: 11px;
+                    """)
+
+            self.stack_status_lb.setText(extract_version['status'])
+            self.stack_status_lb.setMinimumWidth(150)
+            self.stack_status_lb.setAlignment(Qt.AlignCenter)
+            color_schema = match_color_scheme(extract_version['status'])
+            self.stack_status_lb.setStyleSheet(color_schema)
+
+        else:
+            self.stack_version_lb.setText("No Stack Selected")
+            self.stack_version_lb.setStyleSheet("""
+                    font-weight: bold;
+                    font-size: 11px;
+                    """)
+            self.stack_status_lb.setText("No Stack Selected")
+            self.stack_status_lb.setMinimumWidth(150)
+            self.stack_status_lb.setAlignment(Qt.AlignCenter)
+            color_schema = match_color_scheme("No Stack Selected")
+            self.stack_status_lb.setStyleSheet(color_schema)
+
 
     def check_if_current(self, doc_id: str = None):
         if doc_id is not None:
@@ -243,7 +252,7 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
         # row = self.stack_slots_loader_tw.rowCount()
         # self.stack_slots_loader_tw.insertRow(row)
 
-        asset_doc = Asset(**version_doc)
+        asset_doc = DBAssetVersion(**version_doc)
         asset_version_id = asset_doc.id
 
         asset_version_name = "__".join(asset_version_id.split(".")[3:-1])
@@ -270,7 +279,8 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
     def populate_stack_slots(self):
         self.stack_slots_loader_tw.setRowCount(0)
-        stack_slots_versions = self.get_stack_slots()
+        stack_slots_versions = self.context_handler.database_handler().get_current_stack_slots()
+        self.update_info_label()
 
         if stack_slots_versions is not None:
             for slot_type, asset_version in stack_slots_versions.items():
@@ -283,10 +293,8 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
                 row = self.stack_slots_loader_tw.rowCount()
                 self.stack_slots_loader_tw.insertRow(row)
 
-                db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
-                entity_doc = db_ops.entity_document(doc_id=asset_version)
-                asset_doc = Asset(**entity_doc)
-
+                entity_doc = self.context_handler.database_handler().get_db_document_by_id(db_collection=self.context_handler.project_publishes, doc_id=asset_version)
+                asset_doc = DBAssetVersion(**entity_doc)
 
                 asset_version_name = "__".join(asset_version.split(".")[3:-1])
                 asset_version_cnt = asset_version.split(".")[-1]
@@ -313,7 +321,6 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
             return
 
     def update_context(self):
-        # stream_stack_doc = self._get_stream_stack()
         stream_stack_doc = self.context_handler.database_handler().get_stream_stack()
         self.context_handler.stack_id = stream_stack_doc["_id"]
         self.current_context.emit(self.context_handler)

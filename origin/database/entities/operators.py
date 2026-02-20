@@ -7,14 +7,33 @@ from origin.common_utils import version_increment as vup
 
 
 def get_entity_class(item_type):
-    if item_type == "group":
-        return Group
-    if item_type == "asset":
-        return Asset
-    if item_type == "project":
-        return Project
-    if item_type == "task":
-        return Task
+    # if item_type == "group":
+    #     return Group
+    # if item_type == "asset":
+    #     return Asset
+    # if item_type == "project":
+    #     return Project
+    # if item_type == "task":
+    #     return Task
+
+    entity_classes = {  "group": Group,
+                        "asset": Asset,
+                        "project": Project,
+                        "task": Task,
+                        "work_file": WorkFile,
+                        "db_asset__breakdown": AssetBreakdown,
+                        "asset_stack": AssetStack,
+                        "asset_stack_breakdown": AssetStackBreakdown,
+                        "shot_stack": ShotStack,
+                        "shot_stack__breakdown": ShotBreakdown,
+                        "db_asset_version__breakdown": AssetBreakdownVersion,
+                        "db_asset_stack__version": AssetStackVersion,
+
+
+                        }
+
+    return entity_classes.get(item_type)
+
 
 
 def get_file_component_class(component_type, custom_label=None):
@@ -681,6 +700,8 @@ class TaskOperations(EntityOperations):
 
 
 class WorkFile(EntityBaseModel):
+    type: Optional[str] = "work_file"
+
     DESCRIPTION: ClassVar[str] = "description"
     description: Optional[str] = None
 
@@ -741,6 +762,8 @@ class Projects:
 
 
 class DBAsset(EntityBaseModel):
+    type: Optional[str] = "db_asset"
+
     LABEL: ClassVar[str] = "label"
     label: Optional[str] = None
 
@@ -881,7 +904,7 @@ class ShotStack(StackBaseModel):
 
 
 class ShotBreakdown(StackBaseModel):
-    type: Optional[str] = "shot_stack_breakdown"
+    type: Optional[str] = "shot_stack__breakdown"
 
 
 class FxCache(DBAsset):
@@ -1023,7 +1046,7 @@ class DBAssetVersionOperations(DBAssetOperations):
 
 
 class AssetBreakdownVersion(DBAssetVersion):
-    db_asset_type: Optional[str] = "db_asset_breakdown_version"
+    db_asset_type: Optional[str] = "db_asset_version__breakdown"
 
     DATA: ClassVar[dict] = "data"
     data: Optional[dict] = None
@@ -1073,7 +1096,7 @@ class AssetBreakdownVersionOperations(DBAssetOperations):
 
 
 class AssetStackVersion(DBAssetVersion):
-    db_asset_type: Optional[str] = "db_asset__stack_version"
+    db_asset_type: Optional[str] = "db_asset_stack__version"
 
     DATA: ClassVar[dict] = "data"
     data: Optional[dict] = None
@@ -1106,60 +1129,60 @@ class DBAssetFileComponent(EntityBaseModel):
 
 
 class AlembicArchiveComponent(DBAssetFileComponent):
-    type: Optional[str] = "alembic_component"
+    type: Optional[str] = "alembic__component"
     label: Optional[str] = "alembic"
     file_extension: Optional[str] = "abc"
 
 
 class ImageSequenceComponent(DBAssetFileComponent):
-    type: Optional[str] = "image_sequence_component"
+    type: Optional[str] = "image_sequence__component"
     label: Optional[str] = "image_sequence"
     file_extension: Optional[str] = "exr"
 
 
 class JsonComponent(DBAssetFileComponent):
-    type: Optional[str] = "json_component"
+    type: Optional[str] = "json__component"
     label: Optional[str] = "json"
     file_extension: Optional[str] = "json"
 
 
 class MayaSceneComponent(DBAssetFileComponent):
-    type: Optional[str] = "maya_scene_component"
+    type: Optional[str] = "maya_scene__component"
     label: Optional[str] = "maya_scene"
     file_extension: Optional[str] = "ma"
 
 
 class ObjFileComponent(DBAssetFileComponent):
-    type: Optional[str] = "obj_component"
+    type: Optional[str] = "obj__component"
     label: Optional[str] = "obj"
     file_extension: Optional[str] = "obj"
 
 
 class OriginComponent(DBAssetFileComponent):
-    type: Optional[str] = "origin_scene_component"
+    type: Optional[str] = "origin_scene__component"
     label: Optional[str] = "origin_scene"
 
 
 class OrigiMetaComponent(DBAssetFileComponent):
-    type: Optional[str] = "origin_meta_component"
+    type: Optional[str] = "origin_meta__component"
     label: Optional[str] = "origin_meta"
     file_extension: Optional[str] = "origin_meta"
 
 
 class QuicktimeComponent(DBAssetFileComponent):
-    type: Optional[str] = "review_component"
+    type: Optional[str] = "review__component"
     label: Optional[str] = "review"
     file_extension: Optional[str] = "mov"
 
 
 class RenderScriptComponent(DBAssetFileComponent):
-    type: Optional[str] = "render_script_component"
+    type: Optional[str] = "render_script__component"
     label: Optional[str] = "render_script"
     file_extension: Optional[str] = "gfr"
 
 
 class RenderScriptTemplateComponent(DBAssetFileComponent):
-    type: Optional[str] = "render_template_component"
+    type: Optional[str] = "render_template__component"
     label: Optional[str] = "render_template"
     file_extension: Optional[str] = "gfr"
 
@@ -1169,13 +1192,13 @@ class SingleFileAssetComponent(DBAssetFileComponent):
 
 
 class USDComponent(DBAssetFileComponent):
-    type: Optional[str] = "USD_component"
+    type: Optional[str] = "USD__component"
     label: Optional[str] = "USD"
     file_extension: Optional[str] = "usd"
 
 
 class ModelingUVSnapShotComponent(DBAssetFileComponent):
-    type: Optional[str] = "UV_component"
+    type: Optional[str] = "UV__component"
     label: Optional[str] = "UV"
 
     UDIM_TILES: ClassVar[List[int]] = "udim_tiles"
@@ -1186,19 +1209,19 @@ class ModelingUVSnapShotComponent(DBAssetFileComponent):
 
 
 class ThumbnailComponent(DBAssetFileComponent):
-    type: Optional[str] = "thumbnail_component"
+    type: Optional[str] = "thumbnail__component"
     label: Optional[str] = "thumbnail"
     file_extension: Optional[str] = "png"
 
 
 class AudioComponent(DBAssetFileComponent):
-    type: Optional[str] = "audio_component"
+    type: Optional[str] = "audio__component"
     label: Optional[str] = "audio"
     file_extension: Optional[str] = "wav"
 
 
 class SourceTextureComponent(DBAssetFileComponent):
-    type: Optional[str] = "source_texture_component"
+    type: Optional[str] = "source_texture__component"
     label: Optional[str] = "source_texture"
     file_extension: Optional[str] = "exr"
 

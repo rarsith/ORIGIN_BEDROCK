@@ -396,6 +396,16 @@ class ContextHandler:
     # def os_paths_handler(self):
     #     return OriginOSPathHandler(context=self, file_format=None)
 
+class DatabaseConnections:
+    def __init__(self, context: ContextHandler):
+        self.__context = context
+
+        self.__db = MongoConnection().origin_production_database()
+        self.project_structure_collection = self.__db[self.__context.show_name]
+        self.project_publishes_collection = self.__db[self.__context.project_publishes]
+        self.project_control_collection = self.__db[self.__context.project_control]
+        self.project_work_collection = self.__db[self.__context.project_work]
+
 
 class OriginDatabaseHandler:
     def __init__(self, context: ContextHandler):
@@ -411,6 +421,20 @@ class OriginDatabaseHandler:
         db_ops = CollectionOperators(db_collection=db_collection)
         document = db_ops.entity_document(doc_id=doc_id)
         return document
+
+    # def get_document_by_id(self, doc_id, db_collection: DatabaseConnections):
+    #     db_ops = None
+    #     if db_collection == DatabaseConnections.project_structure_collection:
+    #         db_ops = CollectionOperators(db_collection=self.__context.show_name)
+    #     elif db_collection == DatabaseConnections.project_publishes_collection:
+    #         db_ops = CollectionOperators(db_collection=self.__context.project_publishes)
+    #     elif db_collection == DatabaseConnections.project_control_collection:
+    #         db_ops = CollectionOperators(db_collection=self.__context.project_control)
+    #     elif db_collection == DatabaseConnections.project_work_collection:
+    #         db_ops = CollectionOperators(db_collection=self.__context.project_work)
+    #
+    #     document = db_ops.entity_document(doc_id=doc_id)
+    #     return document
 
     def get_project_document(self) -> Project:
         project_doc = self.get_db_document_by_id(db_collection=self.__context.show_name,
@@ -471,18 +495,19 @@ class OriginDatabaseHandler:
     def get_asset_streams(self):
         db_ops = CollectionOperators(db_collection=self.__context.show_name)
         entity_doc = db_ops.entity_document(doc_id=self.__context.entity_id)
-        asset_doc = Asset(**entity_doc)
+        if entity_doc is not None:
+            asset_doc = Asset(**entity_doc)
 
-        curr_asset_type = self.__context.entity_type
-        stack_steams = asset_doc.stack_streams
+            curr_asset_type = self.__context.entity_type
+            stack_steams = asset_doc.stack_streams
 
-        if curr_asset_type != "group":
-            if stack_steams is None:
-                return {}
-            if len(stack_steams) == 0:
-                return {}
-            else:
-                return stack_steams
+            if curr_asset_type != "group":
+                if stack_steams is None:
+                    return {}
+                if len(stack_steams) == 0:
+                    return {}
+                else:
+                    return stack_steams
 
     def get_asset_breakdown_latest_version(self):
         breakdown_doc = self.get_stream_breakdown()
@@ -494,8 +519,6 @@ class OriginDatabaseHandler:
                 return None
         else:
             return None
-
-
 
     def get_asset_breakdown_context_slots(self):
         breakdown_latest_version = self.get_asset_breakdown_latest_version()
@@ -555,6 +578,13 @@ class OriginDatabaseHandler:
         else:
             return None
 
+    def get_current_stack_slots(self):
+        extract_version = self.get_current_stack_version()
+        if extract_version is not None:
+            return extract_version["data"]
+        else:
+            return None
+
     def get_current_db_asset_version(self,  db_doc_obj=None):
         """
 
@@ -568,21 +598,26 @@ class OriginDatabaseHandler:
         doc_id = None
 
         if db_doc_obj is not None:
-            if isinstance(db_doc_obj, DBAssetVersion):
+            if isinstance(db_doc_obj, DBAssetVersion) or isinstance(db_doc_obj, DBAsset) or isinstance(db_doc_obj, Asset):
                 doc_id = db_doc_obj.id
             if isinstance(db_doc_obj, str):
                 doc_id = db_doc_obj
             if isinstance(db_doc_obj, dict):
                 doc_id = db_doc_obj["_id"]
 
-            version_parent = doc_id.rsplit(".", 1)[0]
-            current_doc = db_ops.get_current_version(_id={"$regex": f"^{version_parent}"} )
-            if len(current_doc) != 0:
-                return current_doc[0]
+
+            if doc_id is not None:
+                version_parent = doc_id.rsplit(".", 1)[0]
+                current_doc = db_ops.get_current_version(_id={"$regex": f"^{version_parent}"} )
+                if len(current_doc) != 0:
+                    return current_doc[0]
+                else:
+                    return None
             else:
                 return None
 
         current_doc = db_ops.get_current_version(_id={"$regex": f"^{self.__context.db_asset_id}"})
+        print(current_doc)
         if len(current_doc) != 0:
             return current_doc[0]
         else:
