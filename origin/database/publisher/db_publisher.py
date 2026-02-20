@@ -5,6 +5,7 @@ from origin.paths.output_paths import OriginOSPathHandler
 
 
 class DBPublisher:
+
     def __init__(self, options=None):
 
         self.context_handler = ContextHandler()
@@ -52,6 +53,8 @@ class DBPublisher:
         create_entity = Create(context=self.context_handler)
         path_handler = OriginOSPathHandler(context=self.context_handler)
         for file_component_type, file_path in published_data.items():
+            print("FILE COMPONENT TYPE: ",  file_component_type)
+            print("FILE PATH: ", file_path)
             unix_file_path = path_handler.resolve_to_relative(file_path, as_unix=True)
             create_entity.db_asset_file_component(visibility=True,
                                                   file_ext=file_component_type,

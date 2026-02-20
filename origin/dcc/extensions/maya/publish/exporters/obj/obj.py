@@ -6,6 +6,11 @@ from origin.paths.output_paths import OriginOSPathHandler
 
 import maya.cmds as cmds
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(f"running {__name__}")
+
 
 class MayaOBJExporter:
     obj_file = "obj"
@@ -48,6 +53,7 @@ class MayaOBJExporter:
     def execute(self):
         captured_data = self.run_export()
 
+        print("OBJ EXPORTER CONTEXT DB ASSET VERSION ID:  ", self.context_handler.db_asset_version_id)
         self.db_publisher.create_db_file_components(
             db_asset_version_id=self.context_handler.db_asset_version_id,
             published_data=captured_data,

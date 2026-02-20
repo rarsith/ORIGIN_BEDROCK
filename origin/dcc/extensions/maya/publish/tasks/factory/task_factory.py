@@ -4,10 +4,10 @@ from origin.dcc.extensions.maya.publish.tasks.maya_publish_task import MayaPubli
 
 
 TASKS = {
-    "playblast": MayaMakePlayblastTask,
+    # "playblast": MayaMakePlayblastTask,
     "publish": MayaPublishTask,
     "anim_rig": "",
-    "geometry": MayaGeometryExporterTask,
+    # "geometry": MayaGeometryExporterTask,
     "camera": "",
     "template": "",
     "point_cache": "",

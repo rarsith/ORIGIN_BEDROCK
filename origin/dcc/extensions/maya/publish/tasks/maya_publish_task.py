@@ -5,6 +5,11 @@ from origin.dcc.extensions.maya.publish.tasks.abc.batch_task import BatchTask
 from origin.dcc.publishers.task_type_publisher import PublisherType
 from origin.envars.origin_envars import ContextHandler
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(f"running {__name__}")
+
 
 class MayaPublishTask(BatchTask):
     def execute(self):
@@ -16,11 +21,11 @@ class MayaPublishTask(BatchTask):
 
         db_publisher = DBPublisher(options=self.options)
 
-        db_asset_id = db_publisher.create_db_asset(context=context_handler,
-                                                   parent=context_handler.db_asset_stream_id,
-                                                   publish_type=self.options["publish_type"])
-
-        context_handler.db_asset_id = db_asset_id
+        # db_asset_id = db_publisher.create_db_asset(context=context_handler,
+        #                                            parent=context_handler.db_asset_stream_id,
+        #                                            publish_type=self.options["publish_type"])
+        #
+        # context_handler.db_asset_id = db_asset_id
 
         db_asset_version_id = db_publisher.create_db_asset_version(context=context_handler,
                                                                    parent_id=context_handler.db_asset_id)

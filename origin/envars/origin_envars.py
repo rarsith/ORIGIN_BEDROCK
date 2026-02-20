@@ -72,7 +72,11 @@ class ContextHandler:
 
         save_json(get_root_path, data=session_data, target_file=session_file)
 
-    # Getters and setters for session context properties
+
+    ######################################################
+    # Getters and setters for session context properties #
+    ######################################################
+
     @property
     def show_name(self):
         return self.session_context.show_name
@@ -250,6 +254,11 @@ class ContextHandler:
         origin_path_hierarchy_elements = self.resolve_origin_path_hierarchy()[-1]
         return origin_path_hierarchy_elements
 
+
+    ######################################################
+    # Resolvers                                          #
+    ######################################################
+
     def _update_project_connections(self):
         self.project_publishes = "__".join([self.show_name, "PUBLISHES"])
         self.project_work = "__".join([self.show_name, "WORK"])
@@ -328,6 +337,11 @@ class ContextHandler:
         resolve_id = self.resolve_to_master()
         return resolve_id
 
+
+    ######################################################
+    # Resetters                                          #
+    ######################################################
+
     def reset_to_project(self):
         self.session_context.origin_path_hierarchy = None
         self.session_context.entity_name = None
@@ -368,6 +382,10 @@ class ContextHandler:
     @staticmethod
     def convert_to_uppercases(input_data: dict) -> dict:
         return {k.upper(): v for k, v in input_data.items()}
+
+    ######################################################
+    # Database Handlers                                  #
+    ######################################################
 
     def database_handler(self):
         return OriginDatabaseHandler(context=self)
@@ -432,6 +450,14 @@ class OriginDatabaseHandler:
             else:
                 return None
 
+    def get_stream_breakdown(self):
+        if self.__context.asset_breakdown_id:
+            breakdown_doc_data = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
+                                                            doc_id=self.__context.asset_breakdown_id)
+            return AssetBreakdown(**breakdown_doc_data)
+        else:
+            return None
+
     def get_db_asset_version_document(self):
         if self.__context.db_asset_version_id is not None:
             db_asset_version_doc = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
@@ -442,13 +468,21 @@ class OriginDatabaseHandler:
             else:
                 return None
 
-    def get_stream_breakdown(self):
-        if self.__context.asset_breakdown_id:
-            breakdown_doc_data = self.get_db_document_by_id(db_collection=self.__context.project_publishes,
-                                                            doc_id=self.__context.asset_breakdown_id)
-            return AssetBreakdown(**breakdown_doc_data)
-        else:
-            return None
+    def get_asset_streams(self):
+        db_ops = CollectionOperators(db_collection=self.__context.show_name)
+        entity_doc = db_ops.entity_document(doc_id=self.__context.entity_id)
+        asset_doc = Asset(**entity_doc)
+
+        curr_asset_type = self.__context.entity_type
+        stack_steams = asset_doc.stack_streams
+
+        if curr_asset_type != "group":
+            if stack_steams is None:
+                return {}
+            if len(stack_steams) == 0:
+                return {}
+            else:
+                return stack_steams
 
     def get_asset_breakdown_latest_version(self):
         breakdown_doc = self.get_stream_breakdown()
@@ -460,6 +494,8 @@ class OriginDatabaseHandler:
                 return None
         else:
             return None
+
+
 
     def get_asset_breakdown_context_slots(self):
         breakdown_latest_version = self.get_asset_breakdown_latest_version()
@@ -494,6 +530,63 @@ class OriginDatabaseHandler:
 
     def collection(self):
         pass  # use of Create Module
+
+    def get_stream_stack(self):
+        db_ops = CollectionOperators(db_collection=self.__context.project_publishes)
+
+        if self.__context.db_asset_stream_id is not None:
+            stream_stack_db_asset_id = self.__context.db_asset_stream_id + "." + "asset_stack"
+            stack_doc = db_ops.entity_document(doc_id=stream_stack_db_asset_id)
+            return stack_doc
+
+        else:
+            return None
+
+    def get_current_stack_version(self):
+        db_ops = CollectionOperators(db_collection=self.__context.project_publishes)
+        stack_doc = self.get_stream_stack()
+
+        if stack_doc is not None:
+            current_doc = db_ops.get_current_version(_id={"$regex": f"^{stack_doc['_id']}"})
+            if len(current_doc) != 0:
+                return current_doc[0]
+            else:
+                return None
+        else:
+            return None
+
+    def get_current_db_asset_version(self,  db_doc_obj=None):
+        """
+
+        Returns: database document of the current asset version that has one of the approved class statuses
+        It will return None if there is no current version
+        Uses the db_asset_id parent to get all children db_asset_versions and resolves to the current version
+
+        """
+        db_ops = CollectionOperators(db_collection=self.__context.project_publishes)
+
+        doc_id = None
+
+        if db_doc_obj is not None:
+            if isinstance(db_doc_obj, DBAssetVersion):
+                doc_id = db_doc_obj.id
+            if isinstance(db_doc_obj, str):
+                doc_id = db_doc_obj
+            if isinstance(db_doc_obj, dict):
+                doc_id = db_doc_obj["_id"]
+
+            version_parent = doc_id.rsplit(".", 1)[0]
+            current_doc = db_ops.get_current_version(_id={"$regex": f"^{version_parent}"} )
+            if len(current_doc) != 0:
+                return current_doc[0]
+            else:
+                return None
+
+        current_doc = db_ops.get_current_version(_id={"$regex": f"^{self.__context.db_asset_id}"})
+        if len(current_doc) != 0:
+            return current_doc[0]
+        else:
+            return None
 
 
 class OriginVersionHandler:

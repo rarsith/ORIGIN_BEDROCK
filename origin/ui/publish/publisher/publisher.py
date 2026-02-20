@@ -1,13 +1,30 @@
 import copy
 import os
+import shutil
+import subprocess
+import sys
+import time
 
 from PySide2 import QtWidgets
 
+from origin.database.publisher.db_publisher import DBPublisher
 from origin.database.statuses import DbVersionStatuses
 from origin.envars.origin_envars import ContextHandler
 from origin.paths.output_paths import OriginOSPathHandler
 
 from origin.common_utils import json_utils
+
+def wait_for_file(path, timeout=5.0):
+    start = time.time()
+    while time.time() - start < timeout:
+        if os.path.exists(path):
+            try:
+                with open(path, "r"):
+                    return True
+            except IOError:
+                pass
+        time.sleep(1.0)
+    return False
 
 
 class Publish(QtWidgets.QWidget):
@@ -15,7 +32,6 @@ class Publish(QtWidgets.QWidget):
         super(Publish, self).__init__(parent)
 
         self.context_handler = context
-        self.path_handler = OriginOSPathHandler(context=self.context_handler)
         self.db_publisher = None
 
         self.create_widgets()
@@ -61,15 +77,30 @@ class Publish(QtWidgets.QWidget):
             "entity_properties": get_entity_properties
         }
 
+    def set_db_asset_id(self, pub_options):
+        db_publisher = DBPublisher(options=pub_options)
+        db_asset_id = db_publisher.create_db_asset(context=self.context_handler,
+                                                   parent=self.context_handler.db_asset_stream_id,
+                                                   publish_type=pub_options['publish_type'])
+
+        self.context_handler.db_asset_id = db_asset_id
+
     def publish(self, options):
         current_dcc = os.getenv("DCC")
+        app_bin = os.getenv("APP_BIN")
         get_pub_options = self.get_selected_options()
         options.update(get_pub_options)
+        options['dcc'] = current_dcc
+        options['app_bin'] = app_bin
+
+        self.set_db_asset_id(pub_options=options)
+
+        path_handler = OriginOSPathHandler(context=self.context_handler.snapshot_session(), file_format="json")
 
         if current_dcc != "origin_standalone":
-            from origin.dcc.common.batch_processing.batch_processing import BatchProcessing
             from origin.dcc.common.utils.save_session import scene_session_operations_class
 
+            # save current maya wip scene
             current_scene = scene_session_operations_class()
             master_scene_path = current_scene.save_current_file()
             options["master_scene"] = master_scene_path
@@ -78,14 +109,14 @@ class Publish(QtWidgets.QWidget):
             doci_pub_options = copy.deepcopy(options)
             serialized_context = self.context_handler.snapshot_session()
             doci_pub_options['context_object'] = serialized_context
-            json_doci = r"C:\Users\arsithra\PycharmProjects\ORIGIN_BEDROCK\origin\applications\Doci\jobs\incoming"
-            json_file = "incoming.json"
-            json_utils.save_json(target_path=json_doci, target_file=json_file, data=doci_pub_options)
+            json_doci_temp_path = path_handler.doci_temp_path()
+            json_file = path_handler.doci_file_name() + '.json'
+            json_doci_path = path_handler.doci_incoming_path()
 
 
-            # continue with existing options --> to be deprecated
-            publisher_type = BatchProcessing(options=options, task="publish")
-            publisher_type.run()
+            # save json publish file for Doci to pick up
+            temp_json_file = json_utils.save_json(target_path=json_doci_temp_path, target_file=json_file, data=doci_pub_options)
+            shutil.move(temp_json_file, json_doci_path)
 
         else:
             print (f"{current_dcc.upper()} detected. Skipping Batch Processing.")

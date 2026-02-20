@@ -13,16 +13,10 @@ context = {
 logger = PublishLogger("publish_log.json")
 Publish = Publish(context, logger)
 
-geo_export = Publish.addTask(
-    GeometryExport(scene="asset.ma", out_dir="X:/publish/geo")
-)
+geo_export = Publish.addTask(GeometryExport(scene="asset.ma", out_dir="X:/publish/geo"))
 
-playblast = Publish.addTask(
-    PlayblastExport(playblast_scene="turntable.ma", dependent=geo_export)
-)
+playblast = Publish.addTask(PlayblastExport(playblast_scene="turntable.ma", dependent=geo_export))
 
-movie_make = Publish.addTask(
-    MovExport(dependent=playblast)
-)
+movie_make = Publish.addTask(MovExport(dependent=playblast))
 
 Publish.run()

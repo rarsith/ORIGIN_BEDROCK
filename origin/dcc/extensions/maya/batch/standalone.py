@@ -7,6 +7,11 @@ from pathlib import Path
 from origin.dcc.env_setup import env_setup
 from origin.dcc.extensions.maya.publish.tasks.factory.task_factory import TASKS
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(f"running {__name__}")
+
 
 def load_additional_plugins():
     import maya.cmds as cmds

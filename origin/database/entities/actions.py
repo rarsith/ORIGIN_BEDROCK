@@ -154,11 +154,16 @@ class Fetch:
 
 
 class Create:
-    def __init__(self, context: ContextHandler = None):
+    def __init__(self, context = None):
         self.db = MongoConnection().origin_production_database()
         self.applications__db = MongoConnection().origin_setup_database()
 
         self.context_handler = context
+
+        if isinstance(self.context_handler, dict):
+            self.context_handler = ContextHandler()
+            self.context_handler.load_session(context)
+
         if self.context_handler is not None:
             self.db_structure_collection = self.db[self.context_handler.show_name]
             self.db_publish_collection = self.db[self.context_handler.project_publishes]

@@ -14,7 +14,7 @@ class GeometryPublish:
         self.options = options
 
         self.context_handler: ContextHandler = self.options["context_object"]
-        self.dcc = os.getenv("DCC")
+        self.dcc = options['dcc']
 
         self.image_sequence_exporter = None
         self.quicktime_exporter = None

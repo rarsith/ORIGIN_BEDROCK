@@ -1,4 +1,7 @@
 import json
+import os
+from pathlib import Path
+
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtCore import Slot
 from origin.database.entities.operators import DCCVersion, DCCBaseModel
@@ -12,14 +15,18 @@ class AppVersionsWidget(QtWidgets.QWidget):
 
         self.create_widgets()
         self.create_layout()
+        self.create_connections()
 
     def create_widgets(self):
         self.version_name_le = QtWidgets.QLineEdit()
+        self.icon_path_le = QtWidgets.QLineEdit()
         self.executable_path_le = QtWidgets.QLineEdit()
         self.executable_python_path_le = QtWidgets.QLineEdit()
         self.active_chk = QtWidgets.QCheckBox()
         # self.active_plugins = QtWidgets.QLineEdit()
         self.browse_executable_btn = QtWidgets.QPushButton("Browse")
+        self.browse_icon_btn = QtWidgets.QPushButton("Browse")
+
         self.envar_data_pt = QtWidgets.QPlainTextEdit()
         self.envar_data_pt.setMaximumHeight(50)
         self.envar_data_pt.setMaximumWidth(250)
@@ -27,10 +34,24 @@ class AppVersionsWidget(QtWidgets.QWidget):
         self.delete_version_btn.setFixedSize(60, 180)
 
     def create_layout(self):
+        exec_container = QtWidgets.QWidget()
+        exec_path_layout = QtWidgets.QHBoxLayout(exec_container)
+        exec_path_layout.setContentsMargins(0,0,0,0)
+        exec_path_layout.addWidget(self.executable_path_le)
+        exec_path_layout.addWidget(self.browse_executable_btn)
+
+        icon_container = QtWidgets.QWidget()
+        icon_path_layout = QtWidgets.QHBoxLayout(icon_container)
+        icon_path_layout.setContentsMargins(0, 0, 0, 0)
+        icon_path_layout.addWidget(self.icon_path_le)
+        icon_path_layout.addWidget(self.browse_icon_btn)
+
         form_layout = QtWidgets.QFormLayout()
         form_layout.addRow("Version: ", self.version_name_le)
         form_layout.addRow("Active:", self.active_chk)
-        form_layout.addRow("Executable Path:", self.executable_path_le)
+        form_layout.addRow("Icon Path:", icon_container)
+        form_layout.addRow("Executable Path:", exec_container)
+
         form_layout.addRow("Python Executable:", self.executable_python_path_le)
         # form_layout.addRow("Active Plugins:", self.executable_path_le)
         form_layout.addRow("Environment:", self.envar_data_pt)
@@ -39,22 +60,47 @@ class AppVersionsWidget(QtWidgets.QWidget):
         main_layout.addLayout(form_layout)
 
     def create_connections(self):
-        self.delete_version_btn.clicked.connect(self.delete_item)
+        self.browse_executable_btn.clicked.connect(self.choose_exec_file)
+        self.browse_icon_btn.clicked.connect(self.choose_icon_file)
 
-    def delete_item(self):
-        index = self.tree_widget.indexOfTopLevelItem(self.parent())
 
-        if index != -1:
-            self.tree_widget.takeTopLevelItem(index)
+    def choose_exec_file(self):
+        user_home = os.path.expanduser("~")
+
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            "Select file",
+            user_home,  # start directory
+            "All Files (*);;Text Files (*.txt)"
+        )
+
+        if filename:
+            self.executable_path_le.setText(filename)
+
+    def choose_icon_file(self):
+        orig_root = os.getenv('ORIGIN_ROOT')
+        icons_root = Path(orig_root) / 'origin' / 'dcc' / 'icons'
+
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            "Select file",
+            str(icons_root),  # start directory
+            "All Files (*);;Text Files (*.txt)"
+        )
+
+        if filename:
+            self.icon_path_le.setText(filename)
 
     def populate_properties(self,
                             version_name=None,
                             active=True,
+                            icon_path=None,
                             executable_path=None,
                             python_executable=None,
                             envar_data=None):
         self.version_name_le.setText(version_name)
         self.active_chk.setChecked(active)
+        self.icon_path_le.setText(icon_path)
         self.executable_path_le.setText(executable_path)
         self.executable_python_path_le.setText(python_executable)
         self.envar_data_pt.insertPlainText(str(envar_data))
@@ -67,20 +113,45 @@ class AppPropertiesWidget(QtWidgets.QWidget):
 
         self.create_widgets()
         self.create_layout()
+        self.create_connections()
 
     def create_widgets(self):
         self.app_is_active = QtWidgets.QCheckBox()
         self.app_name_le = QtWidgets.QLineEdit()
         self.app_icon_path = QtWidgets.QLineEdit()
+        self.browse_app_icon_btn = QtWidgets.QPushButton('Browse')
 
     def create_layout(self):
+        icon_container = QtWidgets.QWidget()
+        icon_path_layout = QtWidgets.QHBoxLayout(icon_container)
+        icon_path_layout.setContentsMargins(0, 0, 0, 0)
+        icon_path_layout.addWidget(self.app_icon_path)
+        icon_path_layout.addWidget(self.browse_app_icon_btn)
+
         form_layout = QtWidgets.QFormLayout()
         form_layout.addRow("Active: ", self.app_is_active)
         form_layout.addRow("App Name:", self.app_name_le)
-        form_layout.addRow("Icon:", self.app_icon_path)
+        form_layout.addRow("Icon:", icon_container)
 
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addLayout(form_layout)
+
+    def create_connections(self):
+        self.browse_app_icon_btn.clicked.connect(self.choose_icon_file)
+
+    def choose_icon_file(self):
+        orig_root = os.getenv('ORIGIN_ROOT')
+        icons_root = Path(orig_root) / 'origin' / 'dcc' / 'icons'
+
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            "Select file",
+            str(icons_root),  # start directory
+            "All Files (*);;Text Files (*.txt)"
+        )
+
+        if filename:
+            self.icon_path_le.setText(filename)
 
 
 class AppProperties(QtWidgets.QWidget):
@@ -152,6 +223,7 @@ class AppProperties(QtWidgets.QWidget):
         version_document = DCCVersion(
             active=False,
             version='',
+            icon_path='',
             exec_path='',
             exec_python='',
             envars='{}'
@@ -167,6 +239,7 @@ class AppProperties(QtWidgets.QWidget):
 
         properties_widget.populate_properties(version_name=doc_data.version,
                                               active=doc_data.active,
+                                              icon_path = doc_data.icon_path,
                                               executable_path=doc_data.exec_path,
                                               python_executable=doc_data.exec_python,
                                               envar_data=doc_data.envars)
@@ -178,7 +251,7 @@ class AppProperties(QtWidgets.QWidget):
     def extract_properties(self):
         is_active = self.app_base_config_wdg.app_is_active.isChecked()
         app_name = self.app_base_config_wdg.app_name_le.text()
-        icon_path = self.app_base_config_wdg.app_icon_path.text()
+        icon_path = None
 
         data = {"versions_data": {}}
 
@@ -188,12 +261,20 @@ class AppProperties(QtWidgets.QWidget):
             row_item = self.properties_viewer_tw.itemWidget(item, 0)
             version_id = row_item.version_name_le.text()
             version_is_active = row_item.active_chk.isChecked()
+            wdg_icon_path = row_item.icon_path_le.text()
             exec_path = row_item.executable_path_le.text()
             exec_python_path = row_item.executable_python_path_le.text()
             envar_data = row_item.envar_data_pt.toPlainText()
+
+            if wdg_icon_path:
+                icon_path = wdg_icon_path
+            else:
+                icon_path = self.app_base_config_wdg.app_icon_path.text()
+
             collected_version_data = DCCVersion(
                 active=version_is_active,
                 version=version_id,
+                icon_path=icon_path,
                 exec_path=exec_path,
                 exec_python=exec_python_path,
                 envars=envar_data

@@ -181,37 +181,17 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
     def update_slot_to_current(self, data):
         for row, db_doc_obj in data.items():
-            current_version_doc = self.get_current_version(db_doc_obj=db_doc_obj)
+            # current_version_doc = self.get_current_version(db_doc_obj=db_doc_obj)
+            current_version_doc = self.context_handler.database_handler().get_current_db_asset_version(db_doc_obj=db_doc_obj)
             self.populate_slot(row=row, version_doc=current_version_doc)
         # print(current_version_doc)
 
     def add_slot(self, data):
         print(data)
 
-    def _get_stream_stack(self):
-        self.db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
-
-        if self.context_handler.db_asset_stream_id is not None:
-            stream_stack_db_asset_id = ".".join([self.context_handler.db_asset_stream_id + "." + "asset_stack"])
-            stack_doc = self.db_ops.entity_document(doc_id=stream_stack_db_asset_id)
-            return stack_doc
-
-        else:
-            return None
-
-    def get_current_version_doc(self):
-        db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
-        stack_doc = self._get_stream_stack()
-
-        if stack_doc is not None:
-            current_doc = db_ops.get_current_version(_id={"$regex": f"^{stack_doc['_id']}"})
-            if len(current_doc) != 0:
-                return current_doc[0]
-        else:
-            return
-
     def get_stack_slots(self):
-        extract_version = self.get_current_version_doc()
+        # extract_version = self.get_current_version_doc()
+        extract_version = self.context_handler.database_handler().get_current_stack_version()
 
         if extract_version is not None:
             self.stack_version_lb.setText(extract_version['name'])
@@ -232,23 +212,11 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
 
     def check_if_current(self, doc_id: str = None):
         if doc_id is not None:
-            version_parent = doc_id.rsplit(".", 1)[0]
-            db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
-            current_doc = db_ops.get_current_version(_id={"$regex": f"^{version_parent}"})
+            current_doc = self.context_handler.database_handler().get_current_db_asset_version(db_doc_obj=doc_id)
             if len(current_doc) != 0:
-                return doc_id==current_doc[0]["_id"]
-        else:
-            return None
-
-    def get_current_version(self, db_doc_obj: str = None):
-        if db_doc_obj is not None:
-            doc_id = db_doc_obj.id
-
-            version_parent = doc_id.rsplit(".", 1)[0]
-            db_ops = CollectionOperators(db_collection=self.context_handler.project_publishes)
-            current_doc = db_ops.get_current_version(_id={"$regex": f"^{version_parent}"})
-            if len(current_doc) != 0:
-                return current_doc[0]
+                return doc_id==current_doc["_id"]
+            else:
+                return None
         else:
             return None
 
@@ -345,9 +313,11 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
             return
 
     def update_context(self):
-        stream_stack_doc = self._get_stream_stack()
+        # stream_stack_doc = self._get_stream_stack()
+        stream_stack_doc = self.context_handler.database_handler().get_stream_stack()
         self.context_handler.stack_id = stream_stack_doc["_id"]
         self.current_context.emit(self.context_handler)
+
 
 class AssetStackManagerUI(QtWidgets.QWidget):
     def __init__(self,  context: ContextHandler = None, parent=None):
@@ -438,10 +408,11 @@ class AssetStackManagerUI(QtWidgets.QWidget):
         new_stack_id = db_pub.create_stack_version(context=self.context_handler, slots=gather_ui_data)
         print(f"NEW STACK {new_stack_id}")
         #
-        window = OriginPublisher(context=self.context_handler, publish_type="asset_stack", parent=self)
+        # window = OriginPublisher(context=self.context_handler, publish_type="asset_stack", parent=self)
         # window.setGeometry(100, 100, 700, 300)
         # window.setWindowFlags(QtCore.Qt.Window)
         # window.show()
+
 
 class AssetStackManagerMain(QtWidgets.QMainWindow):
     def __init__(self, parent=None):

@@ -6,6 +6,10 @@ from origin.paths.output_paths import OriginOSPathHandler
 
 import maya.cmds as cmds
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(f"running {__name__}")
 
 class MayaMasterSceneExporter:
     origin_scene_file = "master"
@@ -20,8 +24,11 @@ class MayaMasterSceneExporter:
 
     def set_output_path(self, file_format):
         self.path_handler = OriginOSPathHandler(context=self.context_handler, file_format=file_format)
+        print("MASTER FILE NAME: ", self.path_handler.output_file_name)
         full_path = Path(self.path_handler.publish_path(branch_dir_name=self.path_handler.branch_pub_data,
                                                         create_dir=True)) / self.path_handler.output_file_name
+
+        print("MASTER FILE FULL NAME: ", full_path)
         return full_path
 
     def run_export(self):
@@ -51,6 +58,8 @@ class MayaMasterSceneExporter:
 
     def execute(self):
         captured_data = self.run_export()
+
+        print("MASTER EXPORTER CONTEXT DB ASSET VERSION ID:  ", self.context_handler.db_asset_version_id)
         self.db_publisher.create_db_file_components(
             db_asset_version_id=self.context_handler.db_asset_version_id,
             published_data=captured_data,

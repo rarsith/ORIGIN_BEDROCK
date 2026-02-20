@@ -1,0 +1,1 @@
+2026-02-08 15:41:33,464 | DEBUG | pymongo.topology | {"topologyId": {"$oid": "6988a09cb26cee973dd4b63c"}, "serverHost": "localhost", "serverPort": 27017, "awaited": true, "durationMS": 530.9999999990396, "failure": "\"_OperationCancelled('operation cancelled')\"", "message": "Server heartbeat failed"}

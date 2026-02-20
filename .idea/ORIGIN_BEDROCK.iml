@@ -5,6 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/origin/python_shared" />
+      <excludeFolder url="file://$MODULE_DIR$/origin/tests" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (ORIGIN_BEDROCK)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

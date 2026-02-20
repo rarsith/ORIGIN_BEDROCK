@@ -21,8 +21,8 @@ class MayaFileHandler:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File does not exist: {file_path}")
 
-        if self.extension not in self.SUPPORTED_EXTENSIONS:
-            raise ValueError(f"Unsupported file extension: {self.extension}")
+        # if self.extension not in self.SUPPORTED_EXTENSIONS:
+        #     raise ValueError(f"Unsupported file extension: {self.extension}")
 
     def get_file_types_ops(self):
         file_types_ops = {".ma": ["reference", "open", "import"],

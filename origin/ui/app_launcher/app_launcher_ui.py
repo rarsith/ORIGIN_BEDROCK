@@ -159,12 +159,10 @@ class AppLauncher(QtWidgets.QWidget):
         else:
             self.clear_app_widget()
 
-    # def app_environment(self, app_exec):
-
-
     def launch_async_app(self):
         import os
         import subprocess
+        import pprint
         exe_path = self.get_ver_exec_path()
         if exe_path:
             try:

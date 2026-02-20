@@ -45,6 +45,6 @@ def env_setup():
 
 
 if __name__ == "__main__":
-    xx = os.path.join(os.getenv('ORIGIN_ROOT'), 'origin/dcc/extensions/maya/bin/startup/')
-    print(xx)
+    # xx = os.path.join(os.getenv('ORIGIN_ROOT'), 'origin/dcc/extensions/maya/bin/startup/')
+    # print(xx)
     env_setup()

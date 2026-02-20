@@ -229,5 +229,5 @@ def __originOpen( menu ) :
     __open( currentScript, str( path ) )
 
 
-GafferUI.ScriptWindow.menuDefinition(application).append("/ORIGIN/Open (Rebuild Context)", {"command": __originOpen})
+GafferUI.ScriptWindow.menuDefinition(application).append("/ORIGIN/Open Scene", {"command": __originOpen})
 

@@ -1,4 +1,5 @@
 import os
+import pprint
 import sys
 import time
 import subprocess
@@ -7,8 +8,13 @@ from pathlib import Path
 from PySide2.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction, QSplashScreen, QLabel
 from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtCore import QThread, QObject, Signal, Qt, QTimer
-from origin.config.settings.settings import UserSettingsModel
+
 from origin.common_utils import json_utils as jutil
+from origin.config.settings.settings import UserSettingsModel
+from origin.applications.Origin_Doci.doci import DociObserver
+from origin.dcc.env_setup import env_setup
+
+from origin.ui.publishes_viewer_ui.publishes_view_core import origin_dev_root
 
 
 class BackgroundWorker(QObject):
@@ -18,14 +24,41 @@ class BackgroundWorker(QObject):
     def __init__(self):
         super(BackgroundWorker, self).__init__()
 
-        # self.set_root_envar()
+        self.set_origin_envars()
+        self.origin_doci_root = os.getenv('ORIGIN_DOCI_ROOT')
+        self.doci = DociObserver(root_folder=self.origin_doci_root)
+
 
     def run(self):
         self.set_root_envar()
 
+    def origin_doci_start(self):
+        state = self.doci.watch_publish()
+        print("DOCI STATE:  ", state)
+        return state
+
+    def origin_doci_stop(self):
+        self.doci.stop_watch_publish()
+
+    def origin_doci_state(self):
+        return self.doci.check_observer_state()
+
+    def set_origin_envars(self):
+        origin_dev_root = os.getenv("ORIGIN_ROOT")
+        user_setting_file_path = Path(origin_dev_root) /  "origin/config/settings/user_settings.json"
+        if user_setting_file_path.exists():
+            user_setting_file = jutil.open_json(user_setting_file_path)
+            for env_name, env_val in user_setting_file.items():
+                os.environ[env_name] = str(env_val)
+
+        env = os.environ.copy()
+        # pprint.pprint(env)
+
     def set_root_envar(self):
         origin_dev_root = os.getenv("ORIGIN_ROOT")
         ORIGIN_PIPE_ROOT_PATH = Path(origin_dev_root)
+
+        #env_setup()
 
         origin_stylesheets_rel_pah = Path("origin") / "ui" / "style" / "stylesheets"
         origin_fonts_rel_pah = Path("origin") / "ui" / "style" / "fonts"
@@ -37,7 +70,13 @@ class BackgroundWorker(QObject):
         os.environ["ORIGIN_ICONS_DIR"] = str(ORIGIN_PIPE_ROOT_PATH / origin_icons_rel_pah)
         os.environ["ORIGIN_USD_DIR"] = str(ORIGIN_PIPE_ROOT_PATH / origin_usd_rel_pah)
 
-        ORIGIN_SITE_PACKAGES_PATH_REL = Path(".venv") / "Lib" / "site-packages"
+        ORIGIN_SITE_PACKAGES_PATH_REL = None
+
+        if (ORIGIN_PIPE_ROOT_PATH / '.venv').exists():
+            ORIGIN_SITE_PACKAGES_PATH_REL = Path(".venv") / "Lib" / "site-packages"
+        elif (ORIGIN_PIPE_ROOT_PATH / 'venv').exists():
+            ORIGIN_SITE_PACKAGES_PATH_REL = Path("venv") / "Lib" / "site-packages"
+
         ORIGIN_SITE_PACKAGES_PATH = ORIGIN_PIPE_ROOT_PATH / ORIGIN_SITE_PACKAGES_PATH_REL
 
         if str(ORIGIN_SITE_PACKAGES_PATH) not in sys.path:
@@ -49,19 +88,20 @@ class BackgroundWorker(QObject):
         else:
             os.environ["PYTHONPATH"] = str(ORIGIN_SITE_PACKAGES_PATH)
 
-        user_setting_file_path = os.path.normpath(
-            os.path.join(origin_dev_root, "origin/config/settings/user_settings.json"))
-        user_setting_file = jutil.open_json(user_setting_file_path)
-        settings_model = UserSettingsModel(**user_setting_file)
-
-        os.environ[settings_model.origin_projects_root] = settings_model.ORIGIN_PROJECTS_ROOT
-        os.environ[settings_model.origin_mongo_url] = settings_model.ORIGIN_MONGO_URL
-        os.environ[settings_model.origin_studio_name] = settings_model.ORIGIN_STUDIO_NAME
-        os.environ[settings_model.origin_sylesheet_select] = settings_model.ORIGIN_STYLESHEET_SELECT
-        os.environ[settings_model.origin_initial_setup] = settings_model.ORIGIN_INITIAL_SETUP
-        os.environ[settings_model.origin_font_size] = settings_model.ORIGIN_FONT_SIZE
-        os.environ[settings_model.origin_font_style] = settings_model.ORIGIN_FONT_STYLE
-        os.environ[settings_model.origin_lib_project_root] = settings_model.ORIGIN_LIB_PROJECT_ROOT
+        # user_setting_file_path = os.path.normpath(
+        #     os.path.join(origin_dev_root, "origin/config/settings/user_settings.json"))
+        # user_setting_file = jutil.open_json(user_setting_file_path)
+        # settings_model = UserSettingsModel(**user_setting_file)
+        #
+        # os.environ[settings_model.origin_projects_root] = settings_model.ORIGIN_PROJECTS_ROOT
+        # os.environ[settings_model.origin_doci_root] = settings_model.ORIGIN_DOCI_ROOT
+        # os.environ[settings_model.origin_mongo_url] = settings_model.ORIGIN_MONGO_URL
+        # os.environ[settings_model.origin_studio_name] = settings_model.ORIGIN_STUDIO_NAME
+        # os.environ[settings_model.origin_sylesheet_select] = settings_model.ORIGIN_STYLESHEET_SELECT
+        # os.environ[settings_model.origin_initial_setup] = settings_model.ORIGIN_INITIAL_SETUP
+        # os.environ[settings_model.origin_font_size] = settings_model.ORIGIN_FONT_SIZE
+        # os.environ[settings_model.origin_font_style] = settings_model.ORIGIN_FONT_STYLE
+        # os.environ[settings_model.origin_lib_project_root] = settings_model.ORIGIN_LIB_PROJECT_ROOT
 
         try:
             import pymongo
@@ -86,6 +126,7 @@ class BackgroundWorker(QObject):
 
 class TrayApp:
     def __init__(self):
+
         self.app = QApplication(sys.argv)
 
         self.tray_icon_path = None
@@ -207,6 +248,7 @@ class TrayApp:
         """Start a background task in a separate thread."""
         self.thread = QThread()
         self.worker = BackgroundWorker()
+        self.worker.origin_doci_start()
         self.setup_base()
         self.worker.moveToThread(self.thread)
 
@@ -215,6 +257,7 @@ class TrayApp:
         self.worker.finished.connect(self.thread.quit)
 
         self.thread.start()
+        print("WATCHER IS ACTIVE AFTER STARTING: ", self.worker.origin_doci_state())
 
     def on_background_update(self, message):
         print(message)
@@ -225,12 +268,27 @@ class TrayApp:
 
     def quit(self):
         """Quit the application."""
+
+        # self.worker.doci.stop_watch_publish()
+        print("WATCHER IS ACTIVE BEFORE QUITING: ", self.worker.origin_doci_state())
         print("Quitting application...")
+        print("GOT THREAD RUNNING STATE:  ", self.thread.isRunning())
+
+        self.worker.origin_doci_stop()
+
         if self.thread.isRunning():
+            print("WATCHER IS ACTIVE: ", self.worker.origin_doci_state())
+            print("STOPPING DOCI....")
+            print("WATCHER IS ACTIVE: ", self.worker.origin_doci_state())
             self.thread.quit()
             self.thread.wait()
         self.tray_icon.hide()
+
+        print("GOT THREAD RUNNING STATE AFTER STOPPING:  ", self.thread.isRunning())
+
+
         QApplication.quit()
+
 
     def perform_loading_tasks(self, status_label):
         tasks = ["Initializing Environment...",

@@ -1,6 +1,11 @@
 from origin.dcc.extensions.maya.publish.tasks.abc.batch_task import BatchTask
 from origin.dcc.extensions.maya.publish.exporters.geometry import MayaGeometryExporter
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(f"running {__name__}")
+
 
 class MayaGeometryExporterTask(BatchTask):
     def execute(self):

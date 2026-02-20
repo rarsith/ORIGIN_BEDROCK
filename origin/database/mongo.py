@@ -295,6 +295,51 @@ class CollectionOperators:
         db_documents = self.db_collection.find({"parent": parent_id})
         return [doc for doc in db_documents]
 
+    def document_with_parent_id(self, parent_id):
+        db_documents = self.db_collection.find({"parent": parent_id})
+        return [doc for doc in db_documents]
+
+    def documents_attr_value_starts_with(self, attr_field: str,
+                                        val_starts_with: str,
+                                        extra_filters: List[dict] = None,
+                                        ids_only=False):
+
+        pipe = OriginDBPipelines()
+        pipe.add_attr_value_startswith(attribute_field=attr_field, value_field=val_starts_with)
+
+        if extra_filters:
+            for ex_filter in extra_filters:
+                for key, value in ex_filter.items():
+                    if isinstance(value, list):
+                        pipe.add_match_attribute_multi_values(attribute_field=key, values_field=value)
+                    else:
+                        pipe.add_match_attribute_dict({key: value})
+
+        if ids_only:
+            pipe.ids_only(only_id=ids_only)
+
+        pipeline = pipe.create_pipeline()
+
+        extra_sorting = pipeline + [{"$addFields": {
+            "datetime": {
+                "$dateFromString": {"dateString": {"$concat": ["$date", "T", "$time"]}}}}},
+
+            {
+                "$sort": {
+                    "datetime": -1
+                }
+            },
+
+        ]
+        try:
+            if self.db_collection is not None:
+                results = list(self.db_collection.aggregate(extra_sorting))
+                return results
+
+        except Exception as e:
+            print(__file__, e)
+
+
     def entities_attr_value_starts_with(self, attr_field: str,
                                         val_starts_with: str,
                                         extra_filters: List[dict] = None,
@@ -348,9 +393,6 @@ class CollectionOperators:
         pipe = OriginDBPipelines()
         pipe.add_attr_value_startswith(attribute_field=attr_field, value_field=val_starts_with)
 
-        # pipe.add_sort(sort_by_attr="time", sort_value=-1)
-        # pipe.add_sort(sort_by_attr="date", sort_value=-1)
-
         if extra_filters:
             for ex_filter in extra_filters:
                 for key, value in ex_filter.items():
@@ -361,8 +403,6 @@ class CollectionOperators:
 
         if ids_only:
             pipe.ids_only(only_id=ids_only)
-
-        # pipe.add_count_attr("count")
 
         pipeline = pipe.create_pipeline()
 
@@ -386,15 +426,6 @@ class CollectionOperators:
             print(__file__, e)
 
     def fetch_paginated_documents(self, page_number, page_size):
-        # pipeline = [
-        #     {'$match': {'$and': [{'_id': {'$regex': '^The_Rock.assets.props.knife'}}]}},
-        #     {'$match': {'type': {'$in': ['publish', 'db_asset__stack_version']}}},
-        #     {'$addFields': {'datetime': {'$dateFromString': {'dateString': {'$concat': ['$date', 'T', '$time']}}}}},
-        #     {'$sort': {'datetime': -1}},
-        #     {'$skip': (page_number - 1) * page_size},
-        #     {'$limit': page_size}
-        # ]
-
         pipeline = [
             {
                 '$facet': {

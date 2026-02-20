@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 
-def get_executable():
-    dcc = os.getenv("DCC")
+def get_executable(options):
+    dcc = options['dcc']
     batch_executables = {
         "maya": "mayapy.exe",
         "houdini": "houdini.exe",
@@ -14,9 +14,9 @@ def get_executable():
     return batch_executables.get(dcc)
 
 
-def set_executable():
-    dcc_executable = get_executable()
-    app_bin = Path(os.getenv("APP_BIN"))
+def set_executable(options):
+    dcc_executable = get_executable(options)
+    app_bin = Path(options['app_bin'])
 
     app_py_executable = app_bin / dcc_executable
     app_py_normalized = app_py_executable.as_posix()

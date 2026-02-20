@@ -23,35 +23,37 @@ def clone_environment():
 def open_path():
     cloned_env = clone_environment()
     path_ops = OriginOSPathHandler(context=cloned_env)
-    work_path_elements = path_ops.work_base_path(as_path=False, abs_path=False)
-    work_path_elements.append(path_ops.branch_user_scene_files)
-    save_path = path_ops.compose_path(path_elements=work_path_elements, relative=False)
-    normalized_path = os.path.normpath(save_path)
-    unix_path = normalized_path.replace(os.sep, '/')
+    unix_path = path_ops.get_user_scene_files()
     return unix_path
 
 
-def custom_save_as_dialog(start_directory):
-    maya_main_window_ptr = omui.MQtUtil.mainWindow()
-    maya_main_window = wrapInstance(int(maya_main_window_ptr), QWidget)
-    file_path, _ = QFileDialog.getSaveFileName(maya_main_window, "Save As", start_directory)
-    return file_path
+def custom_open(start_dir):
+    path = cmds.fileDialog2(fileMode=1,
+                            startingDirectory = start_dir,
+                            caption="Open Scene (Custom)")
 
+    if not path:
+        return
 
-def custom_open_scene_dialog(start_directory):
-    maya_main_window_ptr = omui.MQtUtil.mainWindow()
-    maya_main_window = wrapInstance(int(maya_main_window_ptr), QWidget)
+    path = path[0]
 
-    file_path, _ = QFileDialog.getOpenFileName(
-        parent=maya_main_window,
-        caption="Open Maya Scene",
-        dir=start_directory,
-        filter="Maya Files (*.ma *.mb);;All Files (*.*)"
-    )
+    if cmds.file(q=True, modified=True):
+        result = cmds.confirmDialog(
+            title="Unsaved Changes",
+            message="Save changes before opening?",
+            button=["Save", "Don't Save", "Cancel"],
+            defaultButton="Save",
+            cancelButton="Cancel"
+        )
 
-    cmds.file(file_path, open=True, force=True)
+        if result == "Cancel":
+            return
+        elif result == "Save":
+            cmds.file(save=True)
+
+    cmds.file(path, o=True, force=True)
 
 
 def initiate_open_file_dialog():
     open_file_path = open_path()
-    custom_open_scene_dialog(start_directory=open_file_path)
+    custom_open(start_dir=open_file_path)

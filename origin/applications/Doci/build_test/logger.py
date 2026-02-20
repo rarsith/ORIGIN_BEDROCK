@@ -19,7 +19,7 @@ class PublishLogger:
             "task": task.name,
             "event": event,
             "status": task.status.value,
-            "time": datetime.utcnow().isoformat(),
+            "time": datetime.now().isoformat(),
             "outputs": task.outputs
         })
         self._flush()

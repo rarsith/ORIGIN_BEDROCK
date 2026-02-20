@@ -40,6 +40,7 @@ def get_file_component_class(component_type, custom_label=None):
         "texture": SourceTextureComponent,
         "jpg_seq": JPGImageSequenceComponent,
         "playblast_template": PlayblastTemplateFileComponent,
+
     }
     if component_type in components_file_types.keys():
         return components_file_types.get(component_type)
@@ -218,6 +219,9 @@ class DCCVersion(BaseModel):
 
     VERSION: ClassVar[str] = "version"
     version: Optional[str] = None
+
+    ICON_PATH: ClassVar[str] = "icon_path"
+    icon_path: Optional[str] = None
 
     EXEC_PATH: ClassVar[str] = "exec_path"
     exec_path: Optional[str] = None
@@ -817,6 +821,10 @@ class DBAssetOperations(EntityOperations):
 
     def get_next_version(self):
         version_string, version = vup.version_up(self.entity.version_cnt)
+        return version_string, version
+
+    def get_version_cnt(self):
+        version_string, version = vup.version_cnt(self.entity.version_cnt)
         return version_string, version
 
     def add_stack(self, db_collection, stack_id):

@@ -1,3 +1,4 @@
 *.env
 /origin/dcc/extensions/maya/template_scenes/
 /origin/python_shared/
+/origin/tests/

@@ -70,5 +70,6 @@
         "res_x": 1920,
         "res_y": 1080
     },
-    "master_scene": "X:/projects/Small_Rock/assets/characters/red_hulk/modeling/work_arsithra/scene_files/test__v0008.mb"
+    "dcc": "maya",
+    "master_scene": "X:/projects/Small_Rock/assets/characters/red_hulk/modeling/work_arsithra/scene_files/test__v0013.mb"
 }

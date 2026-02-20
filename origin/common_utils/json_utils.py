@@ -40,6 +40,8 @@ def save_json(target_path, target_file, data):
     with open(os.path.join(target_path, target_file), 'w') as outfile:
         outfile.write(json_object)
 
+    return os.path.join(target_path, target_file)
+
 def read_dictionary(source_data, attribute_to_read):
     """Read dictionary and return value by key."""
     return source_data[attribute_to_read]

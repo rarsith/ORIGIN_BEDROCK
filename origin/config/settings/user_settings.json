@@ -1,5 +1,6 @@
 {
     "ORIGIN_PROJECTS_ROOT": "X:\\projects",
+    "ORIGIN_DOCI_ROOT": "X:\\_doci",
     "ORIGIN_MONGO_URL": "mongodb://localhost:27017",
     "ORIGIN_STUDIO_NAME": "THE_OTHER_SIDE",
     "ORIGIN_STYLESHEET_SELECT": "",

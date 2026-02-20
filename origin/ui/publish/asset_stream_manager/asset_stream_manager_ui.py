@@ -5,8 +5,6 @@ from origin.database.dispachers.entity_class_dispatcher import extract_asset_cla
 from origin.ui.project_viewer_ui.project_tree_viewer_UI import ProjectTreeViewerUI
 from origin.ui.publish.asset_stream_manager.widgets.create_asset_stream_ui import CreateStreamUI
 from origin.ui.publish.asset_stream_manager.widgets.delete_asset_stream_ui import DeleteEmptyStreamsUI
-from origin.database.entities.operators import Asset
-from origin.database.mongo import CollectionOperators
 
 
 class ContextViewer(ProjectTreeViewerUI):
@@ -103,7 +101,7 @@ class EntryStackStream(QtWidgets.QWidget):
             self.populate_streams()
 
     def populate_streams(self):
-        stack_streams = self.get_stack_streams()
+        stack_streams = self.context_handler.database_handler().get_asset_streams()
 
         self.all_streams.setChecked(True)
         is_current_stream_context = self.current_stream_context.isChecked()
@@ -130,22 +128,6 @@ class EntryStackStream(QtWidgets.QWidget):
                     list_item = QtWidgets.QListWidgetItem(stream_name)
                     self.stack_stream_lw.addItem(list_item)
                     list_item.setData(QtCore.Qt.UserRole, stream)
-
-    def get_stack_streams(self):
-        db_ops = CollectionOperators(db_collection=self.context_handler.show_name)
-        entity_doc = db_ops.entity_document(doc_id=self.context_handler.entity_id)
-        asset_doc = Asset(**entity_doc)
-
-        curr_asset_type = self.context_handler.entity_type
-        stack_steams = asset_doc.stack_streams
-
-        if curr_asset_type != "group":
-            if stack_steams is None:
-                return {}
-            if len(stack_steams) == 0:
-                return {}
-            else:
-                return stack_steams
 
     def update_context(self):
         current_item = self.stack_stream_lw.currentItem()

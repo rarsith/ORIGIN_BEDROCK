@@ -1,6 +1,10 @@
 from origin.dcc.extensions.maya.publish.tasks.abc.batch_task import BatchTask
 from origin.dcc.extensions.maya.publish.exporters.maya_make_playblast import MayaMakePlayblast
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info(f"running {__name__}")
 
 class MayaMakePlayblastTask(BatchTask):
     def execute(self):

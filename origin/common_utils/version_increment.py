@@ -28,6 +28,10 @@ def version_up(current_version: int, prefix_symbol='v'):
     version_string = "{0}{1:04d}".format(prefix_symbol, int(next_version))
     return version_string, next_version
 
+def version_cnt(current_version: int, prefix_symbol='v'):
+    version_string = "{0}{1:04d}".format(prefix_symbol, int(current_version))
+    return version_string, current_version
+
 def next_file_version(path_to_query, delimiter="_"):
     all_versions = []
     for dir_path, dir_names, file_names in os.walk(path_to_query):
