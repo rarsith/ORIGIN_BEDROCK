@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from origin.common_utils.json_utils import save_json
 from origin.database.entities.operators import Project, Asset, Task, DBAsset, Group, AssetBreakdown, \
-    AssetBreakdownVersion, AssetStack, AssetStackVersion, DBAssetVersion
+    AssetBreakdownVersion, AssetStack, AssetStackVersion, DBAssetVersion, get_entity_class
 from origin.database.mongo import CollectionOperators
 from origin.database.mongo_connection import MongoConnection
 
@@ -420,7 +420,15 @@ class OriginDatabaseHandler:
     def get_db_document_by_id(self, db_collection, doc_id):
         db_ops = CollectionOperators(db_collection=db_collection)
         document = db_ops.entity_document(doc_id=doc_id)
+        # document_object = get_entity_class(item_type=document['type'])(**document)
+        # print(document_object.type)
         return document
+
+    # def get_db_document_by_id(self, db_collection, doc_id):
+    #     db_ops = CollectionOperators(db_collection=db_collection)
+    #     document = db_ops.entity_document(doc_id=doc_id)
+    #     document_object = get_entity_class(item_type=document['type'])(**document)
+    #     return document_object
 
     # def get_document_by_id(self, doc_id, db_collection: DatabaseConnections):
     #     db_ops = None

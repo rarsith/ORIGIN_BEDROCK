@@ -106,5 +106,5 @@ if __name__ == '__main__':
     from origin.database.entities.operators import WorkFile
 
     xx = WorkFile(_id="")
-    zz = xx.dict(by_alias=True)
+    zz = xx.model_dump(by_alias=True)
     print(zz)

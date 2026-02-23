@@ -3,18 +3,14 @@ import pprint
 
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import Qt, QPoint
-from PySide2.QtGui import QIcon, QFont, QBrush, QColor
-from PySide2.QtWidgets import QVBoxLayout, QTableWidgetItem, QMenu
+from PySide2.QtGui import QFont, QColor
+from PySide2.QtWidgets import QMenu
 
-from origin.database.entities.operators import Project, Asset, Projects, AssetBreakdown, DBAssetVersion
-from origin.database.mongo import CollectionOperators
+from origin.database.entities.operators import DBAssetVersion
 from origin.database.publisher.db_publisher import DBPublisher
 from origin.envars.origin_envars import ContextHandler
 from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeViewerCore
-from origin.ui.publish.origin_publisher import OriginPublisher
 from origin.ui.status_widgets.color_settings import match_color_scheme
-from origin.ui.status_widgets.publish_status_wdg import PublishStatusWidget
-from origin.ui.stream_viewer_ui.stream_viewer_UI import StreamViewerUI
 
 
 class CustomListWidget(QtWidgets.QListWidget):
@@ -217,7 +213,6 @@ class AssetStackSlotsLoaderWDG(QtWidgets.QWidget):
             self.stack_status_lb.setAlignment(Qt.AlignCenter)
             color_schema = match_color_scheme("No Stack Selected")
             self.stack_status_lb.setStyleSheet(color_schema)
-
 
     def check_if_current(self, doc_id: str = None):
         if doc_id is not None:

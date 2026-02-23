@@ -110,7 +110,7 @@ class Publish(QtWidgets.QWidget):
             serialized_context = self.context_handler.snapshot_session()
             doci_pub_options['context_object'] = serialized_context
             json_doci_temp_path = path_handler.doci_temp_path()
-            json_file = path_handler.doci_file_name() + '.json'
+            json_file = path_handler.doci_file_name()
             json_doci_path = path_handler.doci_incoming_path()
 
 

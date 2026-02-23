@@ -6,6 +6,8 @@ from pathlib import Path
 from origin.common_utils.users import Users
 from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.operators import get_file_component_class
+from origin.common_utils.users import Users
+from origin.common_utils.generate_uuid import generate_uuid
 
 import logging
 
@@ -73,12 +75,8 @@ class OriginOSPathHandler:
 
         if compile_next_version:
             self.__compile_next_version()
-            print("COMPILED FILE VERSION:   ", self.__version_string)
         if compile_filename:
             self.__compile_file_name()
-            print("COMPILED FILE NAME:   ", self.output_file_name)
-
-
 
     def __compile_next_version(self):
         if self.__db_asset_doc:
@@ -194,16 +192,21 @@ class OriginOSPathHandler:
         return temp
 
     def doci_file_name(self):
+        uuid = generate_uuid()
+        user = Users.curr_user()
         if self.__db_asset_doc:
             doci_file_name = "__".join(['doci_pub',
                                         self.__category_name,
                                         self.__context_handler.entity_name,
                                         self.__db_asset_doc.name,
-                                        self.__version_string])
+                                        user,
+                                        self.__version_string,
+                                        uuid
+                                        ]
+                                       )
 
 
-            return doci_file_name
-
+            return f"{doci_file_name}.json"
 
     def work_path(self, branch_dir_name=None, create_dir=False, relative=False):
         work_path_elements = self.__work_db_asset_version_branch(branch_dir_name=branch_dir_name)

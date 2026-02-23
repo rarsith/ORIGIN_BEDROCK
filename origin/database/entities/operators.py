@@ -7,33 +7,29 @@ from origin.common_utils import version_increment as vup
 
 
 def get_entity_class(item_type):
-    # if item_type == "group":
-    #     return Group
-    # if item_type == "asset":
-    #     return Asset
-    # if item_type == "project":
-    #     return Project
-    # if item_type == "task":
-    #     return Task
-
     entity_classes = {  "group": Group,
                         "asset": Asset,
                         "project": Project,
                         "task": Task,
                         "work_file": WorkFile,
-                        "db_asset__breakdown": AssetBreakdown,
+
+                        "db_asset": DBAsset,
+                        "db_asset_version": DBAssetVersion,
+
+                        "asset_breakdown": AssetBreakdown,
+                        "asset_breakdown_version": AssetBreakdownVersion,
+
                         "asset_stack": AssetStack,
-                        "asset_stack_breakdown": AssetStackBreakdown,
+                        "asset_stack_version": AssetStackVersion,
+
+                        "shot_breakdown": ShotBreakdown,
+                        "shot_breakdown_version": ShotBreakdownVersion,
+
                         "shot_stack": ShotStack,
-                        "shot_stack__breakdown": ShotBreakdown,
-                        "db_asset_version__breakdown": AssetBreakdownVersion,
-                        "db_asset_stack__version": AssetStackVersion,
-
-
+                        "shot_stack_version": ShotStackVersion,
                         }
 
     return entity_classes.get(item_type)
-
 
 
 def get_file_component_class(component_type, custom_label=None):
@@ -107,7 +103,7 @@ class OriginSettingsBase(BaseModel):
     ROOT_PATH: ClassVar[str] = "root_path"
     root_path: Optional[str] = None
 
-    ROOT_ORIGIN_PROJECTS: ClassVar[bool] = "root_origin_projects"
+    ROOT_ORIGIN_PROJECTS: ClassVar[str] = "root_origin_projects"
     root_origin_projects: Optional[bool] = None
 
     APPLICATIONS_REPOSITORY: ClassVar[str] = "applications_repository"
@@ -122,7 +118,7 @@ class OriginSettingsBase(BaseModel):
     STUDIO_LOGO: ClassVar[str] = "studio_logo"
     studio_logo: Optional[str] = None
 
-    LAST_SESSION: ClassVar[dict] = "last_session"
+    LAST_SESSION: ClassVar[str] = "last_session"
     last_session: Optional[dict] = None
 
     DATE: ClassVar[str] = "date"
@@ -182,7 +178,7 @@ class DCCBaseModel(BaseModel):
     NAME: ClassVar[str] = "name"
     name: Optional[str] = None
 
-    ACTIVE: ClassVar[bool] = "active"
+    ACTIVE: ClassVar[str] = "active"
     active: Optional[bool] = None
 
     TYPE: ClassVar[str] = "type"
@@ -191,7 +187,7 @@ class DCCBaseModel(BaseModel):
     PARENT: ClassVar[str] = "parent"
     parent: Optional[str] = None
 
-    VERSIONS: ClassVar[dict] = "versions"
+    VERSIONS: ClassVar[str] = "versions"
     versions: Optional[dict] = None
 
     ICON_PATH: ClassVar[str] = "icon_path"
@@ -233,7 +229,7 @@ class DCCOperations:
 
 
 class DCCVersion(BaseModel):
-    ACTIVE: ClassVar[bool] = "active"
+    ACTIVE: ClassVar[str] = "active"
     active: Optional[bool] = None
 
     VERSION: ClassVar[str] = "version"
@@ -381,6 +377,11 @@ class PublishTypes(BaseModel):
     asset_stack: Optional[str] = None
 
 
+##############
+## ENTITIES ##
+##############
+
+
 class EntityBaseModel(BaseModel):
     ID: ClassVar[str] = "_id"
     id: Optional[str] = Field(None, alias='_id')
@@ -388,7 +389,7 @@ class EntityBaseModel(BaseModel):
     NAME: ClassVar[str] = "name"
     name: Optional[str] = None
 
-    ACTIVE: ClassVar[bool] = "active"
+    ACTIVE: ClassVar[str] = "active"
     active: Optional[bool] = None
 
     TYPE: ClassVar[str] = "type"
@@ -400,7 +401,7 @@ class EntityBaseModel(BaseModel):
     BREAKDOWN: ClassVar[str] = "breakdown"
     breakdown: Optional[str] = None
 
-    CHILDREN: ClassVar[list] = "children"
+    CHILDREN: ClassVar[str] = "children"
     children: Optional[list] = None
 
     ORIGIN_DB_PATH: ClassVar[str] = "origin_db_path"
@@ -480,21 +481,22 @@ class EntityOperations:
             children.append(child)
         return children
 
+###################################################
 
 class Asset(EntityBaseModel):
-    DEFINITION: ClassVar[dict] = "definition"
+    DEFINITION: ClassVar[str] = "definition"
     definition: Optional[dict] = None
 
-    TASKS: ClassVar[dict] = "tasks"
+    TASKS: ClassVar[str] = "tasks"
     tasks: Optional[dict] = None
 
-    STACK_STREAMS: ClassVar[list] = "stack_streams"
+    STACK_STREAMS: ClassVar[str] = "stack_streams"
     stack_streams: Optional[list] = None
 
-    ASSIGNEES: ClassVar[dict] = "assignees"
+    ASSIGNEES: ClassVar[str] = "assignees"
     assignees: Optional[dict] = None
 
-    ASSIGNED_TO: ClassVar[dict] = "assigned_to"
+    ASSIGNED_TO: ClassVar[str] = "assigned_to"
     assigned_to: Optional[dict] = None
 
     def operations(self):
@@ -573,7 +575,7 @@ class AssetOperations(EntityOperations):
 
 
 class Group(EntityBaseModel):
-    DATA: ClassVar[dict] = "data"
+    DATA: ClassVar[str] = "data"
     data: Optional[dict] = None
 
 
@@ -584,10 +586,10 @@ class Project(EntityBaseModel):
     SHOW_CODE: ClassVar[str] = "show_code"
     show_code: Optional[str] = None
 
-    SHOW_SETTING: ClassVar[dict] = "show_settings"
+    SHOW_SETTING: ClassVar[str] = "show_settings"
     show_settings: Optional[dict] = None
 
-    SHOW_SITE: ClassVar[dict] = "show_site"
+    SHOW_SITE: ClassVar[str] = "show_site"
     show_site: Optional[dict] = None
 
     def operations(self):
@@ -622,7 +624,7 @@ class Task(EntityBaseModel):
     ARTIST: ClassVar[str] = "artist"
     artist: Optional[str] = None
 
-    IMPORTS_FROM: ClassVar[dict] = "imports_from"
+    IMPORTS_FROM: ClassVar[str] = "imports_from"
     imports_from: Optional[dict] = None
 
     BID_DAYS: ClassVar[str] = "bid_days"
@@ -631,7 +633,7 @@ class Task(EntityBaseModel):
     END_DATE: ClassVar[str] = "end_date"
     end_date: Optional[str] = None
 
-    MILESTONES: ClassVar[dict] = "milestones"
+    MILESTONES: ClassVar[str] = "milestones"
     milestones: Optional[dict] = None
 
     START_DATE: ClassVar[str] = "start_date"
@@ -646,7 +648,7 @@ class Task(EntityBaseModel):
     DESCRIPTION: ClassVar[str] = "description"
     description: Optional[str] = None
 
-    PREVIOUS_ARTISTS: ClassVar[list] = "previous_artists"
+    PREVIOUS_ARTISTS: ClassVar[str] = "previous_artists"
     previous_artists: Optional[list] = None
 
     def operations(self):
@@ -711,10 +713,10 @@ class WorkFile(EntityBaseModel):
     VERSION: ClassVar[str] = "version"
     version: Optional[str] = None
 
-    SESSION_CONTENT: ClassVar[dict] = "session_content"
+    SESSION_CONTENT: ClassVar[str] = "session_content"
     session_content: Optional[dict] = None
 
-    REPRESENTATION: ClassVar[dict] = "representation"
+    REPRESENTATION: ClassVar[str] = "representation"
     representation: Optional[dict] = None
 
     def operations(self):
@@ -767,13 +769,13 @@ class DBAsset(EntityBaseModel):
     LABEL: ClassVar[str] = "label"
     label: Optional[str] = None
 
-    STACKS: ClassVar[list] = "stacks"
+    STACKS: ClassVar[str] = "stacks"
     stacks: Optional[list] = None
 
     MASTER_TASK_TYPE: ClassVar[str] = "task_type"
     master_task_type: Optional[str] = None
 
-    VERSION_CNT: ClassVar[int] = "version_cnt"
+    VERSION_CNT: ClassVar[str] = "version_cnt"
     version_cnt: Optional[int] = 0
 
     DB_ASSET_TYPE: ClassVar[str] = "db_asset_type"
@@ -862,18 +864,18 @@ class AssetBreakdown(DBAsset):
 
 
 class StackSlot(EntityBaseModel):
-    SLOT: ClassVar[dict] = "slot"
+    SLOT: ClassVar[str] = "slot"
     slot: Optional[dict] = None
 
 
 class StackBaseModel(DBAsset):
-    SLOTS: ClassVar[dict] = "slots"
+    SLOTS: ClassVar[str] = "slots"
     slots: Optional[dict] = None
 
-    OPTIONS: ClassVar[dict] = "options"
+    OPTIONS: ClassVar[str] = "options"
     options: Optional[dict] = None
 
-    ORIGIN_DATA: ClassVar[dict] = "origin_data"
+    ORIGIN_DATA: ClassVar[str] = "origin_data"
     origin_data: Optional[dict] = None
 
     def operations(self):
@@ -903,8 +905,16 @@ class ShotStack(StackBaseModel):
     type: Optional[str] = "shot_stack"
 
 
+class ShotStackVersion(StackBaseModel):
+    type: Optional[str] = "shot_stack_version"
+
+
 class ShotBreakdown(StackBaseModel):
-    type: Optional[str] = "shot_stack__breakdown"
+    type: Optional[str] = "shot_breakdown"
+
+
+class ShotBreakdownVersion(StackBaseModel):
+    type: Optional[str] = "shot_breakdown_version"
 
 
 class FxCache(DBAsset):
@@ -1015,19 +1025,19 @@ class DBAssetVersion(EntityBaseModel):
     DESCRIPTION: ClassVar[str] = "description"
     description: Optional[str] = None
 
-    COMMENTS: ClassVar[list] = "comments"
+    COMMENTS: ClassVar[str] = "comments"
     comments: Optional[list] = None
 
     VERSION: ClassVar[str] = "version"
     version: Optional[str] = None
 
-    VERSION_CNT: ClassVar[int] = "version_cnt"
+    VERSION_CNT: ClassVar[str] = "version_cnt"
     version_cnt: Optional[int] = None
 
-    COMPONENTS: ClassVar[list] = "components"
+    COMPONENTS: ClassVar[str] = "components"
     components: Optional[list] = None
 
-    ORIGIN_DATA: ClassVar[dict] = "origin_data"
+    ORIGIN_DATA: ClassVar[str] = "origin_data"
     origin_data: Optional[dict] = None
 
     def operations(self):
@@ -1048,7 +1058,7 @@ class DBAssetVersionOperations(DBAssetOperations):
 class AssetBreakdownVersion(DBAssetVersion):
     db_asset_type: Optional[str] = "db_asset_version__breakdown"
 
-    DATA: ClassVar[dict] = "data"
+    DATA: ClassVar[str] = "data"
     data: Optional[dict] = None
 
     def operations(self):
