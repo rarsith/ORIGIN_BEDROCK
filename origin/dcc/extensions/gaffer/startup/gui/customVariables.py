@@ -36,7 +36,7 @@ def __scriptAdded( container, script ) :
 
     for envar, envar_val in origin_envars.items() :
         if envar not in variables :
-            resource = variables.addMember(envar, IECore.StringData( str(envar_val) if envar_val is not None else "" ), envar)
+            resource = variables.addMember(envar, IECore.StringData( str(envar_val) if envar_val is not None else '' ), envar)
 
         Gaffer.MetadataAlgo.setReadOnly( variables[envar]["name"], True )
 

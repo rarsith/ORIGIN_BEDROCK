@@ -301,7 +301,7 @@ class VersionLoader(QtWidgets.QWidget):
                                                                        )
 
 
-        return publishes_docs
+            return publishes_docs
 
     def get_asset_breakdown_data(self):
         pass
