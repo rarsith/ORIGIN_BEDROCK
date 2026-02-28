@@ -1,5 +1,5 @@
 import sys
-from PySide2 import QtWidgets
+from Qt import QtWidgets
 from origin.envars.origin_envars import ContextHandler
 from origin.database.entities.actions import Create
 

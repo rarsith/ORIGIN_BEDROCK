@@ -1,12 +1,12 @@
-from PySide2 import QtWidgets, QtGui, QtCore
+from Qt import QtWidgets, QtGui, QtCore
 
-from origin.envars.origin_envars import ContextHandler
+from origin.envars.origin_envarsXXX import ContextHandler
 from origin.ui.project_viewer_ui.project_tree_viewer_UI import ProjectTreeViewerUI
-from origin.database.entities.operators import get_entity_class, Projects, Group, Project
 
 from origin.ui.creators_ui.create_asset_ui_FAST import CreateAssetUI
 from origin.ui.creators_ui.create_group_ui_FAST import CreateGroupUI
 from origin.ui.creators_ui.create_show_ui import CreateShowUI
+from origin.server import client
 
 
 # assignment_manager_core
@@ -68,13 +68,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.remove_selected_action.triggered.connect(self.remove_selected_menu)
 
     def get_shows(self):
-        """Returns a list of all shows in the database"""
-        get_all_shows = Projects().names()
-        if get_all_shows is None:
-            return
+        all_shows = client.request_all_shows()
 
-        all_shows = [Project(**show) for show in get_all_shows]
-        return all_shows
+        if all_shows is not None:
+            return all_shows
+        else:
+            return None
 
     def refresh_shows(self):
         """Refreshes the combobox with the current shows in the database"""
@@ -106,6 +105,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
 
     def populate_shows_cb(self):
         get_shows = self.get_shows()
+
         cnt = 0
         for show in get_shows:
             self.show_select_cb.addItem(show.name)
@@ -135,15 +135,15 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         self.project_tree_viewer_wdg.clear()
         curr_proj_data = self.get_current_index_data()
         if curr_proj_data:
-            get_branches = curr_proj_data.operations().get_children()
+            get_branches = client.request_entity_children(context=self.context_handler,
+                                                          entity_id=self.context_handler.show_name)
 
             if get_branches:
                 for branch in get_branches:
-                    asset = Group(**branch)
-                    doc_visual_children = asset.children
+                    doc_visual_children = branch.children
 
-                    item = QtWidgets.QTreeWidgetItem([asset.name])
-                    item.setData(0, QtCore.Qt.UserRole, asset)
+                    item = QtWidgets.QTreeWidgetItem([branch.name])
+                    item.setData(0, QtCore.Qt.UserRole, branch)
 
                     if len(doc_visual_children) != 0:
                         item.setChildIndicatorPolicy(QtWidgets.QTreeWidgetItem.ShowIndicator)
@@ -152,15 +152,14 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
     def on_item_expanded(self, item):
         if item.childCount() == 0:
             parent_doc_data = item.data(0, QtCore.Qt.UserRole)
-            children_docs = parent_doc_data.operations().get_children()
+            children_docs = client.request_entity_children(context=self.context_handler,
+                                                          entity_id=parent_doc_data._id)
 
             for child_doc in children_docs:
-                if child_doc["type"] != "task":
-                    check_type = get_entity_class(child_doc["type"])
-                    asset = check_type(**child_doc)
-                    doc_visual_children = asset.children
-                    child_item = QtWidgets.QTreeWidgetItem([asset.name])
-                    child_item.setData(0, QtCore.Qt.UserRole, asset)
+                if child_doc.type != "task":
+                    doc_visual_children = child_doc.children
+                    child_item = QtWidgets.QTreeWidgetItem([child_doc.name])
+                    child_item.setData(0, QtCore.Qt.UserRole, child_doc)
 
                     if len(doc_visual_children) != 0:
                         child_item.setChildIndicatorPolicy(QtWidgets.QTreeWidgetItem.ShowIndicator)
@@ -201,12 +200,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         get_sel_type = sel_data.type
 
         if get_sel_type == "group":
-            sel_id = sel_data.id
+            sel_id = sel_data._id
             orig_path = sel_id.split(".", 1)[1]
             group_selection.clear()
             group_selection.append(orig_path)
         elif get_sel_type == "asset":
-            sel_id = sel_data.id
+            sel_id = sel_data._id
             exclude_project = sel_id.split(".", 1)[1]
             exclude_asset = exclude_project.rsplit(".", 1)[0]
             group_selection.clear()
@@ -218,7 +217,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             self.context_handler.origin_path_hierarchy = group_selection[0]
         self.context_handler.entity_name = sel_data.name
         self.context_handler.entity_type = sel_data.type
-        self.context_handler.entity_id = sel_data.id
+        self.context_handler.entity_id = sel_data._id
         self.context_handler.asset_breakdown_id = sel_data.breakdown
 
         self.current_context.emit(self.context_handler)

@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from dataclasses import dataclass, asdict
+
 from typing import List, Tuple, Optional, ClassVar
 
 from origin.database.collections.connections import ProjectCollections
@@ -98,8 +99,8 @@ def get_db_asset_class(publish_type):
     }
     return pub_types.get(publish_type)
 
-
-class OriginSettingsBase(BaseModel):
+@dataclass
+class OriginSettingsBase:
     ROOT_PATH: ClassVar[str] = "root_path"
     root_path: Optional[str] = None
 
@@ -170,10 +171,10 @@ class OriginSettingsOperations:
               entry_id=self.entity.id,
               attribute=self.entity.LAST_SESSION).attribute_value(data=last_session_data)
 
-
-class DCCBaseModel(BaseModel):
+@dataclass
+class DCCBaseModel:
     ID: ClassVar[str] = "_id"
-    id: Optional[str] = Field(None, alias='_id')
+    _id: Optional[str] = None
 
     NAME: ClassVar[str] = "name"
     name: Optional[str] = None
@@ -202,6 +203,16 @@ class DCCBaseModel(BaseModel):
     OWNER: ClassVar[str] = "owner"
     owner: Optional[str] = None
 
+    def to_mongo(self):
+        """Converts the dataclass to a dict specifically for MongoDB."""
+        data = asdict(self)
+
+        # Swap 'id' for '_id'
+        if "id" in data:
+            data["_id"] = data.pop("id")
+
+        return data
+
     model_config = {
         "from_attributes": True,
     }
@@ -227,8 +238,8 @@ class DCCOperations:
             children.append(child)
         return children
 
-
-class DCCVersion(BaseModel):
+@dataclass
+class DCCVersion:
     ACTIVE: ClassVar[str] = "active"
     active: Optional[bool] = None
 
@@ -267,8 +278,8 @@ class DCCVersionOperations:
         db_doc = doc_data.entity_document(doc_id=parent_id)
         return DCCVersion(**db_doc)
 
-
-class PublishOptions(BaseModel):
+@dataclass
+class PublishOptions:
     PUBLISH_TYPE: ClassVar[str] = "publish_type"
     publish_type: Optional[str] = None
 
@@ -308,8 +319,8 @@ class PublishOptions(BaseModel):
     PUBLISH_STATUS: ClassVar[str] = "publish_status"
     publish_status: Optional[str] = None
 
-
-class PublishTypes(BaseModel):
+@dataclass
+class PublishTypes:
     GEOMETRY: ClassVar[str] = "geometry"
     geometry: Optional[str] = None
 
@@ -381,10 +392,10 @@ class PublishTypes(BaseModel):
 ## ENTITIES ##
 ##############
 
-
-class EntityBaseModel(BaseModel):
+@dataclass
+class EntityBaseModel:
     ID: ClassVar[str] = "_id"
-    id: Optional[str] = Field(None, alias='_id')
+    _id: Optional[str] = None
 
     NAME: ClassVar[str] = "name"
     name: Optional[str] = None
@@ -425,6 +436,16 @@ class EntityBaseModel(BaseModel):
         "from_attributes": True,
     }
 
+    def as_dict(self):
+        """Converts the dataclass to a dict specifically for MongoDB."""
+        data = asdict(self)
+
+        # Swap 'id' for '_id'
+        if "id" in data:
+            data["_id"] = data.pop("id")
+
+        return data
+
     def operations(self):
         return EntityOperations(entity=self)
 
@@ -436,10 +457,10 @@ class EntityOperations:
     def parent_show(self):
         delimiter = "."
 
-        if delimiter not in self.entity.id:
-            return self.entity.id
+        if delimiter not in self.entity._id:
+            return self.entity._id
 
-        parent_show = self.entity.id.split(delimiter, 1)[0]
+        parent_show = self.entity._id.split(delimiter, 1)[0]
         return parent_show
 
     def project_control_collection(self):
@@ -476,13 +497,13 @@ class EntityOperations:
     def get_children(self):
         children = []
         doc_data = CollectionOperators(db_collection=self.parent_show())
-        children_docs = doc_data.children_with_parent_id(parent_id=self.entity.id)
+        children_docs = doc_data.children_with_parent_id(parent_id=self.entity._id)
         for child in children_docs:
             children.append(child)
         return children
 
 ###################################################
-
+@dataclass
 class Asset(EntityBaseModel):
     DEFINITION: ClassVar[str] = "definition"
     definition: Optional[dict] = None
@@ -573,12 +594,12 @@ class AssetOperations(EntityOperations):
 
             return AssetBreakdownVersion(**latest_version_doc_data)
 
-
+@dataclass
 class Group(EntityBaseModel):
     DATA: ClassVar[str] = "data"
     data: Optional[dict] = None
 
-
+@dataclass
 class Project(EntityBaseModel):
     SHOW_TYPE: ClassVar[str] = "show_type"
     show_type: Optional[str] = None
@@ -616,7 +637,7 @@ class ProjectOperations(EntityOperations):
               entry_id=self.entity.id,
               attribute=self.entity.SHOW_SETTING).attribute_value(data=data)
 
-
+@dataclass
 class Task(EntityBaseModel):
     TASK_TYPE: ClassVar[str] = "task_type"
     task_type: Optional[str] = None
@@ -700,7 +721,7 @@ class TaskOperations(EntityOperations):
               entry_id=self.entity.id,
               attribute=self.entity.PREVIOUS_ARTISTS).value_to_field(data=data)
 
-
+@dataclass
 class WorkFile(EntityBaseModel):
     type: Optional[str] = "work_file"
 
@@ -762,7 +783,7 @@ class Projects:
 
         return projects_list
 
-
+@dataclass
 class DBAsset(EntityBaseModel):
     type: Optional[str] = "db_asset"
 
@@ -857,17 +878,17 @@ class DBAssetOperations(EntityOperations):
               entry_id=self.entity.id,
               attribute=self.entity.STACKS).value_to_field(data=stack_id)
 
-
+@dataclass
 class AssetBreakdown(DBAsset):
     type: Optional[str] = "db_asset__breakdown"
     db_asset_type: Optional[str] = "db_asset__breakdown"
 
-
+@dataclass
 class StackSlot(EntityBaseModel):
     SLOT: ClassVar[str] = "slot"
     slot: Optional[dict] = None
 
-
+@dataclass
 class StackBaseModel(DBAsset):
     SLOTS: ClassVar[str] = "slots"
     slots: Optional[dict] = None
@@ -892,123 +913,123 @@ class StackOperations(DBAssetOperations):
               entry_id=self.entity.id,
               attribute=self.entity.SLOTS).value_to_field(data=db_asset_id)
 
-
+@dataclass
 class AssetStackBreakdown(StackBaseModel):
     type: Optional[str] = "asset_stack_breakdown"
 
-
+@dataclass
 class AssetStack(StackBaseModel):
     type: Optional[str] = "asset_stack"
 
-
+@dataclass
 class ShotStack(StackBaseModel):
     type: Optional[str] = "shot_stack"
 
-
+@dataclass
 class ShotStackVersion(StackBaseModel):
     type: Optional[str] = "shot_stack_version"
 
-
+@dataclass
 class ShotBreakdown(StackBaseModel):
     type: Optional[str] = "shot_breakdown"
 
-
+@dataclass
 class ShotBreakdownVersion(StackBaseModel):
     type: Optional[str] = "shot_breakdown_version"
 
-
+@dataclass
 class FxCache(DBAsset):
     type: Optional[str] = "fx_cache"
 
-
+@dataclass
 class SceneFile(DBAsset):
     type: Optional[str] = "scene"
 
-
+@dataclass
 class HoudiniDigitalAsset(DBAsset):
     type: Optional[str] = "hda"
 
-
+@dataclass
 class EditorialMedia(DBAsset):
     type: Optional[str] = "editorial"
 
-
+@dataclass
 class Render(DBAsset):
     type: Optional[str] = "render"
 
-
+@dataclass
 class Groom(DBAsset):
     type: Optional[str] = "groom"
 
-
+@dataclass
 class Comp(DBAsset):
     type: Optional[str] = "comp"
 
-
+@dataclass
 class Look(DBAsset):
     type: Optional[str] = "look"
 
-
+@dataclass
 class Template(DBAsset):
     type: Optional[str] = "template"
 
-
+@dataclass
 class Geometry(DBAsset):
     type: Optional[str] = "geometry"
 
-
+@dataclass
 class USDAssembly(DBAsset):
     type: Optional[str] = "usd_assembly"
 
-
+@dataclass
 class ImageSequence(DBAsset):
     type: Optional[str] = "img_seq"
 
-
+@dataclass
 class Camera(DBAsset):
     type: Optional[str] = "camera"
 
-
+@dataclass
 class TurntableCamera(DBAsset):
     type: Optional[str] = "turntable_camera"
 
-
+@dataclass
 class RigModule(DBAsset):
     type: Optional[str] = "rig_module"
 
-
+@dataclass
 class AnimationRig(DBAsset):
     type: Optional[str] = "animation_rig"
 
-
+@dataclass
 class TextureSet(DBAsset):
     type: Optional[str] = "texture_set"
 
-
+@dataclass
 class Texture(DBAsset):
     type: Optional[str] = "texture"
 
-
+@dataclass
 class Animation(DBAsset):
     type: Optional[str] = "animation"
 
-
+@dataclass
 class ShotSculpt(DBAsset):
     type: Optional[str] = "shot_sculpt"
 
-
+@dataclass
 class Image(DBAsset):
     type: Optional[str] = "image"
 
-
+@dataclass
 class Reference(DBAsset):
     type: Optional[str] = "reference"
 
-
+@dataclass
 class Quicktime(DBAsset):
     type: Optional[str] = "quicktime"
 
-
+@dataclass
 class DBAssetVersion(EntityBaseModel):
     LABEL: ClassVar[str] = "label"
     label: Optional[str] = None
@@ -1054,7 +1075,7 @@ class DBAssetVersionOperations(DBAssetOperations):
               entry_id=self.entity.id,
               attribute=self.entity.COMPONENTS).value_to_field(data=component_id)
 
-
+@dataclass
 class AssetBreakdownVersion(DBAssetVersion):
     db_asset_type: Optional[str] = "db_asset_version__breakdown"
 
@@ -1104,7 +1125,7 @@ class AssetBreakdownVersionOperations(DBAssetOperations):
                  entry_id=self.entity.id,
                  attribute=data_path).attribute_value(data=db_asset_doc.id)
 
-
+@dataclass
 class AssetStackVersion(DBAssetVersion):
     db_asset_type: Optional[str] = "db_asset_stack__version"
 
@@ -1120,7 +1141,7 @@ class AssetStackVersionOperations(DBAssetOperations):
         super(AssetStackVersionOperations, self).__init__(entity=entity)
         self.entity = entity
 
-
+@dataclass
 class DBAssetFileComponent(EntityBaseModel):
     LABEL: ClassVar[str] = "label"
     label: Optional[str] = None
@@ -1137,117 +1158,117 @@ class DBAssetFileComponent(EntityBaseModel):
     DB_ASSET_TYPE: ClassVar[str] = "db_asset_type"
     db_asset_type: Optional[str] = None
 
-
+@dataclass
 class AlembicArchiveComponent(DBAssetFileComponent):
     type: Optional[str] = "alembic__component"
     label: Optional[str] = "alembic"
     file_extension: Optional[str] = "abc"
 
-
+@dataclass
 class ImageSequenceComponent(DBAssetFileComponent):
     type: Optional[str] = "image_sequence__component"
     label: Optional[str] = "image_sequence"
     file_extension: Optional[str] = "exr"
 
-
+@dataclass
 class JsonComponent(DBAssetFileComponent):
     type: Optional[str] = "json__component"
     label: Optional[str] = "json"
     file_extension: Optional[str] = "json"
 
-
+@dataclass
 class MayaSceneComponent(DBAssetFileComponent):
     type: Optional[str] = "maya_scene__component"
     label: Optional[str] = "maya_scene"
     file_extension: Optional[str] = "ma"
 
-
+@dataclass
 class ObjFileComponent(DBAssetFileComponent):
     type: Optional[str] = "obj__component"
     label: Optional[str] = "obj"
     file_extension: Optional[str] = "obj"
 
-
+@dataclass
 class OriginComponent(DBAssetFileComponent):
     type: Optional[str] = "origin_scene__component"
     label: Optional[str] = "origin_scene"
 
-
+@dataclass
 class OrigiMetaComponent(DBAssetFileComponent):
     type: Optional[str] = "origin_meta__component"
     label: Optional[str] = "origin_meta"
     file_extension: Optional[str] = "origin_meta"
 
-
+@dataclass
 class QuicktimeComponent(DBAssetFileComponent):
     type: Optional[str] = "review__component"
     label: Optional[str] = "review"
     file_extension: Optional[str] = "mov"
 
-
+@dataclass
 class RenderScriptComponent(DBAssetFileComponent):
     type: Optional[str] = "render_script__component"
     label: Optional[str] = "render_script"
     file_extension: Optional[str] = "gfr"
 
-
+@dataclass
 class RenderScriptTemplateComponent(DBAssetFileComponent):
     type: Optional[str] = "render_template__component"
     label: Optional[str] = "render_template"
     file_extension: Optional[str] = "gfr"
 
-
+@dataclass
 class SingleFileAssetComponent(DBAssetFileComponent):
     pass
 
-
+@dataclass
 class USDComponent(DBAssetFileComponent):
     type: Optional[str] = "USD__component"
     label: Optional[str] = "USD"
     file_extension: Optional[str] = "usd"
 
-
+@dataclass
 class ModelingUVSnapShotComponent(DBAssetFileComponent):
     type: Optional[str] = "UV__component"
     label: Optional[str] = "UV"
 
-    UDIM_TILES: ClassVar[List[int]] = "udim_tiles"
+    UDIM_TILES: ClassVar[str] = "udim_tiles"
     udim_tiles: Optional[List[int]] = None
 
-    UV_TILES: ClassVar[List[Tuple[int, int]]] = "uv_tiles"
+    UV_TILES: ClassVar[str] = "uv_tiles"
     uv_tiles: Optional[List[Tuple[int, int]]] = None
 
-
+@dataclass
 class ThumbnailComponent(DBAssetFileComponent):
     type: Optional[str] = "thumbnail__component"
     label: Optional[str] = "thumbnail"
     file_extension: Optional[str] = "png"
 
-
+@dataclass
 class AudioComponent(DBAssetFileComponent):
     type: Optional[str] = "audio__component"
     label: Optional[str] = "audio"
     file_extension: Optional[str] = "wav"
 
-
+@dataclass
 class SourceTextureComponent(DBAssetFileComponent):
     type: Optional[str] = "source_texture__component"
     label: Optional[str] = "source_texture"
     file_extension: Optional[str] = "exr"
 
-
+@dataclass
 class JPGImageSequenceComponent(DBAssetFileComponent):
     type: Optional[str] = "jpg__img_seq__component"
     label: Optional[str] = "source_jpg"
     file_extension: Optional[str] = "jpg"
 
-
+@dataclass
 class CustomFileComponent(DBAssetFileComponent):
     type: Optional[str] = "custom__file_component"
     label: Optional[str] = ""
     file_extension: Optional[str] = "custom_extension"
 
-
+@dataclass
 class PlayblastTemplateFileComponent(DBAssetFileComponent):
     type: Optional[str] = "playblast_template__component"
     label: Optional[str] = "playblast_template"

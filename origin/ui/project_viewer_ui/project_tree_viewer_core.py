@@ -4,8 +4,8 @@ from origin.envars.origin_envars import ContextHandler
 from origin.ui.project_viewer_ui.project_tree_viewer_UI import ProjectTreeViewerUI
 from origin.database.entities.operators import get_entity_class, Projects, Group, Project
 
-from origin.ui.creators_ui.create_asset_ui import CreateAssetUI
-from origin.ui.creators_ui.create_group_ui import CreateGroupUI
+from origin.ui.creators_ui.create_asset_ui_FAST import CreateAssetUI
+from origin.ui.creators_ui.create_group_ui_FAST import CreateGroupUI
 from origin.ui.creators_ui.create_show_ui import CreateShowUI
 
 
@@ -201,12 +201,12 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
         get_sel_type = sel_data.type
 
         if get_sel_type == "group":
-            sel_id = sel_data.id
+            sel_id = sel_data._id
             orig_path = sel_id.split(".", 1)[1]
             group_selection.clear()
             group_selection.append(orig_path)
         elif get_sel_type == "asset":
-            sel_id = sel_data.id
+            sel_id = sel_data._id
             exclude_project = sel_id.split(".", 1)[1]
             exclude_asset = exclude_project.rsplit(".", 1)[0]
             group_selection.clear()
@@ -218,7 +218,7 @@ class ProjectTreeViewerCore(ProjectTreeViewerUI):
             self.context_handler.origin_path_hierarchy = group_selection[0]
         self.context_handler.entity_name = sel_data.name
         self.context_handler.entity_type = sel_data.type
-        self.context_handler.entity_id = sel_data.id
+        self.context_handler.entity_id = sel_data._id
         self.context_handler.asset_breakdown_id = sel_data.breakdown
 
         self.current_context.emit(self.context_handler)

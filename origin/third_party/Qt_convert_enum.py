@@ -33,7 +33,7 @@ def qt_for_binding(binding):
     if "QT_VERBOSE" in os.environ:
         del os.environ["QT_VERBOSE"]
 
-    import Qt
+    from origin.third_party import Qt
 
     return Qt
 

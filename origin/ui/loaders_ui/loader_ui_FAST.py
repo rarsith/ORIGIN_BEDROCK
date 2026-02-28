@@ -1,12 +1,12 @@
 import os.path
 
-from PySide2 import QtWidgets, QtCore
+from Qt import QtWidgets, QtCore
 
 from origin.database.mongo import CollectionOperators
 from origin.envars.origin_envars import ContextHandler
 from origin.ui.loaders_ui.color_settings import match_color_scheme
-from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeViewerCore
-from origin.ui.stream_viewer_ui.stream_viewer_UI import StreamViewerUI
+from origin.ui.project_viewer_ui.project_tree_viewer_core_FAST import ProjectTreeViewerCore
+from origin.ui.stream_viewer_ui.stream_viewer_UI_FAST import StreamViewerUI
 from origin.ui.task_viewer_ui.task_viewer_core import TaskViewerCore
 from origin.database.entities.registries import registry
 from origin.dcc.common.dispachers.loaders import get_loader_class
@@ -357,7 +357,7 @@ class TaskViewerCoreOverride(TaskViewerCore):
 
                 self.context_handler.task_name = get_task_data.name
                 self.context_handler.task_type = get_task_data.task_type
-                self.context_handler.task_id = get_task_data.id
+                self.context_handler.task_id = get_task_data._id
                 self.current_context.emit(self.context_handler)
 
                 return get_task_data

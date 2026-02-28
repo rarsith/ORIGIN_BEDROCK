@@ -8,8 +8,8 @@ from PySide2.QtWidgets import QMenu
 
 from origin.database.entities.operators import DBAssetVersion
 from origin.database.publisher.db_publisher import DBPublisher
-from origin.envars.origin_envars import ContextHandler
-from origin.ui.project_viewer_ui.project_tree_viewer_core import ProjectTreeViewerCore
+from origin.envars.origin_envarsXXX import ContextHandler
+from origin.ui.project_viewer_ui.project_tree_viewer_core_FAST import ProjectTreeViewerCore
 from origin.ui.status_widgets.color_settings import match_color_scheme
 
 

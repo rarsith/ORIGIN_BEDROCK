@@ -8,8 +8,13 @@ class TasksTemplates:
 
     shot_basic_tasks_config = {}
 
-    def __init__(self, context: ContextHandler):
-        self.context_handler = context
+    def __init__(self, context: dict | ContextHandler):
+
+        if isinstance(context, dict):
+            self.context_handler = ContextHandler()
+            self.context_handler.load_session(context)
+        else:
+            self.context_handler = context
 
     def create_build_tasks(self):
         created_tasks = []

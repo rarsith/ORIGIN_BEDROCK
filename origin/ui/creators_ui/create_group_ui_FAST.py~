@@ -1,5 +1,5 @@
 import sys
-from Qt import QtWidgets
+from PySide2 import QtWidgets
 from origin.server import client
 
 

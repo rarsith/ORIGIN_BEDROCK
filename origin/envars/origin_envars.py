@@ -56,6 +56,7 @@ class ContextHandler:
         conform_lower_case = {k.lower(): v for k, v in session_data.items()}
         self.session_context = SessionContext(**conform_lower_case)
         self.session_context.entity_id = session_data['entity_id']
+        print("session loaded: ", self.session_context.model_dump(by_alias=True))
 
     def snapshot_session(self) -> dict:
         context_data = self.session_context.model_dump(by_alias=True)

@@ -1,9 +1,6 @@
-import sys
-from PySide2 import QtWidgets
-
-from origin.database.entities.actions import Create
-from origin.database.schemas.templates.tasks_templates import TasksTemplates
-from origin.envars.origin_envars import ContextHandler
+from Qt import QtWidgets
+from origin.envars.origin_envarsXXX import ContextHandler
+from origin.server import client
 
 
 class CreateAssetUI(QtWidgets.QDialog):
@@ -85,7 +82,6 @@ class CreateAssetUI(QtWidgets.QDialog):
             if widget.isChecked():
                 checked_items.append(widget.text())
 
-        print(checked_items)
         return checked_items
 
     def db_commit_close(self):
@@ -96,27 +92,18 @@ class CreateAssetUI(QtWidgets.QDialog):
         asset_name = self.asset_name_le.text()
         get_selected_options = self.get_checked_options()
 
-        created_asset_id = Create(context=self.context_handler).asset(name=asset_name,
-                                                                      parent=self.asset_parent
-                                                                      )
-        self.context_handler.entity_id = created_asset_id
+        result = client.request_asset_creation(context=self.context_handler,
+                                               asset_name=asset_name,
+                                               asset_parent=self.asset_parent,
+                                               options=get_selected_options
+                                               )
 
-        tasks_template = TasksTemplates(context=self.context_handler)
-        tasks_template.build_base_task_schema()
-
-        options_config = {
-            "has_groom": tasks_template.build_has_groom,
-            "has_groom_cfx": tasks_template.build_has_groom_cfx,
-            "has_cloth_cfx": tasks_template.build_has_cloth_cfx,
-            "is_assembly": tasks_template.build_is_assembly,
-        }
-
-        for sel_option in get_selected_options:
-            if sel_option in list(options_config.keys()):
-                options_config[sel_option]()
-        tasks_template.create_build_tasks()
-
-
+        if result.get("status") == "success":
+            print(f"Successfully created asset: {result.get('created_id')}")
+            # Update the local context so other UIs know the new ID
+            self.context_handler.entity_id = result.get("created_id")
+        else:
+            print(f"Failed to create asset: {result.get('message')}")
 
         self.asset_name_le.clear()
 
